@@ -1,0 +1,40 @@
+# Operating System
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Personal notes (if you want to keep private notes)
+notes/
+scratch/
+private/
+
+# Node modules (if you add any Node.js tools)
+node_modules/
+
+# Python (if you add any Python tools)
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+.env.local
