@@ -1,3 +1,8 @@
+---
+name: paper-summary
+description: Interactive academic paper reading, discussion, and personalized Korean summarization with typed links for building paper networks. Use when researcher wants to discuss and summarize papers.
+---
+
 # Paper Summary Skill
 
 A comprehensive skill for interactive paper reading, discussion, and personalized summarization.
