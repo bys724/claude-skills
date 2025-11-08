@@ -57,11 +57,11 @@ When the user confirms readiness, Claude creates a Korean summary with the follo
 [A complete paragraph (like an Abstract) that captures the paper's core content while reflecting what the researcher emphasized in discussion, papers they compared it to, and specific aspects they focused on. This is a subjective summary incorporating the researcher's perspective]
 
 **Comparison & Discussion**:
-[Only truly essential papers, maximum 3-4 items. Use Obsidian typed links format]
+[Only truly essential papers, maximum 3-4 items. Use Juggle typed links format]
 
-- [[builds-on::Paper A]] - This work directly uses the method/model/data from Paper A. [Specific explanation]
-- [[vs::Paper B]] - Experimental comparison of performance or methodology. [Specific explanation]
-- [[ref::Paper C]] - Referenced for background or general context. [Specific explanation]
+- [[Paper A|builds-on]] - This work directly uses the method/model/data from Paper A. [Specific explanation]
+- [[Paper B|vs]] - Experimental comparison of performance or methodology. [Specific explanation]
+- [[Paper C|ref]] - Referenced for background or general context. [Specific explanation]
 
 *Typed link classification criteria:*
 - **builds-on**: Directly uses code/model/data from that paper or builds directly upon it
