@@ -55,39 +55,45 @@ When the user confirms readiness, Claude creates **ONE** comprehensive note that
    - What was expected to learn
    - Connection to current research interests
 
-2. **🎯 Core Ideas** (Objective)
+2. **📚 Background & Related Concepts**
+   - Key concepts needed to understand the paper
+   - Prior work and methodologies this builds upon
+   - Research context from Related Work section
+   - Focus on 3-5 essential concepts discussed
+
+3. **🎯 Core Ideas** (Objective)
    - One-sentence summary
    - Main contributions (3-5 bullet points)
    - Key approach with technical details
 
-3. **🔬 Methodology Details**
+4. **🔬 Methodology Details**
    - Architecture/algorithm specifics
    - Data and experimental setup
    - Implementation details discussed
    - Flexible subsections based on discussion depth
 
-4. **📊 Results & Analysis**
+5. **📊 Results & Analysis**
    - Key experimental findings
    - Ablation studies
    - Acknowledged limitations
 
-5. **💬 Discussion Highlights**
+6. **💬 Discussion Highlights**
    - Questions asked during conversation
    - Papers compared and discussed
    - Topics explored in depth
 
-6. **💭 Personal Evaluation & Insights**
+7. **💭 Personal Evaluation & Insights**
    - Honest assessment (strengths, weaknesses, novelty, impact)
    - Connections to own research
    - New insights and ideas sparked
    - What stood out
 
-7. **🔗 Related Papers** (Typed Links)
+8. **🔗 Related Papers** (Typed Links)
    - Essential papers only (3-5 max)
    - Use Juggle format: `[[Paper|builds-on]]`, `[[Paper|vs]]`, `[[Paper|ref]]`
    - Include specific explanations
 
-8. **❓ Questions & Future Exploration**
+9. **❓ Questions & Future Exploration**
    - Unresolved questions
    - Papers to read next
    - Experiments or applications to try
@@ -195,6 +201,18 @@ paper_type: Conference
 
 **기대했던 것**
 Multi-head attention의 작동 원리, positional encoding의 필요성과 구현 방식, 그리고 왜 Transformer가 RNN을 대체할 수 있었는지에 대한 명확한 이해를 얻고자 했다.
+
+---
+
+## 📚 배경 지식 및 관련 개념 (Background & Related Concepts)
+
+**Sequence-to-Sequence Models**: Encoder-decoder 구조로 입력 시퀀스를 고정 길이 벡터로 인코딩하고 디코딩하는 프레임워크. RNN/LSTM 기반 모델들이 주류였음.
+
+**Attention Mechanism**: Decoder가 출력을 생성할 때 입력의 특정 부분에 집중할 수 있게 하는 메커니즘. Bahdanau attention이 대표적.
+
+**RNN/LSTM의 한계**: Sequential processing으로 인해 병렬화가 어렵고, 긴 시퀀스에서 gradient vanishing/exploding 문제 발생. Long-range dependency를 포착하기 어려움.
+
+**Research Context**: 기계 번역을 중심으로 한 NLP 분야에서 더 효율적이고 성능 좋은 sequence 모델링 방법을 찾는 연구가 활발하던 시기.
 
 ---
 

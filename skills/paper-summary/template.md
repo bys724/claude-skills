@@ -31,6 +31,22 @@ paper_type: [Conference/Journal/ArXiv/Workshop]
 
 ---
 
+## 📚 배경 지식 및 관련 개념 (Background & Related Concepts)
+
+[Summarize key background knowledge, concepts, and prior work needed to understand this paper. Focus on content from the Related Work section and concepts discussed during conversation:
+
+**Key Concept A**: [Brief 1-2 sentence explanation of fundamental concept]
+
+**Key Concept B**: [Brief 1-2 sentence explanation of another important concept]
+
+**Prior Work/Methods**: [Major research or methodologies this paper builds upon, with brief descriptions]
+
+**Research Context**: [The broader research area or paradigm this work fits into]
+
+Note: Focus on 3-5 essential concepts that were discussed or are crucial for understanding. Don't list everything from Related Work - only what's truly necessary for comprehension.]
+
+---
+
 ## 🎯 핵심 아이디어 (Core Ideas)
 
 **한 문장 요약**
