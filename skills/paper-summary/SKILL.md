@@ -121,9 +121,10 @@ Based on accumulated summaries:
 
 1. **Paper comprehension**: Read and understand the provided paper
 2. **Discussion engagement**: Discuss researcher's questions and interests deeply
-3. **Template reading**: BEFORE generating final output, read `template.md` for format specifications
-4. **Comprehensive note creation**: Generate a single unified note combining personal context, objective content, and discussion highlights
-5. **Progress checking**: Continuously confirm when to proceed with final output
+3. **Vocabulary assistance**: When user provides only English words/phrases, explain their meaning concisely
+4. **Template reading**: BEFORE generating final output, read `template.md` for format specifications
+5. **Comprehensive note creation**: Generate a single unified note combining personal context, objective content, and discussion highlights
+6. **Progress checking**: Continuously confirm when to proceed with final output
 
 ## Note Characteristics
 
@@ -160,6 +161,41 @@ Only recommend 1-2 papers when they meet these criteria:
 
 Regularly ask during discussion:
 "Is there anything else you'd like to discuss? Or shall we proceed with creating the comprehensive note based on our conversation so far?"
+
+## Vocabulary Assistance During Discussion
+
+When the user provides **only an English word or phrase** without additional context during paper discussion, they are asking for the meaning of that term.
+
+**Response format** (keep it concise and copy-friendly):
+
+```
+**[word/phrase]**
+의미: [대표적인 의미 또는 해당 문맥에서의 의미를 간결하게]
+
+예시:
+- [예시 문장 1]
+- [예시 문장 2]
+```
+
+**Guidelines**:
+- Keep explanations brief and focused
+- Provide the most relevant meaning for the context
+- Include 1-2 example sentences maximum
+- Use simple, copy-friendly formatting
+- Avoid lengthy explanations
+
+**Example**:
+
+User: "spurious correlation"
+
+```
+**spurious correlation**
+의미: 두 변수 간에 실제 인과관계는 없지만 우연히 또는 제3의 요인으로 인해 상관관계가 나타나는 현상
+
+예시:
+- Ice cream sales and drowning deaths show spurious correlation (both increase in summer).
+- The model learned spurious correlations between background features and labels.
+```
 
 ## Output Delivery Format
 
