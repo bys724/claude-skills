@@ -125,6 +125,16 @@ git submodule update --init --recursive
 
 **설치:** `./scripts/install.sh paper-summary`
 
+#### Research Presentation
+연구/논문 발표 자료 (PPT) 제작 스킬
+
+- 대화하며 반복적으로 개선
+- Obsidian vault의 논문/개념 노트 자동 통합
+- 학술 발표에 최적화된 템플릿
+- 공식 pptx 스킬 활용
+
+**설치:** `./scripts/install.sh research-presentation`
+
 ### 🔧 수정된 공식 스킬 (`modified/`)
 
 공식 스킬을 기반으로 개인적인 필요에 맞게 수정한 버전입니다.
@@ -166,22 +176,29 @@ ls vendor/official/skills/
 
 독립적인 컨텍스트에서 실행되는 특수 작업용 에이전트입니다.
 
-현재는 없음. 자세한 가이드는 `agents/custom/README.md`를 참고하세요.
+#### Research Consultant
+종합 연구 컨설팅 에이전트
 
-**활용 예시:**
-- 대규모 로그 분석 (메인 대화 컨텍스트 보호)
-- 병렬 논문 분석 (여러 논문 동시 처리)
-- 코드 리뷰 (읽기 전용 분석)
-- 독립적인 테스트 실행
+- Obsidian vault 논문/아이디어 분석
+- 최신 연구 동향 조사 (WebSearch)
+- 연구 갭 식별 및 기회 발견
+- 진로 및 연구 방향 조언
+- 종합 컨설팅 보고서 생성
 
-**생성 및 설치:**
+**사용법:**
+```
+"research-consultant 에이전트로 내 연구 방향 분석해줘"
+```
+
+**설치:** `./scripts/install-agents.sh research-consultant`
+
+---
+
+**추가 에이전트 생성:**
 ```bash
-# 1. 에이전트 생성
 mkdir agents/custom/my-agent
 cd agents/custom/my-agent
-# my-agent.md 작성 (YAML frontmatter + system prompt)
-
-# 2. 설치
+# my-agent.md 작성
 ./scripts/install-agents.sh my-agent
 ```
 
