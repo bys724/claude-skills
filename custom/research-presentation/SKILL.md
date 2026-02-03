@@ -33,7 +33,18 @@ user-invocable: true
    - 15-20분: 10-12 슬라이드
    - 30분+: 15-20 슬라이드
 
-4. **참조 자료**: Obsidian vault 활용?
+4. **디자인 테마**: 어떤 스타일?
+   - **Classic Academic** (Navy #1C2833, Gray #2E4053, Silver #AAB7B8)
+     - 전통적이고 신뢰감 있는 학술 발표
+   - **Modern Research** (Teal #5EA8A7, Emerald #2ECC71, Cream #FAF7F2)
+     - 현대적이고 깔끔한 느낌
+   - **Bold Presentation** (Deep Blue #2C3E50, Bright Orange #E67E22, White)
+     - 강렬하고 기억에 남는 발표
+   - **Minimal Professional** (Black #2C3E50, White #ECF0F1, Accent #3498DB)
+     - 미니멀하고 전문적인 느낌
+   - **Custom** (사용자가 색상 직접 지정)
+
+5. **참조 자료**: Obsidian vault 활용?
    - 특정 논문 노트 (`Sources/papers/XXX.md`)
    - 개념 노트 (`Concepts/XXX.md`)
    - 연구 컨텍스트 (`RESEARCH_CONTEXT.md`)
@@ -105,11 +116,41 @@ user-invocable: true
 최종 승인 후, 공식 pptx 스킬의 html2pptx 워크플로우 사용하여 PPT 파일 생성.
 
 **디자인 원칙 (학술 발표):**
-- **색상**: 깔끔하고 전문적인 팔레트
-  - Classic Blue: Navy (#1C2833), Gray (#2E4053), Silver (#AAB7B8)
-  - Academic Green: Forest green (#27AE60), Emerald (#2ECC71), Cream (#FAF7F2)
+
+선택한 테마 자동 적용:
+
+**Classic Academic Theme:**
+- 주 색상: Navy (#1C2833)
+- 보조 색상: Gray (#2E4053), Silver (#AAB7B8)
+- 배경: Off-white (#F4F6F6)
+- 강조: Deep blue
+- 분위기: 전통적, 신뢰감, 학술적
+
+**Modern Research Theme:**
+- 주 색상: Teal (#5EA8A7)
+- 보조 색상: Emerald (#2ECC71)
+- 배경: Cream (#FAF7F2)
+- 강조: Deep teal (#277884)
+- 분위기: 현대적, 깔끔, 혁신적
+
+**Bold Presentation Theme:**
+- 주 색상: Deep Blue (#2C3E50)
+- 보조 색상: Bright Orange (#E67E22)
+- 배경: White (#FFFFFF)
+- 강조: Orange
+- 분위기: 강렬, 기억에 남는, 임팩트
+
+**Minimal Professional Theme:**
+- 주 색상: Dark Gray (#2C3E50)
+- 보조 색상: Light Gray (#ECF0F1)
+- 배경: White (#FFFFFF)
+- 강조: Blue (#3498DB)
+- 분위기: 미니멀, 세련, 전문적
+
+**공통 원칙:**
 - **폰트**: Arial, Helvetica (가독성 최우선)
 - **레이아웃**: 명확한 계층 구조, 여백 충분
+- **일관성**: 모든 슬라이드에 테마 일관 적용
 
 ## Key Features
 
@@ -163,11 +204,18 @@ Mermaid 다이어그램으로 초안 제공 → 사용자 확인 후 PPT에 삽�
 Claude: "알겠습니다! 몇 가지 질문드릴게요:
 1. 청중: 팀 내부 기술 미팅인가요?
 2. 시간: 몇 분 발표인가요?
-3. Obsidian vault의 DINO.md 노트를 활용할까요?"
+3. 디자인 테마:
+   - Classic Academic (전통적)
+   - Modern Research (현대적)
+   - Bold Presentation (강렬)
+   - Minimal Professional (미니멀)
+   어떤 스타일을 선호하시나요?
+4. Obsidian vault의 DINO.md 노트를 활용할까요?"
 
-사용자: "응, 팀 내부고 15분 발표야. vault 활용해줘"
+사용자: "응, 팀 내부고 15분 발표야. Modern Research 테마로, vault 활용해줘"
 
-Claude: "좋습니다. 구조는 이렇게 제안드립니다:
+Claude: "좋습니다! Modern Research 테마 (Teal & Emerald)로 제작하겠습니다.
+구조는 이렇게 제안드립니다:
 1. Title & Motivation
 2. Problem: Why Self-Supervised Learning?
 3. DINO Method (EMA + Self-Distillation)
