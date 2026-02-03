@@ -10,16 +10,20 @@ claude-skills/
 │   ├── CLAUDE.md              # 프로젝트 설정
 │   └── skills/                # 로컬 테스트 환경 (gitignored)
 │       └── .gitkeep
-├── custom/                    # 개인 맞춤 스킬
+├── custom/                    # 순수 커스텀 스킬 (처음부터 직접 제작)
+│   ├── README.md              # 커스텀 스킬 가이드
 │   └── paper-summary/         # 논문 읽기 및 요약 스킬
 │       ├── SKILL.md
 │       ├── template.md
 │       └── legacy-guide.md
+├── modified/                  # 수정된 공식 스킬 (공식 스킬 기반 수정)
+│   └── README.md              # 수정 가이드
+│       # (공식 스킬을 복사하여 수정한 버전들)
 ├── vendor/
-│   └── official/              # Anthropic 공식 스킬 (서브모듈)
+│   └── official/              # Anthropic 공식 스킬 (서브모듈, 읽기 전용)
 │       └── skills/            # 16개 공식 스킬
 ├── scripts/                   # 관리 스크립트
-│   ├── install.sh             # 맞춤 스킬 전역 설치
+│   ├── install.sh             # 커스텀/수정 스킬 전역 설치
 │   ├── install-official.sh    # 공식 스킬 전역 설치
 │   ├── uninstall.sh           # 스킬 제거
 │   ├── update-official.sh     # 공식 스킬 업데이트
@@ -72,18 +76,35 @@ git submodule update --init --recursive
 ./scripts/uninstall.sh paper-summary pdf
 ```
 
-## 📚 맞춤 스킬
+## 📚 스킬 분류
 
-### Paper Summary
+### 🎨 순수 커스텀 스킬 (`custom/`)
 
-연구용 논문 읽기, 토론, 종합적인 노트 생성 스킬입니다.
+처음부터 직접 제작한 나만의 스킬입니다.
+
+#### Paper Summary
+논문 읽기, 토론, 종합적인 노트 생성 스킬
 
 - 연구자 관점을 반영한 개인화된 한글 요약
 - Obsidian typed links를 활용한 논문 네트워크 구축
 - 향후 검색을 위한 태그 기반 분류
 
-**위치:** `custom/paper-summary/`
 **설치:** `./scripts/install.sh paper-summary`
+
+### 🔧 수정된 공식 스킬 (`modified/`)
+
+공식 스킬을 기반으로 개인적인 필요에 맞게 수정한 버전입니다.
+
+현재는 없음. 공식 스킬을 수정하려면 `modified/README.md`를 참고하세요.
+
+**수정 방법:**
+```bash
+# 공식 스킬 복사
+cp -r vendor/official/skills/pdf modified/pdf
+
+# 수정 후 설치
+./scripts/install.sh pdf  # modified/pdf가 우선 설치됨
+```
 
 ## 🏢 공식 스킬
 
@@ -107,21 +128,63 @@ ls vendor/official/skills/
 
 ## 🔄 워크플로우
 
-### 개발 워크플로우
-
-1. **개발**: `custom/` 디렉토리에서 맞춤 스킬 개발
-2. **테스트**: `.claude/skills/`에 심볼릭 링크를 만들어 로컬 테스트 (이 프로젝트에서만)
-3. **배포**: `./scripts/install.sh`로 전역 설치 (모든 Claude Code 프로젝트에서 사용 가능)
-
-### 이 프로젝트에서 테스트하기
+### 1. 순수 커스텀 스킬 개발
 
 ```bash
-# 로컬 테스트를 위한 심볼릭 링크 생성
-cd .claude/skills
-ln -s ../../custom/your-skill your-skill
+# 1. 새 스킬 생성
+mkdir custom/my-skill
+cd custom/my-skill
+
+# 2. SKILL.md 작성
+# (custom/README.md 참고)
+
+# 3. 로컬 테스트 (이 프로젝트에서만)
+cd ../../.claude/skills
+ln -s ../../custom/my-skill my-skill
+
+# 4. 전역 설치 (모든 Claude Code 프로젝트)
+./scripts/install.sh my-skill
 ```
 
-**참고:** `.claude/skills/`는 gitignore 처리되어 있어 (`.gitkeep` 제외) 로컬 테스트 링크는 커밋되지 않습니다.
+### 2. 공식 스킬 수정
+
+```bash
+# 1. 공식 스킬 복사
+cp -r vendor/official/skills/pdf modified/pdf
+
+# 2. 수정 작업
+cd modified/pdf
+# SKILL.md 등을 수정
+
+# 3. 출처 기록 (중요!)
+# SKILL.md 상단에 주석 추가:
+# <!--
+# Based on: vendor/official/skills/pdf
+# Modified: 2024-02-03
+# Changes: 추가한 기능이나 변경 내용
+# -->
+
+# 4. 전역 설치
+./scripts/install.sh pdf  # modified/pdf가 우선 설치됨
+```
+
+### 3. 공식 스킬 그대로 사용
+
+```bash
+# 필요한 공식 스킬만 선택 설치
+./scripts/install-official.sh xlsx pptx docx
+```
+
+### 로컬 테스트 환경
+
+`.claude/skills/`에 심볼릭 링크를 만들면 이 프로젝트에서만 스킬을 테스트할 수 있습니다.
+
+```bash
+cd .claude/skills
+ln -s ../../custom/my-skill my-skill
+```
+
+**참고:** `.claude/skills/`는 gitignore 처리되어 로컬 테스트 링크는 커밋되지 않습니다.
 
 ### 공식 스킬 업데이트
 
@@ -143,12 +206,18 @@ git commit -m "Update official skills to latest version"
 
 | 명령어 | 설명 |
 |--------|------|
-| `./scripts/list.sh` | 사용 가능한 스킬과 설치된 스킬 목록 표시 |
-| `./scripts/install.sh` | 모든 맞춤 스킬을 `~/.claude/skills/`에 설치 |
-| `./scripts/install.sh <스킬명>` | 특정 맞춤 스킬 설치 |
-| `./scripts/install-official.sh <스킬명>...` | 하나 이상의 공식 스킬 설치 |
-| `./scripts/uninstall.sh <스킬명>...` | `~/.claude/skills/`에서 스킬 제거 |
+| `./scripts/list.sh` | 모든 스킬 목록 표시 (custom, modified, official) |
+| `./scripts/install.sh` | 모든 custom/modified 스킬을 `~/.claude/skills/`에 설치 |
+| `./scripts/install.sh <스킬명>` | 특정 스킬 설치 (modified 우선, 없으면 custom) |
+| `./scripts/install-official.sh <스킬명>...` | 공식 스킬 설치 (원본 그대로) |
+| `./scripts/uninstall.sh <스킬명>...` | 설치된 스킬 제거 |
 | `./scripts/update-official.sh` | 공식 스킬 서브모듈 업데이트 |
+
+### 스킬 우선순위
+
+같은 이름의 스킬이 여러 곳에 있을 때:
+- `./scripts/install.sh`: **modified/** > custom/
+- `./scripts/install-official.sh`: vendor/official/ (항상)
 
 ## 🎯 Claude Code의 스킬 탐색 방식
 
@@ -160,30 +229,32 @@ Claude Code는 다음 위치에서 자동으로 스킬을 탐색합니다 (우�
 
 스크립트로 스킬을 설치하면 `~/.claude/skills/`에 심볼릭 링크가 생성되어 **모든** Claude Code 프로젝트에서 사용할 수 있습니다.
 
-## 📖 새로운 맞춤 스킬 만들기
+## 📖 스킬 개발 가이드
 
-1. `custom/`에 새 디렉토리 생성:
+### 순수 커스텀 스킬 만들기
+
+자세한 내용은 `custom/README.md`를 참고하세요.
+
 ```bash
 mkdir custom/my-new-skill
-```
-
-2. YAML frontmatter와 지시사항이 포함된 `SKILL.md` 작성:
-```markdown
----
-skill-id: my-new-skill
-skill-name: My New Skill
-description: 이 스킬이 하는 일에 대한 간단한 설명
-user-invocable: true
----
-
-# My New Skill
-
-Claude를 위한 지시사항...
-```
-
-3. 설치 및 테스트:
-```bash
+cd custom/my-new-skill
+# SKILL.md 작성 후
+cd ../..
 ./scripts/install.sh my-new-skill
+```
+
+### 공식 스킬 수정하기
+
+자세한 내용은 `modified/README.md`를 참고하세요.
+
+```bash
+# 1. 공식 스킬 복사
+cp -r vendor/official/skills/pdf modified/pdf
+
+# 2. 수정 작업 및 출처 기록
+
+# 3. 설치
+./scripts/install.sh pdf  # modified 버전이 우선 설치됨
 ```
 
 ## 🔗 유용한 링크
