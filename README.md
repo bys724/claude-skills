@@ -1,33 +1,45 @@
-# Claude Skills 저장소
+# Claude Extensions 저장소
 
-개인 맞춤 스킬과 Anthropic 공식 스킬을 함께 관리하는 저장소입니다.
+개인 맞춤 **스킬과 에이전트**를 Anthropic 공식 스킬과 함께 관리하는 저장소입니다.
+
+## 🎯 스킬 vs 에이전트
+
+| | 스킬 | 에이전트 |
+|---|------|----------|
+| **컨텍스트** | 메인 대화 공유 | 독립된 컨텍스트 |
+| **상호작용** | 반복적 대화 가능 | 실행 후 요약 반환 |
+| **용도** | 대화 중 지속 참고 | 독립 작업 위임 |
+| **출력** | 대화 흐름 속 통합 | 고립된 결과 요약 |
+| **예시** | 문서 작성 가이드, 코딩 컨벤션 | 로그 분석, 병렬 테스트 실행 |
 
 ## 📁 저장소 구조
 
 ```
-claude-skills/
+claude-extensions/
 ├── .claude/
 │   ├── CLAUDE.md              # 프로젝트 설정
 │   └── skills/                # 로컬 테스트 환경 (gitignored)
-│       └── .gitkeep
-├── custom/                    # 순수 커스텀 스킬 (처음부터 직접 제작)
-│   ├── README.md              # 커스텀 스킬 가이드
-│   └── paper-summary/         # 논문 읽기 및 요약 스킬
-│       ├── SKILL.md
-│       ├── template.md
-│       └── legacy-guide.md
-├── modified/                  # 수정된 공식 스킬 (공식 스킬 기반 수정)
-│   └── README.md              # 수정 가이드
-│       # (공식 스킬을 복사하여 수정한 버전들)
-├── vendor/
-│   └── official/              # Anthropic 공식 스킬 (서브모듈, 읽기 전용)
-│       └── skills/            # 16개 공식 스킬
+├── custom/                    # 순수 커스텀 스킬
+│   ├── README.md
+│   └── paper-summary/
+├── modified/                  # 수정된 공식 스킬
+│   └── README.md
+├── vendor/official/           # 공식 스킬 (서브모듈, 읽기 전용)
+│   └── skills/
+├── agents/                    # 에이전트 (독립 컨텍스트에서 실행)
+│   ├── custom/                # 순수 커스텀 에이전트
+│   │   └── README.md
+│   └── modified/              # 수정된 에이전트 (향후 공식용)
+│       └── README.md
 ├── scripts/                   # 관리 스크립트
-│   ├── install.sh             # 커스텀/수정 스킬 전역 설치
-│   ├── install-official.sh    # 공식 스킬 전역 설치
+│   ├── install.sh             # 스킬 설치 → ~/.claude/skills/
+│   ├── install-official.sh    # 공식 스킬 설치
+│   ├── install-agents.sh      # 에이전트 설치 → ~/.claude/agents/
 │   ├── uninstall.sh           # 스킬 제거
-│   ├── update-official.sh     # 공식 스킬 업데이트
-│   └── list.sh                # 사용 가능한 스킬 목록 보기
+│   ├── uninstall-agents.sh    # 에이전트 제거
+│   ├── list.sh                # 스킬 목록
+│   ├── list-agents.sh         # 에이전트 목록
+│   └── update-official.sh     # 공식 스킬 업데이트
 └── README.md
 ```
 
@@ -74,6 +86,28 @@ git submodule update --init --recursive
 
 ```bash
 ./scripts/uninstall.sh paper-summary pdf
+```
+
+### 4. 에이전트 설치
+
+**모든 맞춤 에이전트 설치:**
+```bash
+./scripts/install-agents.sh
+```
+
+**특정 에이전트만 설치:**
+```bash
+./scripts/install-agents.sh my-agent
+```
+
+**에이전트 목록 확인:**
+```bash
+./scripts/list-agents.sh
+```
+
+**에이전트 제거:**
+```bash
+./scripts/uninstall-agents.sh my-agent
 ```
 
 ## 📚 스킬 분류
@@ -125,6 +159,37 @@ ls vendor/official/skills/
 ```bash
 ./scripts/install-official.sh pdf xlsx
 ```
+
+## 🤖 에이전트 분류
+
+### 💻 순수 커스텀 에이전트 (`agents/custom/`)
+
+독립적인 컨텍스트에서 실행되는 특수 작업용 에이전트입니다.
+
+현재는 없음. 자세한 가이드는 `agents/custom/README.md`를 참고하세요.
+
+**활용 예시:**
+- 대규모 로그 분석 (메인 대화 컨텍스트 보호)
+- 병렬 논문 분석 (여러 논문 동시 처리)
+- 코드 리뷰 (읽기 전용 분석)
+- 독립적인 테스트 실행
+
+**생성 및 설치:**
+```bash
+# 1. 에이전트 생성
+mkdir agents/custom/my-agent
+cd agents/custom/my-agent
+# my-agent.md 작성 (YAML frontmatter + system prompt)
+
+# 2. 설치
+./scripts/install-agents.sh my-agent
+```
+
+### 🔧 수정된 에이전트 (`agents/modified/`)
+
+향후 공식 에이전트가 제공될 경우를 대비한 디렉토리입니다.
+
+현재는 없음. `agents/modified/README.md` 참고.
 
 ## 🔄 워크플로우
 
@@ -219,7 +284,22 @@ git commit -m "Update official skills to latest version"
 - `./scripts/install.sh`: **modified/** > custom/
 - `./scripts/install-official.sh`: vendor/official/ (항상)
 
-## 🎯 Claude Code의 스킬 탐색 방식
+## 📋 에이전트 관리 명령어
+
+| 명령어 | 설명 |
+|--------|------|
+| `./scripts/list-agents.sh` | 모든 에이전트 목록 표시 (custom, modified) |
+| `./scripts/install-agents.sh` | 모든 custom/modified 에이전트를 `~/.claude/agents/`에 설치 |
+| `./scripts/install-agents.sh <에이전트명>` | 특정 에이전트 설치 (modified 우선, 없으면 custom) |
+| `./scripts/uninstall-agents.sh <에이전트명>...` | 설치된 에이전트 제거 |
+
+### 에이전트 우선순위
+
+스킬과 동일: **modified/** > custom/
+
+## 🎯 Claude Code의 스킬/에이전트 탐색 방식
+
+### 스킬 탐색
 
 Claude Code는 다음 위치에서 자동으로 스킬을 탐색합니다 (우선순위 순):
 
@@ -227,7 +307,16 @@ Claude Code는 다음 위치에서 자동으로 스킬을 탐색합니다 (우�
 2. **Personal**: `~/.claude/skills/` (스크립트로 설치)
 3. **Project**: `.claude/skills/` (로컬 테스트)
 
-스크립트로 스킬을 설치하면 `~/.claude/skills/`에 심볼릭 링크가 생성되어 **모든** Claude Code 프로젝트에서 사용할 수 있습니다.
+### 에이전트 탐색
+
+Claude Code는 다음 위치에서 에이전트를 탐색합니다 (우선순위 순):
+
+1. **CLI flag** (`--agents`): 세션 전용, 최우선
+2. **Project**: `.claude/agents/` (프로젝트별)
+3. **Personal**: `~/.claude/agents/` (스크립트로 설치)
+4. **Plugin**: 플러그인 디렉토리
+
+스크립트로 설치하면 심볼릭 링크가 생성되어 **모든** Claude Code 프로젝트에서 사용할 수 있습니다.
 
 ## 📖 스킬 개발 가이드
 
