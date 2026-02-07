@@ -288,3 +288,28 @@ Report must provide:
 6. **빠른 파악** (배경 설명 간결)
 
 **Target length: 2-3 pages (excluding appendix)**
+
+## Vault Output (Optional)
+
+**When running inside Obsidian vault:**
+
+1. **Check vault location** (경로: global/CLAUDE.md 참조)
+2. **If inside vault**, create report file:
+   - **Location**: `Outputs/`
+   - **Naming**: `Report - [Topic] (YYYY-MM-DD).md`
+   - **Example**: `Report - Drone Flight Controllers (2026-02-08).md`
+
+3. **Frontmatter**:
+```yaml
+---
+type: report
+domain: market  # or: tech, product, etc.
+created: YYYY-MM-DD
+agent: scout
+topics: [tag1, tag2, tag3]
+---
+```
+
+4. **If outside vault**, output to terminal only
+
+**Note:** See vault-specific CLAUDE.md for detailed output rules.

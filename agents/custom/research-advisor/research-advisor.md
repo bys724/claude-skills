@@ -235,3 +235,28 @@ Report must answer:
 4. "What's the next step?"
 
 **And do it in < 3 pages of content (excluding appendix).**
+
+## Vault Output (Optional)
+
+**When running inside Obsidian vault:**
+
+1. **Check vault location** (경로: global/CLAUDE.md 참조)
+2. **If inside vault**, create report file:
+   - **Location**: `Outputs/`
+   - **Naming**: `Report - [Topic] (YYYY-MM-DD).md`
+   - **Example**: `Report - RSS 2026 Trends (2026-02-08).md`
+
+3. **Frontmatter**:
+```yaml
+---
+type: report
+domain: research
+created: YYYY-MM-DD
+agent: research-advisor
+topics: [tag1, tag2, tag3]
+---
+```
+
+4. **If outside vault**, output to terminal only
+
+**Note:** See vault-specific CLAUDE.md for detailed output rules.
