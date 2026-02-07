@@ -247,5 +247,5 @@ Claude: [html2pptx로 파일 생성]
 ## Dependencies
 
 - 공식 pptx 스킬의 html2pptx 워크플로우 활용
-- Obsidian vault 경로: `/Users/bys724/Documents/Obsidian Vault/`
+- Obsidian vault 경로: 전역 CLAUDE.md 참조
 - markitdown, python-pptx (공식 스킬에서 제공)

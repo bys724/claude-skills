@@ -1,24 +1,9 @@
 # Claude Skills Repository
 
-Personal workspace for managing Claude Code skills.
-
-## Communication Preferences
-
-- Use Korean (한글) for all conversations and code comments
-- Use English for skill documentation and Claude-facing files
-- This ensures better understanding by Claude while maintaining comfortable communication
+Personal workspace for managing Claude Code skills and agents.
 
 ## Current Focus
 
-This repository currently focuses on **paper summarization workflow** for research purposes:
-
-- Interactive paper reading and discussion
-- Personalized Korean summaries reflecting researcher's perspective
-- Paper network building using Obsidian typed links
-- Tag-based categorization for future retrieval
-
-## Working Principles
-
-- Keep skills focused and well-documented
-- Iterate and improve based on actual usage
-- Maintain clean, minimal structure
+- **paper-summary**: 논문 읽기 워크플로우 (arxiv → 대화 → Zotero 보강)
+- **research-presentation**: 연구 발표 자료 제작
+- **research-consultant**: 연구 방향 분석 에이전트

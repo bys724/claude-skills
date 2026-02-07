@@ -26,7 +26,7 @@ tools:
 ### Phase 1: Current State Analysis (30min)
 
 **A. Research Context Understanding**
-- Read `/Users/bys724/Documents/Obsidian Vault/RESEARCH_CONTEXT.md`
+- Read `RESEARCH_CONTEXT.md` from vault (경로는 전역 CLAUDE.md 참조)
 - 목표: RSS 2026 submission
 - 주제: Action-Agnostic Visual Representation for Robotics
 

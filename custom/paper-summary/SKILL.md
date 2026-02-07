@@ -1,344 +1,143 @@
 ---
 name: paper-summary
-description: Interactive academic paper reading, discussion, and comprehensive note generation. Creates a single detailed note combining personal context, objective content, and discussion highlights for Obsidian. The note can later be processed by another Claude instance for reorganization. Use when researcher wants to discuss and deeply document papers.
+description: 논문 읽기 지원 스킬. Phase 1 (arxiv로 논문 파악) → Phase 2 (대화형 읽기 지원) → Phase 3 (Zotero 임포트 후 보강). 사용자가 논문 제목/링크를 주면 시작.
 ---
 
 # Paper Summary Skill
 
-A comprehensive skill for interactive paper reading, discussion, and unified personalized documentation.
+논문 읽기의 전체 워크플로우를 지원하는 스킬.
 
-## Overview
+## Phase 1: 논문 파악 (arxiv MCP)
 
-This skill helps researchers:
-- Read and discuss academic papers interactively
-- Create a single comprehensive note that includes:
-  - **Personal context**: Why read this? What did I expect?
-  - **Objective content**: Core ideas, methodology, results
-  - **Discussion highlights**: Questions asked, papers compared, topics explored
-  - **Personal evaluation**: Honest assessment, insights, connections to own research
-  - **Related papers**: Network of relationships using typed links
-- Organize papers with searchable tags
-- Provide rich, detailed notes that can be later reorganized by another Claude instance
+사용자가 논문 제목이나 링크를 제공하면:
 
-## Workflow
+1. `search_papers`로 논문 검색
+2. `download_paper`로 다운로드
+3. `read_paper`로 전문 파악
+4. 핵심 내용을 간단히 요약하여 사용자의 읽기 준비 지원
 
-### Phase 1: Interactive Discussion
+시작 멘트:
+"논문을 찾아서 읽어보겠습니다."
 
-**User provides:**
-- Paper link or file
-- (Optional) Initial questions or points of interest
+## Phase 2: 대화형 논문 읽기 지원
 
-**Claude's role:**
-- Read and understand the paper
-- Engage in free-form discussion
-- Listen to researcher's questions, interests, and interpretations
-- **Do NOT create any output documents during this phase**
-- **Continuously check**: "Would you like to proceed with the final summary?"
+사용자는 Zotero에서 논문 PDF를 읽으며 질문한다.
 
-### Phase 2: Comprehensive Note Generation
+**Claude의 역할:**
+- 기술적 질문 응답, 방법론 설명, 비교 논의
+- Vocabulary Assistance (영단어 즉석 설명)
+- 대화 내용이 Phase 3의 "🔬 방법론 상세 이해" 섹션 소스가 됨
 
-When the user confirms readiness, Claude creates **ONE** comprehensive note that will serve as the complete record of this paper.
+**Vocabulary Assistance:**
 
-**CRITICAL: Before generating output, READ the template.md file in this skill directory for detailed format specifications and examples.**
-
-**Output Characteristics**:
-- Single unified document combining personal and objective elements
-- Ready to paste into Obsidian
-- Rich enough for future Claude instance to reorganize/refine
-- Includes YAML frontmatter with metadata
-- Flexible structure adapted to the discussion
-
-**Content Scope** - The note must include:
-
-1. **📌 Reading Context**
-   - Why this paper was read
-   - What was expected to learn
-   - Connection to current research interests
-
-2. **📚 Background & Related Concepts**
-   - Key concepts needed to understand the paper
-   - Prior work and methodologies this builds upon
-   - Research context from Related Work section
-   - Focus on 3-5 essential concepts discussed
-
-3. **🎯 Core Ideas** (Objective)
-   - One-sentence summary
-   - Main contributions (3-5 bullet points)
-   - Key approach with technical details
-
-4. **🔬 Methodology Details**
-   - Architecture/algorithm specifics
-   - Data and experimental setup
-   - Implementation details discussed
-   - Flexible subsections based on discussion depth
-
-5. **📊 Results & Analysis**
-   - Key experimental findings
-   - Ablation studies
-   - Acknowledged limitations
-
-6. **💬 Discussion Highlights**
-   - Questions asked during conversation
-   - Papers compared and discussed
-   - Topics explored in depth
-
-7. **💭 Personal Evaluation & Insights**
-   - Honest assessment (strengths, weaknesses, novelty, impact)
-   - Connections to own research
-   - New insights and ideas sparked
-   - What stood out
-
-8. **🔗 Related Papers** (Typed Links)
-   - Essential papers only (3-5 max)
-   - Use Juggle format: `[[Paper|builds-on]]`, `[[Paper|vs]]`, `[[Paper|ref]]`
-   - Include specific explanations
-
-9. **❓ Questions & Future Exploration**
-   - Unresolved questions
-   - Papers to read next
-   - Experiments or applications to try
-
-**Tag Guidelines**:
-- Use 3-5 general English keywords for classification
-- Focus on searchable categories: research area, method, domain
-- Examples: Robot, Transformer, Imitation Learning, Vision, Manipulation, VLA
-- Classification over specificity
-
-**Typed Link Criteria**:
-- **builds-on**: Directly uses code/model/data or builds directly upon it
-- **vs**: Direct experimental comparison with numbers/benchmarks
-- **ref**: Referenced for background or context
-- Only include papers explicitly discussed
-
-### Phase 3: Future Usage (Paper Organization & Retrieval)
-
-Based on accumulated summaries:
-- Request paper classification by specific topics or perspectives
-- Get recommendations for papers related to new research directions
-- Analyze connections and citation networks between papers
-
-## Claude's Core Responsibilities
-
-1. **Paper comprehension**: Read and understand the provided paper
-2. **Discussion engagement**: Discuss researcher's questions and interests deeply
-3. **Vocabulary assistance**: When user provides only English words/phrases, explain their meaning concisely
-4. **Template reading**: BEFORE generating final output, read `template.md` for format specifications
-5. **Comprehensive note creation**: Generate a single unified note combining personal context, objective content, and discussion highlights
-6. **Progress checking**: Continuously confirm when to proceed with final output
-
-## Note Characteristics
-
-The comprehensive note should be:
-- **Personal + Objective**: Blends subjective evaluation with factual technical content
-- **Discussion-driven**: Heavily reflects what was actually discussed and explored
-- **Rich in context**: Includes motivations, expectations, and connections to researcher's work
-- **Honest evaluation**: Contains frank assessment of strengths, weaknesses, and significance
-- **Technically detailed**: Provides enough depth on methodology and results
-- **Network-aware**: Shows relationships to other papers with typed links
-- **Future-oriented**: Captures questions, ideas, and next steps
-- **Flexible structure**: Adapts template sections based on conversation flow
-- **Reorganization-ready**: Contains enough detail for future Claude to refine/restructure
-
-## Starting a Session
-
-Begin new sessions with:
-"Let's start the paper review process. Please provide the paper link or file, and we'll discuss it together. When you're ready, I'll create a comprehensive note for Obsidian that combines your personal context, the paper's content, and our discussion highlights."
-
-
-## Additional Recommendations (with final summary)
-
-Only recommend 1-2 papers when they meet these criteria:
-- Directly related to researcher's core questions, OR
-- Essential for understanding the paper's core ideas, OR
-- High-impact papers in robot control field
-
-**Recommendation format**:
-"Additional reference: [Paper title or reference number] - [Brief reason to read it]"
-
-**Important**: The researcher already has many papers to read. Don't recommend low-importance papers. Omit recommendations if there are no pressing questions or if the paper has limited impact.
-
-## Discussion Progress Check
-
-Regularly ask during discussion:
-"Is there anything else you'd like to discuss? Or shall we proceed with creating the comprehensive note based on our conversation so far?"
-
-## Vocabulary Assistance During Discussion
-
-When the user provides **only an English word or phrase** without additional context during paper discussion, they are asking for the meaning of that term.
-
-**Response format** (keep it concise and copy-friendly):
+사용자가 영어 단어/구만 보내면 의미를 설명:
 
 ```
 **[word/phrase]**
-의미: [대표적인 의미 또는 해당 문맥에서의 의미를 간결하게]
+의미: [간결한 설명]
 
 예시:
 - [예시 문장 1]
 - [예시 문장 2]
 ```
 
-**Guidelines**:
-- Keep explanations brief and focused
-- Provide the most relevant meaning for the context
-- Include 1-2 example sentences maximum
-- Use simple, copy-friendly formatting
-- Avoid lengthy explanations
+**주기적 확인:**
+"더 궁금한 부분 있으세요? 정리 진행할까요?"
 
-**Example**:
+## Phase 3: Zotero 임포트 후 보강
 
-User: "spurious correlation"
+사용자가 "Zotero에서 가져왔으니 정리해" 등의 요청을 하면 실행.
 
-```
-**spurious correlation**
-의미: 두 변수 간에 실제 인과관계는 없지만 우연히 또는 제3의 요인으로 인해 상관관계가 나타나는 현상
+Vault 경로는 전역 CLAUDE.md 참조.
+논문 노트 위치: `Sources/papers/`
 
-예시:
-- Ice cream sales and drowning deaths show spurious correlation (both increase in summer).
-- The model learned spurious correlations between background features and labels.
-```
+### 보강 작업 (우선순위 순)
 
-## Output Delivery Format
+#### 0. 방법론 상세 이해 추가 (최고 우선순위)
 
-**BEFORE generating output**: Use the Read tool to read `template.md` in this skill directory for complete format specifications.
+대화에서 나온 Q&A를 **"🔬 방법론 상세 이해"** 섹션으로 구성.
 
-When delivering the final note, use this format:
+**포함 내용:**
+- 전체 워크플로우/파이프라인
+- 단계별 설명
+- 핵심 개념 Q&A
+- pseudo code, 다이어그램
+- 혼란 포인트 명시적 설명
 
-```
-## 📝 Paper Note
+**배치:** 📋 Summary 위에
 
-[Complete comprehensive note with YAML frontmatter and all sections - copy-paste ready]
-```
+**작성 원칙:**
+- 한글로 설명
+- 코드/다이어그램 적극 활용
+- 대화에서 나온 예시와 비유 포함
+- 개요 → 세부 → 인사이트 순서
 
-**Important**:
-- Output is plain markdown (no code blocks wrapping the content)
-- Include YAML frontmatter with title, tags, read_date, paper_type
-- Use proper markdown syntax (headers, bold, lists, links)
-- Ready to paste directly into Obsidian
-- Follow template.md structure but adapt to discussion
+#### 1. Summary 섹션 작성
 
-## Output Example (Brief)
+- 한 줄 요약
+- 핵심 기여
+- 주요 결과
+- Typed links로 관련 논문 연결: `[[Paper|builds-on]]`, `[[Paper|vs]]`, `[[Paper|ref]]`
 
-Here's a simplified example of how the comprehensive note should look:
+#### 2. 파일 이름 변경
+
+Zotero camelCase → `[Short Title] (YYYY).md`
+
+예시: `radfordLearningTransferableVisual2021.md` → `CLIP (2021).md`
+
+#### 3. Frontmatter 검증
+
+- 연도: arXiv 기준 (컨퍼런스 날짜 아님)
+- URL: `https://arxiv.org/abs/XXXX.XXXXX` 형식
+- 대규모 협업: "Open X-Embodiment Collaboration et al."
+- 중복 frontmatter 제거, 들여쓰기 수정
+
+#### 4. Figure 캡션 추가
+
+🖼️ Key Figures의 이미지에 한글 설명 1-2문장.
 
 ```markdown
----
-title: Attention Is All You Need
-tags: [Transformer, NLP, Deep Learning, Attention Mechanism, Sequence-to-Sequence]
-read_date: 2025-01-15
-paper_type: Conference
----
-
-# Attention Is All You Need
-
-## 📌 Reading Context
-
-**왜 이 논문을 읽었는가?**
-최근 Vision Transformer 관련 연구를 하면서 Transformer의 기본 원리를 정확히 이해할 필요가 있었다. 특히 self-attention이 어떻게 작동하는지, 왜 이것이 효과적인지 알고 싶었다. 또한 로봇 비전 분야에 Transformer를 적용하는 최근 연구들을 이해하기 위한 기초를 다지고자 했다.
-
-**기대했던 것**
-Multi-head attention의 작동 원리, positional encoding의 필요성과 구현 방식, 그리고 왜 Transformer가 RNN을 대체할 수 있었는지에 대한 명확한 이해를 얻고자 했다.
-
----
-
-## 📚 배경 지식 및 관련 개념 (Background & Related Concepts)
-
-**Sequence-to-Sequence Models**: Encoder-decoder 구조로 입력 시퀀스를 고정 길이 벡터로 인코딩하고 디코딩하는 프레임워크. RNN/LSTM 기반 모델들이 주류였음.
-
-**Attention Mechanism**: Decoder가 출력을 생성할 때 입력의 특정 부분에 집중할 수 있게 하는 메커니즘. Bahdanau attention이 대표적.
-
-**RNN/LSTM의 한계**: Sequential processing으로 인해 병렬화가 어렵고, 긴 시퀀스에서 gradient vanishing/exploding 문제 발생. Long-range dependency를 포착하기 어려움.
-
-**Research Context**: 기계 번역을 중심으로 한 NLP 분야에서 더 효율적이고 성능 좋은 sequence 모델링 방법을 찾는 연구가 활발하던 시기.
-
----
-
-## 🎯 핵심 아이디어 (Core Ideas)
-
-**한 문장 요약**
-RNN/CNN 없이 오직 attention mechanism만으로 sequence-to-sequence 모델을 구성하여 병렬화와 성능을 동시에 달성한 아키텍처.
-
-**주요 기여 (Main Contributions)**
-- Self-attention만으로 구성된 새로운 아키텍처 제안
-- 병렬 처리가 가능하여 학습 시간 대폭 단축
-- 기계 번역에서 SOTA 성능 달성
-- 이후 NLP 전반의 표준 아키텍처로 자리잡음
-
-**핵심 접근법 (Key Approach)**
-기존 RNN/LSTM은 sequential processing으로 인해 병렬화가 어렵고 long-range dependency를 잘 포착하지 못한다. Transformer는 전체 시퀀스를 한번에 보는 self-attention을 사용하여 이 문제를 해결한다. Query, Key, Value의 개념으로 각 토큰이 다른 모든 토큰과의 관계를 학습하며, multi-head를 통해 다양한 representation subspace에서 attention을 계산한다.
-
----
-
-## 🔬 방법론 상세 (Methodology Details)
-
-### Multi-Head Attention
-토론 중 왜 8개의 head를 사용하는지 질문했다. 각 head가 서로 다른 representation subspace를 학습하여 다양한 관점에서 attention을 계산할 수 있다. 예를 들어, 한 head는 구문적 관계를, 다른 head는 의미적 관계를 학습할 수 있다.
-
-### Positional Encoding
-Positional encoding은 sin/cos 함수를 사용하는데, 이는 상대적 위치 정보를 모델이 외삽(extrapolate)할 수 있게 한다. 학습된 positional embedding보다 일반화가 잘 된다는 점을 실험으로 확인했다.
-
----
-
-## 📊 결과 및 분석 (Results & Analysis)
-
-**주요 실험 결과**
-WMT 2014 English-to-German에서 BLEU 28.4, English-to-French에서 41.8을 달성하며 당시 SOTA 갱신. 학습 시간은 기존 모델 대비 1/10 수준.
-
-**한계점 (Limitations)**
-긴 시퀀스에서 O(n²) 복잡도가 문제가 될 수 있다. 이미지나 오디오 같은 연속적 데이터에 바로 적용하기는 어렵다.
-
----
-
-## 💬 Discussion Highlights
-
-**토론 중 나온 질문들**
-- Multi-head의 개수는 어떻게 결정하나? → Ablation study 참고
-- Positional encoding vs learned embedding 차이는? → 일반화 성능 차이
-- Vision에는 어떻게 적용? → Patch 기반 접근
-
-**비교 논의한 논문들**
-Seq2Seq with Attention과 비교하며 어떤 점이 근본적으로 다른지 토론. GNMT와의 성능 비교도 살펴봄.
-
----
-
-## 💭 Personal Evaluation & Insights
-
-**논문에 대한 평가**
-- **Strengths**: 간결하면서도 강력한 아키텍처. 병렬화 가능성이 실용적으로 매우 중요.
-- **Weaknesses**: O(n²) 복잡도가 매우 긴 시퀀스에서는 문제.
-- **Novelty**: Attention을 주요 메커니즘으로 사용한 것은 혁신적.
-- **Impact**: NLP 패러다임을 완전히 바꿈.
-
-**내 연구와의 연결점**
-로봇 비전에 Transformer를 적용할 때 이미지를 patch로 나누는 것이 NLP의 토큰화와 유사하다. Inductive bias가 적다는 것이 오히려 다양한 도메인에 적용 가능한 장점이 될 수 있다.
-
-**새로운 통찰 및 아이디어**
-Attention map 시각화를 통해 모델이 실제로 무엇을 학습하는지 분석하면 로봇의 시각적 추론 과정을 이해하는 데 도움이 될 것 같다.
-
----
-
-## 🔗 Related Papers & References
-
-**관련 논문 (Typed Links)**
-- [[Sequence to Sequence Learning with Neural Networks|builds-on]] - Transformer의 기반이 되는 encoder-decoder 구조를 제안
-- [[GNMT|vs]] - 기계 번역 성능과 학습 시간을 직접 비교
-- [[Effective Approaches to Attention-based Neural Machine Translation|ref]] - Attention mechanism의 기본 개념 제공
-
----
-
-## ❓ Questions & Future Exploration
-
-**미해결 질문**
-- Sparse attention 같은 변형들이 실제로 얼마나 효과적인가?
-- 로봇 제어 같은 연속적 행동 공간에도 적용 가능한가?
-
-**향후 읽을 논문**
-- Vision Transformer (ViT)
-- BERT (bidirectional transformer)
-- Decision Transformer (RL 적용)
-
-**시도해볼 것**
-- 로봇 조작 데이터에 Transformer 적용 실험
-- Attention weight 시각화 도구 구현
+**Figure N: [간략한 제목]**
+![[image-path.png]]
+*[한글 설명: 핵심 내용, 왜 중요한지]*
 ```
 
-For complete templates and detailed guidelines, refer to `template.md`.
+#### 5. 단어 추출 → Vocabulary.md
+
+**추출:**
+- 하이라이트/노트에서 단어만 추출
+- Vocabulary.md에 알파벳순 추가
+
+**형식:**
+```markdown
+**word**
+- 의미: [한글 설명]
+- 예시: [영어 예시 1-2개]
+```
+
+**정리 (반드시 두 섹션 모두 확인):**
+
+1. **"📌 All Highlights" 섹션**:
+   - 삭제: 단어만 있는 하이라이트 (`> expedite`, `> holistic`)
+   - 유지: 연구 내용 하이라이트 (기술 설명, 방법론, 결과)
+
+2. **"✍️ Notes (Yellow)" 섹션**:
+   - 삭제: 단어 번역 노트
+   - 대체: `*(Vocabulary annotations have been extracted to Vocabulary.md)*`
+
+**재등장 처리:** 새 논문에서 같은 단어가 나오면 마스터리 초기화 (✓, ✓✓, ✅ 제거)
+
+#### 6. 관계 링크 업데이트
+
+- 기존 논문과의 양방향 링크 확인/추가
+- `「PaperName」` (vault에 없는 논문) vs `[[PaperName]]` (vault에 있는 논문)
+- 관계 유형: `builds-on`, `vs`, `ref`, `related`, `applied-by`, `leads-to`
+
+### Zotero 템플릿 구조 유지
+
+보강 시 기존 구조를 유지: Key Figures → Summary → Contents → Connections
+
+### 하지 말 것
+
+- 템플릿 구조 변경 (Zotero Integrator가 관리)
+- 이미지/어노테이션 수정 (플러그인이 자동 임포트)
