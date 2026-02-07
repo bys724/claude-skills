@@ -395,9 +395,9 @@ Report must provide:
 
 1. **Check vault location** (경로: global/CLAUDE.md 참조)
 2. **If inside vault**, create report file:
-   - **Location**: `Outputs/`
+   - **Location**: `Outputs/Reports/`
    - **Naming**: `Report - [Topic] (YYYY-MM-DD).md`
-   - **Example**: `Report - Drone Flight Controllers (2026-02-08).md`
+   - **Example**: `Outputs/Reports/Report - Drone Flight Controllers (2026-02-08).md`
 
 3. **Frontmatter**:
 ```yaml
