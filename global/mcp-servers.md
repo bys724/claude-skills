@@ -2,20 +2,46 @@
 
 새 워크스테이션에서 Claude Code MCP 서버를 설정하기 위한 가이드.
 
-`~/.claude.json`은 Claude Code 내부 상태가 섞여 있어 직접 관리하지 않고,
-`claude mcp add` 명령으로 개별 등록한다.
+## 중요: Claude Desktop vs Claude Code
+
+- **Claude Desktop**의 MCP 설정: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Claude Code**의 MCP 설정: `~/.claude.json`
+- 두 설정은 **별도**이므로 **공유되지 않음**
+- `claude mcp add-from-claude-desktop` 명령으로 가져올 수 있으나, 인터랙티브 UI가 필요하여 실패할 수 있음
+- 실패 시 `claude mcp add` 명령으로 수동 등록
+
+## User-level vs Project-level
+
+**User-level (`-s user`):**
+- 모든 프로젝트에서 공통으로 사용
+- `~/.claude.json`의 `mcpServers` 섹션에 저장
+- **권장**: 대부분의 MCP 서버는 user-level로 등록
+
+**Project-level (기본값):**
+- 특정 프로젝트에서만 사용
+- `~/.claude.json`의 `projects.<project-path>.mcpServers`에 저장
+- 저장소별로 다시 설정해야 함
+
+`~/.claude.json`은 Claude Code 내부 상태가 섞여 있어 직접 편집하지 않고,
+`claude mcp add` 명령으로 등록하는 것을 권장합니다.
 
 ## 사용자 레벨 MCP 서버 목록
 
-### filesystem
+### filesystem (필수)
 
-공식 파일시스템 접근 MCP 서버. 특정 디렉토리에 대한 읽기/쓰기 권한 제공.
+공식 파일시스템 접근 MCP 서버. **Obsidian Vault 접근을 위해 필수**.
+
+**주요 use case:**
+- Obsidian Vault 읽기/쓰기
+- 논문 메모 작성 및 관리
+- paper-summary, research-presentation 스킬에서 사용
 
 ```bash
-# Claude Code
+# Claude Code (User-level 권장)
+# Obsidian Vault만 포함하는 것을 권장
 claude mcp add -s user filesystem \
   -- npx -y @modelcontextprotocol/server-filesystem \
-  ~/Desktop ~/Documents/Obsidian\ Vault
+  "/Users/username/Documents/Obsidian Vault"
 ```
 
 **Claude Desktop 직접 설정:**
@@ -28,7 +54,6 @@ claude mcp add -s user filesystem \
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/username/Desktop",
         "/Users/username/Documents/Obsidian Vault"
       ]
     }
@@ -37,8 +62,11 @@ claude mcp add -s user filesystem \
 ```
 
 **환경별 차이점:**
-- 접근 권한을 줄 디렉토리 경로는 환경에 맞게 조정
-- 공백이 있는 경로는 이스케이프 처리 필요
+- **macOS**: `/Users/username/Documents/Obsidian Vault`
+- **Linux**: `/home/username/Documents/Obsidian Vault`
+- **Windows**: `C:/Users/username/Documents/Obsidian Vault` (슬래시 사용)
+- 공백이 있는 경로는 따옴표로 감싸기
+- 여러 디렉토리 지정 가능하나, 보안상 필요한 것만 포함 권장
 
 ### arxiv-mcp-server
 
@@ -232,3 +260,54 @@ claude mcp add -s user arxiv-mcp-server \
 1. 서버 이름, 용도
 2. 설치 명령어
 3. 환경별 차이점 (경로, 인증 등)
+
+---
+
+## 트러블슈팅
+
+### MCP 서버가 동작하지 않을 때
+
+```bash
+# MCP 서버 상태 확인
+claude mcp list
+
+# 연결 실패 시 서버 제거 후 재등록
+claude mcp remove <server-name>
+claude mcp add -s user <server-name> -- <command> <args...>
+```
+
+### `claude mcp add-from-claude-desktop` 실패 시
+
+인터랙티브 UI 필요로 인해 실패할 수 있습니다. 이 경우:
+
+1. Claude Desktop 설정 파일 확인:
+   ```bash
+   cat ~/Library/Application\ Support/Claude/claude_desktop_config.json
+   ```
+
+2. 각 서버를 `claude mcp add` 명령으로 수동 등록
+
+### filesystem 서버가 Vault에 접근하지 못할 때
+
+1. 경로가 정확한지 확인:
+   ```bash
+   ls -la "/Users/username/Documents/Obsidian Vault"
+   ```
+
+2. User-level로 등록되었는지 확인:
+   ```bash
+   claude mcp list
+   # "filesystem:" 줄에서 경로 확인
+   ```
+
+3. Project-level 설정이 있다면 제거:
+   ```bash
+   # ~/.claude.json에서 projects.<project-path>.mcpServers.filesystem 제거
+   ```
+
+### 여러 워크스테이션에서 설정 동기화
+
+MCP 서버 설정(`~/.claude.json`)은 동기화하지 않는 것을 권장합니다:
+- 경로가 환경마다 다름
+- 내부 상태 정보 포함
+- 대신 이 문서를 참고하여 각 머신에서 재설정
