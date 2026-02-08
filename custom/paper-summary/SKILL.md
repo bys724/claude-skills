@@ -79,20 +79,46 @@ Vault 경로는 전역 CLAUDE.md 참조.
 - 주요 결과
 - Typed links로 관련 논문 연결: `[[Paper|builds-on]]`, `[[Paper|vs]]`, `[[Paper|ref]]`
 
-#### 2. 파일 이름 변경
+#### 2. 파일 이름 변경 (필수)
 
-Zotero camelCase → `[Short Title] (YYYY).md`
+**작업 시작 시 즉시 확인하고 변경할 것.**
 
-예시: `radfordLearningTransferableVisual2021.md` → `CLIP (2021).md`
+Zotero citekey 형식 → `[Short Title] (YYYY).md`
+
+예시:
+- `radfordLearningTransferableVisual2021.md` → `CLIP (2021).md`
+- `patelDeFMLearningFoundation2026.md` → `DeFM (2026).md`
 
 #### 3. Frontmatter 검증
+
+**중요:** Closing `---`는 반드시 첫 컬럼에 위치 (들여쓰기 없음)
 
 - 연도: arXiv 기준 (컨퍼런스 날짜 아님)
 - URL: `https://arxiv.org/abs/XXXX.XXXXX` 형식
 - 대규모 협업: "Open X-Embodiment Collaboration et al."
-- 중복 frontmatter 제거, 들여쓰기 수정
+- 중복 frontmatter 제거
+- **들여쓰기 확인**: closing `---`에 공백이나 탭이 있으면 메타데이터가 깨짐
 
-#### 4. Figure 캡션 추가
+#### 4. Metadata Callout 링크 수정
+
+Zotero Integration이 중첩 링크를 생성하는 경우가 있음. 반드시 수정할 것.
+
+**잘못된 형식 (중첩 링크):**
+```markdown
+[Open]([Full Text PDF](zotero://select/library/items/XXX))
+```
+
+**올바른 형식:**
+```markdown
+[Open in Zotero](zotero://select/library/items/XXX)
+```
+
+또는 Zotero 링크 텍스트가 있다면:
+```markdown
+[Full Text PDF](zotero://select/library/items/XXX)
+```
+
+#### 5. Figure 캡션 추가
 
 🖼️ Key Figures의 이미지에 한글 설명 1-2문장.
 
@@ -102,7 +128,7 @@ Zotero camelCase → `[Short Title] (YYYY).md`
 *[한글 설명: 핵심 내용, 왜 중요한지]*
 ```
 
-#### 5. 단어 추출 → Vocabulary.md
+#### 6. 단어 추출 → Vocabulary.md
 
 **추출:**
 - 하이라이트/노트에서 단어만 추출
@@ -127,7 +153,7 @@ Zotero camelCase → `[Short Title] (YYYY).md`
 
 **재등장 처리:** 새 논문에서 같은 단어가 나오면 마스터리 초기화 (✓, ✓✓, ✅ 제거)
 
-#### 6. 관계 링크 업데이트
+#### 7. 관계 링크 업데이트
 
 - 기존 논문과의 양방향 링크 확인/추가
 - `「PaperName」` (vault에 없는 논문) vs `[[PaperName]]` (vault에 있는 논문)
