@@ -1,3 +1,6 @@
 [submodule "vendor/official"]
 	path = vendor/official
 	url = https://github.com/anthropics/skills.git
+[submodule "vendor/mcp/claude-mermaid"]
+	path = vendor/mcp/claude-mermaid
+	url = https://github.com/veelenga/claude-mermaid.git

@@ -175,6 +175,60 @@ claude mcp add -s user apify \
 - 실행 결과 및 로그 조회
 - 데이터셋 및 key-value 스토어 접근
 
+### claude-mermaid (추천)
+
+Mermaid 다이어그램 생성 및 렌더링 MCP 서버. 마인드맵, 플로우차트, 시퀀스 다이어그램 등 시각화 도구.
+
+**특징:**
+- 라이브 프리뷰 (브라우저 자동 리프레시)
+- PNG/SVG/PDF 출력
+- 4가지 테마 (default, forest, dark, neutral)
+- 완전 무료 (MIT 오픈소스)
+- Vault 의존성 없음
+
+**이 저장소에서 관리:**
+```bash
+# 저장소 클론 시 서브모듈로 포함됨
+cd ~/claude-skills
+git submodule update --init --recursive
+
+# 의존성 설치 및 빌드
+cd vendor/mcp/claude-mermaid
+npm install
+npm run build
+```
+
+**Claude Desktop 직접 설정:**
+```json
+{
+  "mcpServers": {
+    "claude-mermaid": {
+      "command": "node",
+      "args": [
+        "/Users/username/claude-skills/vendor/mcp/claude-mermaid/build/index.js"
+      ]
+    }
+  }
+}
+```
+
+**환경별 차이점:**
+- **macOS/Linux**: `/Users/username/claude-skills/...` 또는 `/home/username/claude-skills/...`
+- **Windows**: `C:/Users/username/claude-skills/...` (슬래시 사용)
+- Node.js 필요 (이미 설치되어 있을 것)
+
+**사용법:**
+```
+"ROS 노드 구조 마인드맵 만들어줘"
+→ 라이브 프리뷰 자동 열림
+→ 대화하며 수정
+→ "PNG로 저장해줘"
+```
+
+**Obsidian 통합:**
+- Mermaid 코드 복사 → Obsidian 노트에 붙여넣기 (네이티브 렌더링)
+- 또는 PNG 저장 → vault/attachments/에 저장 후 `![[diagram.png]]` 삽입
+
 ---
 
 ## 새 워크스테이션 세팅 워크플로우

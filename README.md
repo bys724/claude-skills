@@ -40,14 +40,27 @@ Anthropic 제공, 필요한 것만 골라 설치:
 일부 스킬/에이전트는 Obsidian Vault를 필요로 합니다:
 
 **Vault 필요:**
-- paper-summary
-- research-presentation
+- paper-summary (스킬)
+- research-presentation (스킬)
 - research-advisor (에이전트)
 - scout (에이전트, vault 출력 옵션)
 
-**Vault 없는 워크스테이션:** 위 스킬/에이전트는 설치하지 않기. 코딩/대화 관련 설정(`~/.claude/CLAUDE.md`)만 적용됨.
+**Vault 없음:**
+- 코딩/대화 관련 설정(`~/.claude/CLAUDE.md`)만 적용
+- 위 스킬/에이전트는 설치하지 않기
 
-Vault 경로 설정: `~/.claude/CLAUDE.md`의 "주요 경로" 참조
+#### MCP 서버 (선택)
+
+**Vault 의존성 있음:**
+- filesystem (Vault 읽기/쓰기 필수)
+- arxiv-mcp-server (논문 다운로드, paper-summary와 연동)
+
+**Vault 의존성 없음 (범용):**
+- claude-mermaid (다이어그램 생성, 추천)
+- apify (웹 스크래핑)
+- ssh-mcp (원격 서버 접속)
+
+자세한 설치 가이드: `global/mcp-servers.md` 참조
 
 ### 초기 설정
 
