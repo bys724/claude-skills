@@ -71,3 +71,4 @@
 ## 주요 경로
 
 - Vault: `/home/bys/Documents/vault_YS`
+  - **Vault 없는 워크스테이션**: 코딩/대화 관련 설정만 적용. Research 기능 비활성화
