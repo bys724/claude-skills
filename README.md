@@ -33,6 +33,22 @@ Anthropic 제공, 필요한 것만 골라 설치:
 
 ## 🚀 빠른 시작
 
+### 의존성
+
+#### Obsidian Vault (선택)
+
+일부 스킬/에이전트는 Obsidian Vault를 필요로 합니다:
+
+**Vault 필요:**
+- paper-summary
+- research-presentation
+- research-advisor (에이전트)
+- scout (에이전트, vault 출력 옵션)
+
+**Vault 없는 워크스테이션:** 위 스킬/에이전트는 설치하지 않기. 코딩/대화 관련 설정(`~/.claude/CLAUDE.md`)만 적용됨.
+
+Vault 경로 설정: `~/.claude/CLAUDE.md`의 "주요 경로" 참조
+
 ### 초기 설정
 
 ```bash
