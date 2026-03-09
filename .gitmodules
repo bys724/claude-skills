@@ -4,3 +4,6 @@
 [submodule "vendor/mcp/claude-mermaid"]
 	path = vendor/mcp/claude-mermaid
 	url = https://github.com/veelenga/claude-mermaid.git
+[submodule "mcp-servers/nano-banana-mcp"]
+	path = mcp-servers/nano-banana-mcp
+	url = https://github.com/ConechoAI/Nano-Banana-MCP.git

@@ -10,6 +10,7 @@
 |------|------|--------|
 | **paper-summary** | 논문 읽기 및 토론, 종합 노트 생성 | 대화하며 논문 이해 → 개인화된 한글 요약 |
 | **research-presentation** | 연구/논문 발표 자료 (PPT) 제작 | Vault 활용, 대화하며 슬라이드 제작 |
+| **design-partner** | AI 이미지 생성 디자인 파트너 | Midjourney & Nano Banana 프롬프트 코칭 |
 
 ### 🤖 내 에이전트 (Custom Agents)
 
@@ -59,6 +60,7 @@ Anthropic 제공, 필요한 것만 골라 설치:
 - claude-mermaid (다이어그램 생성, 추천)
 - apify (웹 스크래핑)
 - ssh-mcp (원격 서버 접속)
+- nano-banana-mcp (AI 이미지 생성, design-partner와 연동)
 
 자세한 설치 가이드: `global/mcp-servers.md` 참조
 
@@ -163,12 +165,15 @@ git submodule update --init --recursive
 claude-extensions/
 ├── custom/              # 내 스킬
 │   ├── paper-summary/
-│   └── research-presentation/
+│   ├── research-presentation/
+│   └── design-partner/
 ├── modified/            # 수정한 공식 스킬 (현재 없음)
 ├── vendor/official/     # 공식 스킬 원본 (서브모듈)
 ├── agents/
 │   └── custom/          # 내 에이전트
 │       └── research-consultant/
+├── mcp-servers/         # MCP 서버 (서브모듈)
+│   └── nano-banana-mcp/
 └── scripts/             # 관리 스크립트
 ```
 
