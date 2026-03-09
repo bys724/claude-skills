@@ -244,6 +244,70 @@ D) 직접 구성
 | 비용 | 유료 | 무료 티어 있음 |
 | 플랫폼 | Discord | Web/API/MCP |
 
+## 영상 제작 워크플로우
+
+### 키프레임 기반 영상 제작 파이프라인
+
+영상 제작을 위한 이미지 생성 시:
+
+```
+1. Midjourney → 히어로 샷 (키 비주얼)
+2. Nano Banana → 장면 변형 (일관성 유지)
+3. 영상 생성 AI → 프레임 보간
+```
+
+### 물리적 오류 체크리스트
+
+각 생성 이미지 검증:
+
+#### 해부학적 정확성
+- [ ] 손: 5개 손가락, 자연스러운 관절
+- [ ] 얼굴: 대칭성, 눈/코/입 정렬
+- [ ] 신체 비율: 일관된 프로포션
+
+#### 물리 법칙
+- [ ] 중력: 물체와 그림자 방향 일치
+- [ ] 반사: 표면 재질에 맞는 반사
+- [ ] 원근법: 소실점 일관성
+
+#### 프레임 간 일관성
+- [ ] 캐릭터: 동일 인물 특징 유지
+- [ ] 조명: 광원 방향 일치
+- [ ] 스타일: 렌더링 품질 균일
+
+### Midjourney → Nano Banana 연계
+
+#### Midjourney 키 이미지 생성
+```
+[핵심 장면 프롬프트]
+--sref [스타일 코드] --seed [고정값]
+--ar 16:9 --style raw
+```
+
+#### Nano Banana 변형 (MCP 사용)
+```json
+{
+  "base_image": "midjourney_output.png",
+  "maintain": ["character", "style", "environment"],
+  "modify": {
+    "camera_angle": "rotate_15_degrees",
+    "expression": "slight_smile"
+  },
+  "validation": {
+    "check_physics": true,
+    "maintain_consistency": true
+  }
+}
+```
+
+### 일반적인 오류와 해결책
+
+| 오류 유형 | Midjourney 해결 | Nano Banana 해결 |
+|-----------|----------------|------------------|
+| 손 오류 | Vary Region 또는 --no hands | "anatomy_check": true |
+| 일관성 깨짐 | --seed와 --sref 고정 | JSON 템플릿 재사용 |
+| 물리 오류 | --style raw 사용 | "physics_validation": true |
+
 ## 하지 말 것
 
 - 프롬프트를 통째로 완성해서 주기 (코어만 주고 함께 쌓기)
