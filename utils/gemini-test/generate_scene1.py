@@ -11,7 +11,7 @@ import requests
 from datetime import datetime
 
 # Gemini API 설정
-API_KEY = "AIzaSyBlYPNSlAg-JNon5PtEhfzHsHYRPvQA1jY"
+API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_API_KEY_HERE")
 API_URL = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp:generateContent?key={API_KEY}"
 
 # Scene 1: Walking Scene 프롬프트

@@ -12,7 +12,7 @@ import requests
 from datetime import datetime
 
 # API 설정
-API_KEY = os.getenv("GEMINI_API_KEY", "AIzaSyBlYPNSlAg-JNon5PtEhfzHsHYRPvQA1jY")
+API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_API_KEY_HERE")
 MODEL = "gemini-2.5-flash-image"
 
 def generate_image(prompt, reference_image=None):

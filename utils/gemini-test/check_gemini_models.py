@@ -3,10 +3,11 @@
 Gemini API 사용 가능한 모델 확인
 """
 
+import os
 import requests
 import json
 
-API_KEY = "AIzaSyBlYPNSlAg-JNon5PtEhfzHsHYRPvQA1jY"
+API_KEY = os.getenv("GEMINI_API_KEY", "YOUR_API_KEY_HERE")
 LIST_MODELS_URL = f"https://generativelanguage.googleapis.com/v1beta/models?key={API_KEY}"
 
 def list_models():
