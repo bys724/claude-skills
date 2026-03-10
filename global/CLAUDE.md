@@ -71,10 +71,3 @@
 ## 주요 경로
 
 - Vault: `/home/bys/Documents/vault_YS`
-
-## 도구 위치
-
-### 이미지 생성 (Gemini API)
-- 스크립트: `/Users/bys724/Documents/claude-skills/scripts/gemini_image.py`
-- 사용: `python3 {위 경로} "프롬프트" [레퍼런스이미지]`
-- 상세: `claude-skills/GEMINI_IMAGE_GUIDE.md` 참조
