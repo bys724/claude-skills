@@ -9,6 +9,13 @@ Personal workspace for managing Claude Code skills and agents.
 - **research-consultant**: 연구 방향 분석 에이전트
 - **midjourney-coach**: 미드저니 프롬프트 코칭 (함께 만들며 감각 키우기)
 
+## Available Tools
+
+### Gemini 이미지 생성
+- 위치: `scripts/gemini_image.py`
+- 가이드: `GEMINI_IMAGE_GUIDE.md`
+- MCP 서버 (미작동): `mcp-servers/nano-banana-mcp/`
+
 ## Maintenance Policy
 
 스킬/에이전트 업데이트 시, 각 스킬이 참조하는 외부 지식(공식 문서, API 변경사항 등)의 최신 버전을 확인하고 반영할 것.
