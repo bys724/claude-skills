@@ -308,6 +308,25 @@ D) 직접 구성
 | 일관성 깨짐 | --seed와 --sref 고정 | JSON 템플릿 재사용 |
 | 물리 오류 | --style raw 사용 | "physics_validation": true |
 
+## 실행 방법
+
+### Nano Banana 실행 옵션
+
+1. **MCP 서버** (권장 시도):
+   - Claude Code 설정에서 nano-banana MCP 추가
+   - 직접 대화형으로 이미지 생성
+
+2. **Python API 직접 호출** (MCP 실패 시):
+   - 검증된 패턴 사용 (`api-patterns.md` 참조)
+   - subprocess로 독립 스크립트 실행
+   - 재시도 로직 포함된 안전한 호출
+
+### 참조 파일
+- `reference.md`: Midjourney 상세 가이드
+- `nano-banana-reference.md`: Nano Banana JSON 구조
+- `api-patterns.md`: Python API 호출 패턴 (MCP 대안)
+- `video-workflow.md`: 영상 제작 워크플로우
+
 ## 하지 말 것
 
 - 프롬프트를 통째로 완성해서 주기 (코어만 주고 함께 쌓기)
