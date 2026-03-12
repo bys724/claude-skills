@@ -91,6 +91,7 @@ case "$1" in
         ;;
     "setup-launchd")
         # macOS launchd 사용 (cron 대신 권장)
+        SCRIPT_PATH="$(cd "$(dirname "$0")" && pwd)/$(basename "$0")"
         cat > ~/Library/LaunchAgents/com.user.obsidian-backup.plist << EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -98,9 +99,12 @@ case "$1" in
 <dict>
     <key>Label</key>
     <string>com.user.obsidian-backup</string>
+    <key>RunAtLoad</key>
+    <true/>
     <key>ProgramArguments</key>
     <array>
-        <string>$0</string>
+        <string>/bin/bash</string>
+        <string>$SCRIPT_PATH</string>
         <string>backup</string>
     </array>
     <key>StartInterval</key>
@@ -113,7 +117,7 @@ case "$1" in
 </plist>
 EOF
         launchctl load ~/Library/LaunchAgents/com.user.obsidian-backup.plist
-        echo "✅ launchd 설정 완료. 1시간마다 자동 백업됩니다."
+        echo "✅ launchd 설정 완료. 1시간마다 자동 백업되며, 재시작 후에도 자동으로 실행됩니다."
         ;;
     *)
         echo "📚 Obsidian Vault 이동 및 백업 스크립트"

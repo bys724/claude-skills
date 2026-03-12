@@ -25,9 +25,27 @@
 `~/.claude.json`은 Claude Code 내부 상태가 섞여 있어 직접 편집하지 않고,
 `claude mcp add` 명령으로 등록하는 것을 권장합니다.
 
+## OS별 샌드박스 차이점
+
+### macOS (Darwin)
+- **샌드박스**: Seatbelt 사용 (제한적)
+- **쓰기 권한**: 작업 디렉토리 외부는 명시적 허용 필요
+- **설정 필요**: `sandbox.filesystem.allowWrite` in ~/.claude.json
+- **MCP 충돌 주의**: filesystem MCP 서버 이름 충돌 피하기
+
+### Linux
+- **샌드박스**: bubblewrap 사용
+- **쓰기 권한**: macOS보다 유연
+- **설정 필요**: 기본 설정으로 충분한 경우 많음
+
+### Windows
+- **샌드박스**: 기본적으로 없음
+- **쓰기 권한**: 제한 없음
+- **설정 필요**: 최소
+
 ## 사용자 레벨 MCP 서버 목록
 
-### filesystem (필수)
+### filesystem (조건부)
 
 공식 파일시스템 접근 MCP 서버. **Obsidian Vault 접근을 위해 필수**.
 
@@ -41,7 +59,7 @@
 # Obsidian Vault만 포함하는 것을 권장
 claude mcp add -s user filesystem \
   -- npx -y @modelcontextprotocol/server-filesystem \
-  "/Users/username/Documents/Obsidian Vault"
+  "/Users/bys724/LocalVault/Obsidian Vault"
 ```
 
 **Claude Desktop 직접 설정:**
@@ -54,7 +72,7 @@ claude mcp add -s user filesystem \
       "args": [
         "-y",
         "@modelcontextprotocol/server-filesystem",
-        "/Users/username/Documents/Obsidian Vault"
+        "/Users/bys724/LocalVault/Obsidian Vault"
       ]
     }
   }
@@ -62,7 +80,7 @@ claude mcp add -s user filesystem \
 ```
 
 **환경별 차이점:**
-- **macOS**: `/Users/username/Documents/Obsidian Vault`
+- **macOS**: `/Users/bys724/LocalVault/Obsidian Vault`
 - **Linux**: `/home/username/Documents/Obsidian Vault`
 - **Windows**: `C:/Users/username/Documents/Obsidian Vault` (슬래시 사용)
 - 공백이 있는 경로는 따옴표로 감싸기
@@ -205,7 +223,7 @@ npm run build
     "claude-mermaid": {
       "command": "node",
       "args": [
-        "/Users/username/claude-skills/vendor/mcp/claude-mermaid/build/index.js"
+        "/Users/bys724/claude-skills/vendor/mcp/claude-mermaid/build/index.js"
       ]
     }
   }
@@ -213,7 +231,8 @@ npm run build
 ```
 
 **환경별 차이점:**
-- **macOS/Linux**: `/Users/username/claude-skills/...` 또는 `/home/username/claude-skills/...`
+- **macOS**: `/Users/bys724/claude-skills/...`
+- **Linux**: `/home/username/claude-skills/...`
 - **Windows**: `C:/Users/username/claude-skills/...` (슬래시 사용)
 - Node.js 필요 (이미 설치되어 있을 것)
 
@@ -283,7 +302,7 @@ claude mcp add -s user arxiv-mcp-server \
 
 ```bash
 # global/CLAUDE.md 파일을 열고 실제 경로로 수정
-# 예: Vault 경로를 /Users/username/Documents/Obsidian Vault로 변경
+# 예: Vault 경로를 /Users/bys724/LocalVault/Obsidian Vault로 변경
 ```
 
 **중요:** 이 수정사항은 `.git/info/exclude`에 추가하거나, 커밋 시 주의해서 제외해야 합니다.
@@ -296,7 +315,7 @@ MCP 서버 등록 시 실제 사용 중인 경로로 조정:
 # 예: 기존 arxiv papers 디렉토리가 있다면 그 경로 사용
 claude mcp add -s user arxiv-mcp-server \
   -- uv tool run arxiv-mcp-server \
-  --storage-path /Users/username/Documents/Research/arxiv_mcp_papers
+  --storage-path /Users/bys724/.arxiv-mcp-server/papers
 ```
 
 #### 6.3. 로컬 설정 파일 활용
@@ -345,7 +364,7 @@ claude mcp add -s user <server-name> -- <command> <args...>
 
 1. 경로가 정확한지 확인:
    ```bash
-   ls -la "/Users/username/Documents/Obsidian Vault"
+   ls -la "/Users/bys724/LocalVault/Obsidian Vault"
    ```
 
 2. User-level로 등록되었는지 확인:
