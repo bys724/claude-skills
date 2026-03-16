@@ -6,8 +6,8 @@ Personal workspace for managing Claude Code skills and agents.
 
 - **paper-summary**: 논문 읽기 워크플로우 (arxiv → 대화 → Zotero 보강)
 - **research-presentation**: 연구 발표 자료 제작
-- **research-consultant**: 연구 방향 분석 에이전트
-- **midjourney-coach**: 미드저니 프롬프트 코칭 (함께 만들며 감각 키우기)
+- **research-advisor**: 연구 동향 분석 및 갭 분석 에이전트
+- **design-partner**: AI 이미지 생성 코칭 (Midjourney + Nano Banana)
 
 ## Maintenance Policy
 
