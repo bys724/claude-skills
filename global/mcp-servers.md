@@ -193,6 +193,47 @@ claude mcp add -s user apify \
 - 실행 결과 및 로그 조회
 - 데이터셋 및 key-value 스토어 접근
 
+### nanobanana (공식 Gemini 이미지 확장)
+
+Gemini의 이미지 생성/편집 MCP 서버. design-partner 스킬에서 사용.
+공식 `gemini-cli-extensions/nanobanana` 내부의 MCP 서버를 standalone 으로 실행.
+
+**이 저장소에서 관리** (submodule):
+```bash
+cd ~/claude-skills
+git submodule update --init vendor/mcp/nanobanana
+cd vendor/mcp/nanobanana/mcp-server
+npm install && npm run build
+```
+
+**Claude Desktop 직접 설정:**
+```json
+{
+  "mcpServers": {
+    "nanobanana": {
+      "command": "node",
+      "args": [
+        "/Users/bys724/Documents/claude-skills/vendor/mcp/nanobanana/mcp-server/dist/index.js"
+      ],
+      "env": {
+        "NANOBANANA_API_KEY": "..."
+      }
+    }
+  }
+}
+```
+
+**환경변수 우선순위** (소스 기준):
+`NANOBANANA_API_KEY` > `NANOBANANA_GEMINI_API_KEY` > `NANOBANANA_GOOGLE_API_KEY` > `GEMINI_API_KEY` > `GOOGLE_API_KEY`
+
+**제공 도구:**
+- `generate_image`, `edit_image`, `restore_image`
+
+**참고:**
+- 구버전 `nano-banana-mcp` (ConechoAI, npm) 은 유지보수 정체로 교체
+- 키는 Google AI Studio 에서 발급. **프로젝트 단위로 Tier/billing/모델 권한 결정**, 키는 인증 수단일 뿐
+- 용도별 키 분리 권장 (MCP용 / 코드용)
+
 ### claude-mermaid (추천)
 
 Mermaid 다이어그램 생성 및 렌더링 MCP 서버. 마인드맵, 플로우차트, 시퀀스 다이어그램 등 시각화 도구.
@@ -359,6 +400,16 @@ claude mcp add -s user <server-name> -- <command> <args...>
    ```
 
 2. 각 서버를 `claude mcp add` 명령으로 수동 등록
+
+### Claude Desktop 의 mcpServers 가 통째로 사라졌을 때
+
+`~/Library/Application Support/Claude/claude_desktop_config.json` 의 `mcpServers` 섹션이
+앱 업데이트/리셋 시 초기화되는 사례 확인됨.
+
+- 같은 폴더 `backups/claude_desktop_config_backup_*.json` 에 직전 설정 남아있음
+- 복원 시 경로가 오래된 경우가 많음 — 현재 유효한 경로인지 반드시 재검증
+- 평문 API 키가 있었다면 revoke 후 재발급
+- 상세 기록: [docs/MCP_DESKTOP_RECOVERY.md](../docs/MCP_DESKTOP_RECOVERY.md)
 
 ### filesystem 서버가 Vault에 접근하지 못할 때
 

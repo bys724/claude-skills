@@ -195,8 +195,9 @@ D) 직접 구성
 
 ### MCP 연동 안내
 
-사용자가 Claude Code를 사용 중이라면:
-"Nano Banana MCP 서버를 설치하면 제가 직접 이미지를 생성해드릴 수 있어요. 설치 방법을 안내해드릴까요?"
+공식 `gemini-cli-extensions/nanobanana` 의 MCP 서버를 Claude Desktop 에서 직접 구동 가능.
+설치는 `global/mcp-servers.md` 의 nanobanana 섹션 참조.
+연결되면 `generate_image` / `edit_image` / `restore_image` 툴이 노출됨.
 
 ## 스타일 교육 (공통)
 
@@ -312,14 +313,13 @@ D) 직접 구성
 
 ### Nano Banana 실행 옵션
 
-1. **MCP 서버** (권장 시도):
-   - Claude Code 설정에서 nano-banana MCP 추가
-   - 직접 대화형으로 이미지 생성
+1. **MCP 서버** (대화 기반 이미지 루프에 적합):
+   - 공식 확장 기반. 설치는 `global/mcp-servers.md` 참조
+   - Claude Desktop 에서 직접 호출
 
-2. **Python API 직접 호출** (MCP 실패 시):
-   - 검증된 패턴 사용 (`api-patterns.md` 참조)
-   - subprocess로 독립 스크립트 실행
-   - 재시도 로직 포함된 안전한 호출
+2. **Python API 직접 호출** (코드 통합/배치 작업):
+   - `api-patterns.md` 의 `google-genai` SDK 패턴 사용
+   - 재시도/템플릿 로직 포함
 
 ### 참조 파일
 - `reference.md`: Midjourney 상세 가이드
