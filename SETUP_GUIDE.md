@@ -74,9 +74,24 @@ ls -la ~/LocalVault
 - `~/.claude/CLAUDE.md`: 계정 레벨
 - `{vault}/.claude/CLAUDE.md`: Obsidian용 (있는 경우만)
 
+### 핵심 원칙: 심링크 금지
+
+`global/CLAUDE.md`는 **워크스테이션 일반 템플릿**으로 유지되어야 함. 심링크로 `~/.claude/CLAUDE.md`를 저장소 파일에 연결하면, 해당 워크스테이션에서 user 가이드를 편집할 때마다 저장소가 워크스테이션 특수 경로(Vault 위치 등)로 오염됨.
+
+```bash
+# ❌ 금지
+ln -s ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
+
+# ✅ 권장 — 사본 + 워크스테이션 실경로 직접 추가
+cp ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
+# ~/.claude/CLAUDE.md의 "주요 경로" 섹션에 placeholder를 실경로로 교체
+```
+
+저장소 가이드를 업데이트한 뒤 사본에 반영하려면, 변경분을 수동으로 옮기거나 `cp`를 다시 실행한 뒤 실경로를 재추가할 것.
+
 ### 내용 조정
-- Vault 경로가 있으면: `global/CLAUDE.md` 복사 후 경로 수정
-- Vault가 없으면: 주요 경로 섹션 제거
+- Vault 경로가 있으면: 복사 후 "주요 경로" 섹션의 placeholder를 실경로로 교체
+- Vault가 없으면: "주요 경로" 섹션을 비우거나 주석 처리
 
 ## 4. 스킬 설치
 
@@ -145,7 +160,48 @@ cp -r custom/code-cleaner ~/.claude/skills/
 - ssh-mcp 설정
 - 로컬 임시 노트: `~/temp-notes/`
 
-## 7. 검증 체크리스트
+## 7. 저장소 업데이트 반영 (기존 워크스테이션)
+
+`global/CLAUDE.md`(저장소 마스터)가 업데이트된 후, 이미 셋업된 워크스테이션의 사본(`~/.claude/CLAUDE.md`)에 변경분을 반영하는 절차.
+
+### 의도된 차이 — diff 시 무시할 라인
+
+마스터에는 placeholder, 사본에는 실경로. diff 결과에서 다음은 정상 차이:
+
+| 위치 | 마스터 | 사본 |
+|------|-------|------|
+| "Vault 노트 양방향 편집 가드레일" 섹션 | `<Vault root>` | 실 Vault 경로 |
+| "주요 경로" 섹션 | placeholder + 셋업 안내 문구 | 실경로 두 줄 |
+
+이 외의 모든 차이는 **반영 대상**.
+
+### 절차
+
+```bash
+# 1. 저장소 최신화
+cd ~/Documents/claude-skills
+git pull
+
+# 2. 변경분 확인 (위 placeholder 라인은 무시)
+diff ~/.claude/CLAUDE.md global/CLAUDE.md
+```
+
+### 반영 방법
+
+- **소규모 변경 (몇 줄)**: diff 보면서 사본에 직접 수동 반영
+- **대규모 변경 (구조 변경, 새 섹션 추가 등)**: 사본을 마스터에서 새로 받은 후 워크스테이션 경로 재추가
+
+```bash
+cp ~/Documents/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
+
+# 그 후 ~/.claude/CLAUDE.md 편집:
+# (a) "Vault 작업공간(<Vault root>)" → 실경로로 교체
+# (b) "주요 경로" 섹션의 안내 문구·placeholder 제거 후 실경로 두 줄로 단순화
+```
+
+> ⚠️ 사본에 워크스테이션 고유 추가 (예: 해당 머신만의 경로·MCP 설정)가 있으면 cp 전에 백업하거나 수동 반영을 선택할 것.
+
+## 8. 검증 체크리스트
 
 설정 후 확인:
 - [ ] `~/.claude.json` 생성/수정됨
@@ -153,7 +209,7 @@ cp -r custom/code-cleaner ~/.claude/skills/
 - [ ] `~/.claude/skills/code-cleaner` 설치됨
 - [ ] Claude Code 재시작 필요 안내
 
-## 8. 트러블슈팅
+## 9. 트러블슈팅
 
 ### 문제: Obsidian 접근 안 됨
 - additionalDirectories 확인

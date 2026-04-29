@@ -76,13 +76,74 @@
 - 핵심 로직과 흐름만 표현
 - 메모는 한눈에 이해할 수 있도록
 
-## CLAUDE.md 우선순위 규칙
+## 3-레벨 가이드 분담
 
-프로젝트에서 Obsidian 접근 시:
-1. **Obsidian 작성**: Vault 내 `.claude/CLAUDE.md` 규칙 우선 적용
-2. **프로젝트 작업**: 프로젝트 로컬 CLAUDE.md 규칙 우선
-3. **충돌 시**: 작업 대상 위치의 규칙 따르기 (Obsidian에 쓰면 Obsidian 규칙)
+내 워크플로우는 세 레이어로 구성됨:
+
+- **User** (`~/.claude/CLAUDE.md`): 정체성·언어·답변 스타일·코딩/리팩토링 원칙. 어디서든 적용.
+- **Project** (`<repo>/.claude/CLAUDE.md`): 저장소 목적·스택·구조·관련 Vault 노트 매핑.
+- **Vault** (`Obsidian Vault/.claude/CLAUDE.md`): 노트 작성 컨벤션·폴더 구조·템플릿.
+
+### 우선순위
+
+작업 위치(cwd) 기준으로 가장 가까운 가이드가 우선. 충돌 시 작업 대상 위치의 규칙을 따름 (Vault에 쓰면 Vault 규칙, 저장소 코드 편집이면 프로젝트 규칙). User 가이드는 항상 기본값.
+
+### Vault 노트 양방향 편집 가드레일
+
+**프로젝트 → Vault 노트**:
+- 읽기는 자유 (filesystem MCP / Read 등)
+- 한두 줄 추가, 링크 걸기 같은 가벼운 편집은 허용
+- 신규 노트 작성, 폴더 구조 변경, 기존 노트 대규모 리팩토링은 Vault 작업공간(`<Vault root>`)에서 클로드 코드를 새로 띄워 진행
+- 이유: Vault 컨벤션을 자동 적용받지 못하면 노트 일관성이 깨짐
+
+**Vault → 프로젝트 저장소 코드**:
+- 외부 저장소의 코드/설정 직접 편집 금지
+- 필요 시 사용자에게 알리고, 해당 저장소에서 클로드 코드를 따로 띄워 작업하도록 안내
+- 이유: 프로젝트 컨벤션 없이 변경되면 신뢰성이 깨짐
+
+## Project / Vault CLAUDE.md 작성·편집 지침
+
+새 프로젝트 저장소나 Vault 가이드를 만들거나 편집할 때 따를 메타-가이드.
+
+### Project CLAUDE.md (`<repo>/.claude/CLAUDE.md`)
+
+**목적**: 이 저장소에서 작업할 때 클로드가 매 세션 알아야 할 최소 맥락.
+
+**포함**:
+- 저장소 목적/연구 질문 (1-2 문장)
+- 핵심 진입점 문서 포인터 (예: `docs/RESEARCH_PLAN.md`, `README.md`)
+- 실행 환경 (스택, 컨테이너, 클러스터 등 — 표로 간결히)
+- 주요 워크플로우 명령어 (자주 쓰는 것만)
+- 핵심 파일 인덱스 (대규모 저장소만)
+- **관련 Vault 노트 매핑** (`Projects/<프로젝트명>/`, 관련 `Concepts/`, `Sources/papers/`)
+- 트러블슈팅 — 재발 가능 항목만
+- 진행 상태 (Phase, 현재 잡 등) — 단, 별도 마스터 문서가 있으면 거기로 위임
+
+**제외**:
+- User CLAUDE.md에 이미 있는 일반 원칙 (언어·답변 스타일·코딩 원칙) 재기술 금지
+- 미래 계획 나열, 체크리스트 남발
+- README/docs로 위임 가능한 상세 (파일 구조 트리, 상세 알고리즘 등)
+
+### Vault CLAUDE.md (`Obsidian Vault/.claude/CLAUDE.md`)
+
+**목적**: 노트 작성·편집·정리의 컨벤션 가이드.
+
+**포함**: 폴더 구조, 파일명 규칙, 작성 스타일(이모지·수식·bullet), 백링크 컨벤션, 금지 사항.
+
+**제외**: 코드 작업 가이드, 외부 저장소에 대한 작업 지침.
+
+### 공통 원칙
+
+- **간결성**: CLAUDE.md는 매 세션 컨텍스트로 로드됨. 비대해지면 비용·노이즈 증가. 길어진다 싶으면 별도 docs로 분리하고 포인터만 둘 것.
+- **자주 변하는 정보는 외부 문서로**: 실험 결과·세부 진행 등은 `docs/` 또는 README로. 단 사용자가 의도적으로 CLAUDE.md에 진행 상태를 두는 경우(action-agnostic-visual-rl 사례)는 예외 — 그땐 마스터 문서와 역할 분담을 CLAUDE.md 상단에 명시.
+- **중복 금지**: User에 있는 일반 원칙은 다시 쓰지 않음.
+- **양방향 가드레일 명시**: Vault와 자주 교차하는 프로젝트는 위의 "Vault 노트 양방향 편집 가드레일" 정책을 Project CLAUDE.md에서도 한 번 더 환기.
 
 ## 주요 경로
 
-- Vault: `/Users/bys724/LocalVault/Obsidian Vault`
+> 이 파일은 `claude-skills/global/CLAUDE.md` **마스터 사본**이며 새 워크스테이션 적용용 일반 템플릿. 워크스테이션 특수 경로(`<Vault root>` 등)는 placeholder로만 표기됨.
+>
+> 새 워크스테이션 셋업 시: `~/.claude/CLAUDE.md`로 **복사**한 뒤 아래 형식으로 실경로 추가. **심링크(`ln -s`) 금지** — 워크스테이션 특수 정보가 저장소로 역류해 일반 템플릿이 깨짐. 절차: [`SETUP_GUIDE.md`](../SETUP_GUIDE.md).
+
+- Vault: `<Vault root, e.g. ~/LocalVault/Obsidian Vault>`
+- 스킬/에이전트 워크스페이스: `<claude-skills repo root, e.g. ~/Documents/claude-skills>`

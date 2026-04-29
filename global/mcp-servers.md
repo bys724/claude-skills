@@ -299,8 +299,10 @@ npm run build
 # 이 저장소 클론
 git clone <repo-url> ~/claude-skills
 
-# 전역 CLAUDE.md 심링크
-ln -s ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
+# 전역 CLAUDE.md를 사본으로 두기 (심링크 금지 — 워크스테이션 특수 경로가 저장소로 역류함)
+cp ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
+# 이후 ~/.claude/CLAUDE.md "주요 경로" 섹션에 워크스테이션 실경로 추가
+# 자세한 절차: ~/claude-skills/SETUP_GUIDE.md
 ```
 
 ### 2. MCP 서버 등록
