@@ -1,261 +1,147 @@
 # Nano Banana Reference (2026)
 
-Google의 Gemini 이미지 생성 모델 시리즈. JSON 프롬프팅으로 정밀 제어 가능.
-업데이트 시 공식 문서와 커뮤니티 자료 기준으로 갱신할 것.
+Google Gemini 이미지 생성 모델. 작업 시 공식 문서·커뮤니티 자료 기준으로 갱신.
 
-## 모델 버전 (2026.3 기준)
+## 모델 패밀리
 
-| 모델 | 정식명 | 특징 | 출시 |
-|------|--------|------|------|
-| Nano Banana | Gemini 2.5 Flash Image | 최초 버전, 바이럴 히트 | 2025.8 |
-| Nano Banana Pro | Gemini 3 Pro Image | 고품질, 깊은 추론 | 2025.11 |
-| Nano Banana 2 | Gemini 3.1 Flash Image | 4K 해상도, Flash 속도 | 2026.2 |
+| 모델 | API 식별자 | 특징 | 출시 |
+|------|-----------|------|------|
+| Nano Banana | `gemini-2.5-flash-image` | 최초 버전, 바이럴 | 2025.8 |
+| Nano Banana Pro | `gemini-3-pro-image-preview` | **추론 후 생성**, Search Grounding, 4K, 텍스트 렌더링 | 2025.11 |
+| Nano Banana 2 | `gemini-3.1-flash-image-preview` | Pro 능력 + Flash 속도 (~10초) | 2026.2 |
 
-## JSON 프롬프팅 구조
+### Pro 모델의 진짜 차이: Reasoning-Guided Synthesis
 
-### 기본 구조
+Pro는 단순 디퓨전이 아니라 **프롬프트를 추론하고 씬을 계획한 뒤** 렌더링합니다.
+
+- 물리·논리 오류 사전 검토 (그림자 방향, 손가락 개수, 원근법 등)
+- Google Search Grounding으로 실존 장소·실시간 데이터 반영 (옵션)
+- 레퍼런스 이미지 최대 14장, 인물 일관성 5명까지 (옵션)
+- 다국어 텍스트 렌더링 (로고·표지·UI 모킹)
+
+> "moving from aesthetic output to **reasoning-guided synthesis**" — 이게 핵심. JSON 프롬프팅이 좋아진 게 아니라 **모델이 추론 능력을 갖게 됐다**.
+
+## 자연어 vs JSON: 선택 기준
+
+**Google 공식 권장은 자연어 내러티브 공식입니다.** JSON은 커뮤니티 최적화 기법.
+
+### Google 공식 내러티브 공식
+
+```
+[Subject + Adjectives] doing [Action] in [Location/Context].
+[Composition/Camera Angle]. [Lighting/Atmosphere]. [Style/Media].
+```
+
+예시:
+```
+A confident young Japanese athlete jogging in a misty mountain trail at dawn.
+Wide shot, low angle. Soft golden hour rim lighting through fog.
+90s anime cel-shading style.
+```
+
+### 언제 JSON이 유리한가
+
+| 상황 | 권장 | 이유 |
+|------|------|------|
+| 1회성 이미지, 단순 씬 | **자연어** | 빠르고 자연스러움. JSON 오버헤드 불필요 |
+| 시리즈/캐릭터 일관성 | **JSON** | 필드만 바꿔서 재사용 |
+| 복잡한 다중 객체 씬 | **JSON** | concept bleeding 방지, 요소 분리 |
+| 팀 협업·템플릿화 | **JSON** | 누가 어느 필드 책임지는지 명확 |
+| 정밀한 카메라/조명 제어 | 둘 다 가능 | JSON이 약간 우세 |
+
+[Chase Jarvis 테스트](https://chasejarvis.com/blog/does-json-prompting-actually-work-tested-with-nano-banana/)에서도 JSON이 항상 더 좋은 결과를 내는 건 아님이 보고됐습니다.
+
+## JSON 프롬프팅 구조 (2026 커뮤니티 표준)
+
+[Atlabs Pro 가이드](https://www.atlabs.ai/blog/the-ultimate-nano-banana-pro-prompting-guide-mastering-gemini-3-pro-image), [Miraflow](https://miraflow.ai/blog/nano-banana-json-prompting-2026) 기반.
+
+### 핵심 필드
+
 ```json
 {
-  "subject": "주제/대상",
-  "style": "스타일",
-  "environment": "배경/환경",
-  "lighting": "조명",
-  "camera": {
-    "type": "카메라 타입",
-    "lens": "렌즈",
-    "angle": "앵글",
-    "aperture": "조리개"
-  },
-  "mood": "분위기",
-  "colors": "색상 팔레트",
-  "quality": "품질 설정"
-}
-```
-
-### 핵심 필드 설명
-
-#### Subject (필수)
-```json
-"subject": {
-  "main": "주 대상",
-  "attributes": {
-    "pose": "포즈",
-    "expression": "표정",
-    "clothing": "의상",
-    "accessories": "액세서리"
-  }
-}
-```
-
-#### Style (스타일 제어)
-```json
-"style": {
-  "primary": "hyperrealistic",
-  "influences": ["photography", "digital art"],
-  "rendering": "photorealistic",
-  "texture": "smooth"
-}
-```
-
-스타일 옵션:
-- `hyperrealistic`: 극사실주의
-- `illustration`: 일러스트
-- `3d_figurine`: 3D 피규어 (바이럴 스타일)
-- `anime`: 애니메이션
-- `watercolor`: 수채화
-- `oil_painting`: 유화
-- `minimalist`: 미니멀리즘
-- `abstract`: 추상
-
-#### Camera (촬영 설정)
-```json
-"camera": {
-  "type": "DSLR",
-  "lens": "85mm",
-  "aperture": "f/1.8",
-  "angle": "eye-level",
-  "focus": "sharp on subject",
-  "depth_of_field": "shallow"
-}
-```
-
-카메라 앵글:
-- `bird's-eye view`: 부감
-- `low-angle`: 로우앵글
-- `eye-level`: 눈높이
-- `dutch-angle`: 기울어진
-- `close-up`: 클로즈업
-- `wide-shot`: 와이드샷
-
-#### Lighting (조명)
-```json
-"lighting": {
-  "type": "golden hour",
-  "direction": "backlighting",
-  "intensity": "soft",
-  "shadows": "long and dramatic"
-}
-```
-
-조명 타입:
-- `golden hour`: 골든아워
-- `studio lighting`: 스튜디오
-- `natural light`: 자연광
-- `neon`: 네온
-- `volumetric`: 볼류메트릭
-- `rim lighting`: 림라이팅
-- `chiaroscuro`: 키아로스쿠로
-
-#### Environment (환경)
-```json
-"environment": {
-  "location": "cyberpunk city",
-  "time": "night",
-  "weather": "rainy",
-  "background": {
-    "blur": true,
-    "elements": ["neon signs", "reflections"]
-  }
-}
-```
-
-#### Quality Settings
-```json
-"quality": {
-  "resolution": "4K",
-  "detail_level": "ultra",
-  "model": "NB2"  // or "NBPro"
-}
-```
-
-## 고급 JSON 기법
-
-### 1. 다층 구조 (Nested Structure)
-```json
-{
-  "composition": {
-    "foreground": {
-      "subject": "character",
-      "blur": false
-    },
-    "midground": {
-      "elements": ["buildings"],
-      "blur": "slight"
-    },
-    "background": {
-      "elements": ["sky", "clouds"],
-      "blur": true
-    }
-  }
-}
-```
-
-### 2. 가중치 시스템
-```json
-{
-  "style_weights": {
-    "photorealistic": 0.7,
-    "artistic": 0.3
-  },
-  "element_priority": {
-    "subject": 1.0,
-    "lighting": 0.8,
-    "background": 0.5
-  }
-}
-```
-
-### 3. 조건부 렌더링
-```json
-{
-  "conditional": {
-    "if_portrait": {
-      "depth_of_field": "shallow",
-      "focus": "eyes"
-    },
-    "if_landscape": {
-      "depth_of_field": "deep",
-      "focus": "infinity"
-    }
-  }
-}
-```
-
-### 4. 스타일 블렌딩
-```json
-{
-  "style_blend": [
-    {"style": "anime", "weight": 0.6},
-    {"style": "realistic", "weight": 0.4}
-  ]
-}
-```
-
-## JSON vs 텍스트 프롬프트 비교
-
-| 측면 | 텍스트 | JSON |
-|------|--------|------|
-| 정확도 | 해석 여지 있음 | 명확한 지시 |
-| 일관성 | 변동 가능 | 높은 재현성 |
-| 복잡도 | 간단 | 세밀한 제어 |
-| 토큰 수 | 적음 | 많음 (2000+) |
-| 학습곡선 | 낮음 | 높음 |
-
-## 실제 사용 예시
-
-### 인물 사진
-```json
-{
+  "label": "내부 식별자",
+  "tags": ["aesthetic 앵커 키워드"],
   "subject": {
-    "type": "portrait",
-    "person": {
-      "age": "25-30",
-      "gender": "female",
-      "ethnicity": "asian",
-      "expression": "confident smile",
-      "hair": {
-        "color": "black",
-        "style": "long wavy"
-      }
+    "main": "주 대상",
+    "attributes": {
+      "age": "...", "expression": "...", "clothing": "..."
     }
   },
-  "style": "hyperrealistic photography",
-  "camera": {
-    "lens": "85mm",
-    "aperture": "f/1.4",
-    "focus": "eyes"
-  },
+  "madeOutOf": "재질·텍스처 (예: brushed steel, soft cotton)",
+  "arrangement": "포즈·배치",
+  "background": "전반 배경",
+  "roomObjects": ["씬 내 구체 사물"],
+  "accessories": ["주체-환경 연결 디테일"],
   "lighting": {
-    "type": "rembrandt",
-    "modifier": "softbox"
+    "type": "...", "direction": "...", "intensity": "..."
   },
-  "background": {
-    "type": "studio",
-    "color": "neutral gray",
-    "blur": true
-  }
+  "colorRestriction": ["색상 팔레트 제약"],
+  "camera": {
+    "type": "DSLR", "lens": "85mm",
+    "aperture": "f/1.8", "angle": "eye-level"
+  },
+  "outputStyle": "렌더링 접근법",
+  "mood": "감정 톤"
 }
 ```
 
-### 제품 사진
+**주요 필드 의미**:
+- `madeOutOf`: 사실감·재질감 향상 (Atlabs가 강조하는 핵심 필드)
+- `colorRestriction`: 단순 `colors`보다 통제력 강함 (제외할 색까지 명시)
+- `roomObjects`/`accessories`: 씬 요소 분리로 concept bleeding 방지
+- `label`/`tags`: 템플릿 관리·재사용
+
+### 점진적 확장 원칙
+
+1단계 (최소):
+```json
+{ "subject": "고양이", "outputStyle": "watercolor" }
+```
+
+2단계 (세부):
 ```json
 {
-  "subject": "luxury watch",
-  "style": "commercial photography",
-  "lighting": {
-    "type": "studio",
-    "setup": "three-point",
-    "highlights": "metallic gleam"
+  "subject": { "main": "고양이", "arrangement": "sitting", "expression": "curious" },
+  "outputStyle": "watercolor",
+  "lighting": "soft natural light"
+}
+```
+
+3단계 (고급): 위 핵심 필드 다수 활용.
+
+> **수정 원칙**: 결과가 아쉬우면 **해당 키만** 바꾸고 전체를 다시 쓰지 마세요. JSON의 진짜 가치는 여기에 있습니다.
+
+### 카메라 / 조명 / 스타일 옵션
+
+**카메라 앵글**: `bird's-eye view`, `low-angle`, `eye-level`, `dutch-angle`, `close-up`, `wide-shot`
+
+**조명 타입**: `golden hour`, `studio lighting`, `natural light`, `neon`, `volumetric`, `rim lighting`, `chiaroscuro`, `rembrandt`
+
+**스타일**: `hyperrealistic`, `illustration`, `3d_figurine`, `anime`, `watercolor`, `oil_painting`, `minimalist`, `concept_art`
+
+## 실제 예시
+
+### 인물 사진 (자연어 + JSON 혼합)
+
+자연어로 충분한 경우:
+```
+Hyperrealistic portrait of a 25-year-old Asian woman, confident smile,
+long wavy black hair. 85mm f/1.4 lens, focus on eyes.
+Rembrandt lighting with softbox modifier. Neutral gray studio background, blurred.
+```
+
+JSON으로 시리즈화:
+```json
+{
+  "label": "portrait_series_v1",
+  "subject": {
+    "main": "Asian woman, age 25-30",
+    "attributes": { "expression": "confident smile", "hair": "long wavy black" }
   },
-  "background": "gradient black to gray",
-  "composition": {
-    "angle": "45-degree",
-    "focus": "watch face"
-  },
-  "post_processing": {
-    "reflections": true,
-    "shadows": "soft drop shadow"
-  }
+  "outputStyle": "hyperrealistic photography",
+  "lighting": { "type": "rembrandt", "modifier": "softbox" },
+  "camera": { "lens": "85mm", "aperture": "f/1.4", "focus": "eyes" },
+  "background": "neutral gray studio, blurred"
 }
 ```
 
@@ -263,88 +149,84 @@ Google의 Gemini 이미지 생성 모델 시리즈. JSON 프롬프팅으로 정�
 ```json
 {
   "subject": "alien megacity",
-  "style": {
-    "primary": "sci-fi concept art",
-    "influences": ["blade runner", "cyberpunk"]
-  },
+  "outputStyle": "sci-fi concept art, blade runner influence",
   "environment": {
-    "atmosphere": "foggy",
-    "time": "twilight",
-    "elements": [
-      "floating platforms",
-      "holographic ads",
-      "flying vehicles"
-    ]
+    "atmosphere": "foggy", "time": "twilight",
+    "elements": ["floating platforms", "holographic ads", "flying vehicles"]
   },
   "lighting": {
-    "primary": "neon glow",
-    "secondary": "volumetric fog",
-    "color_palette": ["cyan", "magenta", "orange"]
+    "primary": "neon glow", "secondary": "volumetric fog"
   },
-  "camera": {
-    "angle": "low angle epic shot",
-    "lens": "wide angle"
-  }
+  "colorRestriction": ["cyan", "magenta", "orange"],
+  "camera": { "angle": "low angle epic shot", "lens": "wide angle" }
 }
 ```
 
-## MCP 통합 사용
+## MCP 통합
 
-Claude Code에서 Nano Banana MCP 서버 연동 시:
+### 모델 전환
 
-### 1. 단순 생성
-```
-"사이버펑크 도시를 그려줘"
-→ Claude가 자동으로 JSON 구성
-```
+`vendor/mcp/nanobanana`는 환경변수로 모델 전환:
 
-### 2. JSON 직접 제공
-```
-"이 JSON으로 이미지 생성해줘: {json 내용}"
-→ 정밀 제어
+```bash
+# Pro (reasoning, 고품질)
+export NANOBANANA_MODEL=gemini-3-pro-image-preview
+
+# NB2 (기본, 빠름)
+export NANOBANANA_MODEL=gemini-3.1-flash-image-preview
 ```
 
-### 3. 반복 수정
-```
-"방금 이미지에서 조명만 golden hour로 바꿔줘"
-→ Claude가 JSON 수정하여 재생성
-```
+기본값은 NB2. 텍스트 렌더링·복잡한 씬·실존 장소·일관성이 중요하면 Pro로 전환.
 
-## 성능 최적화 팁
+### 사용 패턴
 
-1. **토큰 효율**: 불필요한 세부사항 제거, 핵심만 JSON화
-2. **모델 선택**:
-   - 빠른 반복: NB2 (Flash)
-   - 최고 품질: NBPro
-3. **캐싱 활용**: 반복되는 스타일은 JSON 템플릿화
-4. **점진적 구축**: 간단한 JSON → 결과 확인 → 세부 추가
+1. **자연어 직접 호출**: "사이버펑크 도시를 그려줘" → Claude가 내러티브 공식으로 변환
+2. **JSON 직접 제공**: 시리즈 작업·정밀 제어 시
+3. **반복 수정**: "방금 이미지에서 조명만 golden hour로" → JSON의 해당 키만 수정
+
+## 옵션 기능 (Pro 모델 한정)
+
+### Search Grounding
+
+실존 장소·실시간 데이터·정확한 사실이 필요할 때:
+- 실제 도쿄 신주쿠 거리, 특정 시점 날씨, 정확한 차트 등
+- API 호출 시 `tools=[{"google_search": {}}]` 옵션 필요 (MCP는 향후 지원 가능성)
+
+### 다중 레퍼런스 이미지
+
+캐릭터/브랜드 일관성이 핵심일 때:
+- 최대 14개 이미지 입력
+- 인물 일관성 최대 5명
+- 브랜드 가이드라인·시리즈 작업·스토리보드에 유용
+
+> 단순 이미지 생성에는 과한 기능. 일관성 워크플로우에서만 의미 있음.
 
 ## 한계 및 주의사항
 
-1. **토큰 제한**: 너무 복잡한 JSON은 토큰 한계 도달
-2. **과적합 위험**: 지나치게 세밀한 지정은 창의성 저하
-3. **스타일 충돌**: 모순되는 스타일 지정 시 예측 불가
-4. **버전 의존성**: 모델 버전마다 JSON 해석 차이
+1. **JSON ≠ 만능**: 단순 작업은 자연어가 빠르고 결과도 비슷하거나 더 자연스러움
+2. **모순 필드 충돌**: 스타일·조명 등이 모순되면 결과 예측 불가
+3. **검증되지 않은 기법** (커뮤니티에서 흔히 보이지만 출처 약함):
+   - `style_weights`, `element_priority` 같은 가중치 숫자 — 모델이 실제로 가중치로 해석하는지 미검증. noise일 가능성
+   - `if_portrait` 같은 조건부 렌더링 — 공식 지원 없음
+   - 검증되지 않은 필드는 결과를 보장하지 않음
+4. **버전 의존성**: 모델 버전마다 JSON 해석에 미세한 차이 있음
 
 ## 커뮤니티 리소스
 
-- GitHub 프롬프트 라이브러리:
-  - `YouMind-OpenLab/awesome-nano-banana-pro-prompts` (10,000+ 프롬프트)
-  - `JimmyLv/awesome-nano-banana`
-  - `ZeroLu/awesome-nanobanana-pro`
-
-- 프롬프트 갤러리:
-  - https://youmind.com (웹 갤러리)
-  - 카테고리별 필터, 원클릭 생성 지원
+- [Atlabs Nano Banana Pro Prompting Guide](https://www.atlabs.ai/blog/the-ultimate-nano-banana-pro-prompting-guide-mastering-gemini-3-pro-image)
+- [Miraflow JSON Prompting 2026](https://miraflow.ai/blog/nano-banana-json-prompting-2026)
+- [Google Cloud 공식 가이드](https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-nano-banana)
+- [Gemini 3 prompting guide](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)
+- GitHub 프롬프트 라이브러리: `YouMind-OpenLab/awesome-nano-banana-pro-prompts`, `ZeroLu/awesome-nanobanana-pro`
 
 ## vs Midjourney 비교
 
 | 측면 | Nano Banana | Midjourney |
 |------|-------------|------------|
-| 프롬프트 방식 | JSON 구조화 | 텍스트 기반 |
-| 제어 정밀도 | 매우 높음 | 중간 |
-| 스타일 일관성 | JSON 재사용으로 완벽 | sref 필요 |
-| 학습 곡선 | 높음 (JSON) | 낮음 |
-| 커뮤니티 | 성장 중 | 성숙 |
-| 비용 | 무료 티어 있음 | 유료만 |
+| 입력 방식 | 자연어 (공식) / JSON (커뮤니티) | 텍스트 + 파라미터 |
+| 추론 능력 | Pro 모델 한정으로 강함 | 없음 |
+| 텍스트 렌더링 | Pro 우수 (다국어 가능) | 약함 |
+| 일관성 | JSON 재사용 + 14 reference | sref 코드 |
+| 실존 정보 | Search Grounding | 없음 |
+| 비용 | 무료 티어 있음 | 유료 |
 | 통합 | MCP로 Claude 직접 연동 | Discord 기반 |

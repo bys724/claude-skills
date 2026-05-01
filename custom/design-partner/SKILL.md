@@ -9,8 +9,8 @@ AI 이미지 생성 프롬프트를 **대신 만들어주는 게 아니라, 함�
 
 ## 지원 플랫폼
 
-- **Midjourney**: 텍스트 프롬프트와 파라미터 기반 (레퍼런스: `reference.md`)
-- **Nano Banana**: JSON 구조화 프롬프트 (레퍼런스: `nano-banana-reference.md`)
+- **Midjourney**: 텍스트 프롬프트 + 파라미터 (레퍼런스: `reference.md`)
+- **Nano Banana**: 자연어 내러티브(공식) / JSON(커뮤니티 최적화) (레퍼런스: `nano-banana-reference.md`)
 
 ## 플랫폼 선택 가이드
 
@@ -19,7 +19,7 @@ AI 이미지 생성 프롬프트를 **대신 만들어주는 게 아니라, 함�
 ```
 어떤 플랫폼으로 작업하시나요?
 A) Midjourney (Discord 기반, 텍스트 프롬프트)
-B) Nano Banana (Google AI, JSON 프롬프트)
+B) Nano Banana (Google AI, MCP 직접 연동)
 C) 추천해주세요
 ```
 
@@ -27,12 +27,20 @@ C) 추천해주세요
 
 | 상황 | 추천 | 이유 |
 |------|------|------|
-| 빠른 아이디어 탐색 | Midjourney | 직관적인 텍스트, 낮은 진입장벽 |
-| 정밀한 제어 필요 | Nano Banana | JSON으로 세밀한 제어 |
-| 일관된 시리즈 작업 | Nano Banana | JSON 재사용으로 완벽한 일관성 |
-| 커뮤니티 레퍼런스 많음 | Midjourney | 방대한 예시와 가이드 |
-| Claude와 통합 작업 | Nano Banana | MCP로 직접 연동 가능 |
-| 무료로 시작 | Nano Banana | 무료 티어 제공 |
+| 빠른 아이디어 탐색 | Midjourney 또는 NB2 (자연어) | 진입장벽 낮음 |
+| 텍스트·로고·UI 모킹 | **Nano Banana Pro** | 다국어 텍스트 렌더링 (Pro 핵심 강점) |
+| 물리·논리 정확성 | **Nano Banana Pro** | reasoning 모드로 사전 검토 |
+| 캐릭터/시리즈 일관성 | **Nano Banana** (JSON + 레퍼런스 14장) | JSON 재사용 + 다중 레퍼런스 |
+| 실존 장소·실시간 데이터 | **Nano Banana Pro** | Google Search Grounding |
+| 커뮤니티 레퍼런스 많음 | Midjourney | 방대한 예시 |
+| Claude와 통합 작업 | Nano Banana | MCP 직접 연동 |
+
+### Nano Banana 모델 선택 (MCP 환경변수)
+
+| 작업 | 모델 | 환경변수 |
+|------|------|----------|
+| 빠른 반복·일상 작업 | NB2 (기본) | `gemini-3.1-flash-image-preview` |
+| 텍스트·복잡한 추론·일관성 | **NB Pro** | `gemini-3-pro-image-preview` |
 
 ## 핵심 원칙 (공통)
 
@@ -75,18 +83,30 @@ C) 추천해주세요
 - `--ar 16:9` — 이 비율이 적합한 이유
 
 #### Nano Banana의 경우
+
+먼저 **자연어 vs JSON 선택**을 안내한다 (Google 공식은 자연어 내러티브 권장).
+
+**자연어 내러티브 공식** (Google 공식, 단순/1회성 작업에 권장):
+```
+[Subject + Adjectives] doing [Action] in [Location/Context].
+[Composition/Camera Angle]. [Lighting/Atmosphere]. [Style/Media].
+```
+
+**JSON 최소 구조** (시리즈·복잡한 씬·재사용 시):
 ```json
 {
   "subject": "핵심 대상",
-  "style": "기본 스타일",
-  "environment": "배경"
+  "outputStyle": "기본 스타일",
+  "background": "배경"
 }
 ```
 
 각 필드 설명:
 - `subject` — 무엇을 그릴지 명확하게
-- `style` — 원하는 시각적 스타일
-- `environment` — 배경이나 상황 설정
+- `outputStyle` — 원하는 시각적 스타일
+- `background` — 배경이나 상황 설정
+
+선택 기준은 `nano-banana-reference.md`의 "자연어 vs JSON" 섹션 참조.
 
 ## Phase 2: 반복 개선
 
@@ -142,13 +162,19 @@ C) [직접 아이디어가 있다면 말해주세요]
 
 ## Nano Banana 특화 기능
 
-### JSON 구조 점진적 확장
+### Pro 모델의 reasoning 활용
+
+NB Pro는 단순 디퓨전이 아니라 **추론 후 생성**한다 — 물리·논리 오류 사전 검토, 텍스트 정확 렌더링, 실존 정보 반영.
+
+자연어로도 충분한 효과를 보지만, **시리즈 작업에서는 JSON으로 reasoning 컨텍스트를 일관되게 공급**하는 게 유리.
+
+### JSON 구조 점진적 확장 (2026 표준 필드)
 
 #### 1단계: 최소 JSON
 ```json
 {
   "subject": "고양이",
-  "style": "watercolor"
+  "outputStyle": "watercolor"
 }
 ```
 
@@ -157,10 +183,11 @@ C) [직접 아이디어가 있다면 말해주세요]
 {
   "subject": {
     "main": "고양이",
-    "pose": "sitting",
+    "arrangement": "sitting",
     "expression": "curious"
   },
-  "style": "watercolor",
+  "madeOutOf": "soft fur, fluffy texture",
+  "outputStyle": "watercolor",
   "lighting": "soft natural light"
 }
 ```
@@ -168,18 +195,22 @@ C) [직접 아이디어가 있다면 말해주세요]
 #### 3단계: 고급 제어
 ```json
 {
+  "label": "cat_series_v1",
   "subject": {...},
-  "style": {...},
-  "camera": {
-    "lens": "50mm",
-    "aperture": "f/2.8"
-  },
-  "composition": {
-    "foreground": {...},
-    "background": {...}
-  }
+  "madeOutOf": "...",
+  "arrangement": "...",
+  "camera": { "lens": "50mm", "aperture": "f/2.8" },
+  "lighting": {...},
+  "colorRestriction": ["warm pastels"],
+  "background": {...}
 }
 ```
+
+**핵심 추가 필드** (필요한 순간에 하나씩 도입):
+- `madeOutOf` — 재질·텍스처 (사실감 향상)
+- `arrangement` — 포즈·배치
+- `colorRestriction` — 팔레트 제약 (단순 colors보다 강함)
+- `label`/`tags` — 시리즈 관리·재사용
 
 ### JSON 템플릿 제공
 
@@ -195,9 +226,17 @@ D) 직접 구성
 
 ### MCP 연동 안내
 
-공식 `gemini-cli-extensions/nanobanana` 의 MCP 서버를 Claude Desktop 에서 직접 구동 가능.
-설치는 `global/mcp-servers.md` 의 nanobanana 섹션 참조.
+공식 `gemini-cli-extensions/nanobanana` MCP 서버. 설치는 `global/mcp-servers.md` 참조.
+
 연결되면 `generate_image` / `edit_image` / `restore_image` 툴이 노출됨.
+
+**모델 전환** (환경변수):
+- 기본 (NB2): `gemini-3.1-flash-image-preview` — 빠른 반복용
+- Pro: `gemini-3-pro-image-preview` — 텍스트·복잡한 씬·일관성 필요 시
+
+```bash
+export NANOBANANA_MODEL=gemini-3-pro-image-preview
+```
 
 ## 스타일 교육 (공통)
 
@@ -215,10 +254,10 @@ D) 직접 구성
 
 | 원하는 것 | Midjourney | Nano Banana |
 |-----------|------------|-------------|
-| 특정 스타일 지정 | 텍스트로 묘사 | JSON style 필드 |
-| 참고 이미지 스타일 | --sref URL | 향후 지원 예정 |
-| AI 해석 줄이기 | --style raw, --s 낮춤 | "style": "raw" |
-| 일관성 유지 | sref 코드 재사용 | JSON 템플릿 재사용 |
+| 특정 스타일 지정 | 텍스트로 묘사 | 자연어 또는 JSON `outputStyle` |
+| 참고 이미지 스타일 | --sref URL | 레퍼런스 이미지 입력 (Pro: 최대 14장) |
+| AI 해석 줄이기 | --style raw, --s 낮춤 | 명확한 자연어 또는 JSON 필드 분리 |
+| 일관성 유지 | sref 코드 재사용 | JSON 템플릿 + 레퍼런스 이미지 |
 
 ## 워크플로우 최적화
 
@@ -229,18 +268,21 @@ D) 직접 구성
 4. Remix로 프롬프트 조정
 
 ### Nano Banana 워크플로우
-1. 간단한 JSON으로 시작
-2. 결과 보고 필드 추가
-3. JSON 템플릿 저장
-4. 변형 생성시 일부만 수정
+1. **자연어 내러티브 1~2장**으로 빠르게 방향 잡기
+2. 시리즈/일관성 필요 시 → JSON으로 전환, 핵심 필드부터
+3. 결과 보고 `madeOutOf`, `colorRestriction`, `arrangement` 등 추가
+4. 변형 시 **해당 키만** 수정 (전체 재작성 금지)
+5. 텍스트·복잡한 추론·실존 정보 필요하면 Pro 모델로 전환
 
 ## 비교 테이블
 
 | 측면 | Midjourney | Nano Banana |
 |------|------------|-------------|
-| 진입장벽 | 낮음 (텍스트) | 중간 (JSON) |
-| 제어 정밀도 | 중간 | 매우 높음 |
-| 일관성 | sref 필요 | JSON 재사용 |
+| 입력 방식 | 텍스트 + 파라미터 | 자연어(공식) / JSON(커뮤니티) |
+| 추론 능력 | 없음 | **Pro 모델 한정으로 강함 (reasoning-guided synthesis)** |
+| 텍스트 렌더링 | 약함 | **Pro 우수 (다국어 가능)** |
+| 일관성 | sref 코드 | JSON 재사용 + 레퍼런스 이미지 14장 |
+| 실존 정보 반영 | 없음 | Search Grounding (Pro) |
 | 커뮤니티 | 매우 활발 | 성장 중 |
 | 비용 | 유료 | 무료 티어 있음 |
 | 플랫폼 | Discord | Web/API/MCP |

@@ -1,284 +1,162 @@
 # Video Production Workflow Guide
 
-영상 제작을 위한 AI 이미지 생성 워크플로우 가이드
+이미지 생성 + Veo 영상 생성을 결합한 짧은 영상 제작 워크플로우.
 
-## 기본 파이프라인
+## 모던 파이프라인
 
 ```mermaid
 graph LR
-    A[스토리보드] --> B[Midjourney 키프레임]
-    B --> C[Nano Banana 변형]
+    A[스토리보드] --> B[키프레임 생성<br/>Nano Banana / Midjourney]
+    B --> C[Veo image-to-video<br/>각 키프레임 → 짧은 클립]
     C --> D[프레임 검증]
-    D --> E[영상 AI 보간]
+    D --> E[FFmpeg 스티칭<br/>+ 자막/BGM]
     E --> F[최종 영상]
 ```
 
+핵심 변화: 과거의 "키프레임 생성 → AI가 사이를 보간" 가정은 **Nano Banana 기능이 아닙니다**. 실제 모던 워크플로우는 **각 키프레임을 Veo로 짧은 클립화 → 스티칭**입니다.
+
 ## Phase 1: 스토리보드 → 키프레임
 
-### Midjourney 키프레임 생성 전략
+각 컷의 키프레임을 이미지 생성 모델로 만든다. 일관성이 중요할수록 Nano Banana Pro 권장 (레퍼런스 이미지 최대 14장 입력 가능, 인물 일관성 5명).
 
-#### 1. 스타일 통일 설정
-```
-Step 1: Style Creator로 일관된 스타일 코드 생성
-Step 2: --sref [코드] 고정
-Step 3: --seed [값] 고정 (테스트용)
-Step 4: --ar 16:9 (영상 비율)
-```
+### 모델 선택
 
-#### 2. 히어로 샷 체크리스트
+| 상황 | 모델 | 이유 |
+|------|------|------|
+| 빠른 컨셉 탐색 | NB2 (Flash) 또는 Midjourney | 비용·속도 |
+| 캐릭터·브랜드 일관성 필수 | **NB Pro** | 다중 레퍼런스 입력 |
+| 텍스트·로고 포함 | **NB Pro** | 텍스트 렌더링 우수 |
+
+### 히어로 샷 체크리스트
+
 - [ ] 명확한 주인공 식별
 - [ ] 환경/배경 확립
-- [ ] 조명 방향 기록
+- [ ] 조명 방향 기록 (Veo 클립화 시 일관성 중요)
 - [ ] 카메라 앵글 명시
+- [ ] 종횡비 통일 (Veo 출력은 보통 16:9)
 
-## Phase 2: Nano Banana 변형 생성
+## Phase 2: Veo로 키프레임 → 영상 클립
 
-### 일관성 유지 JSON 템플릿
+각 키프레임을 Veo image-to-video로 짧은 클립화 (기본 8초, 720p, 네이티브 오디오).
 
-```json
-{
-  "consistency_template": {
-    "locked_elements": {
-      "character": {
-        "face_id": "preserve",
-        "clothing": "exact",
-        "body_proportions": "maintain"
-      },
-      "environment": {
-        "location": "same",
-        "time_of_day": "consistent",
-        "weather": "unchanged"
-      },
-      "style": {
-        "rendering": "match_original",
-        "color_palette": "preserve",
-        "texture_quality": "maintain"
-      }
-    },
-    "variable_elements": {
-      "camera": {
-        "angle": ["front", "side", "back"],
-        "distance": ["close", "medium", "wide"]
-      },
-      "action": {
-        "pose": "sequence",
-        "expression": "progression"
-      }
-    }
-  }
-}
+### 기본 호출 (google-genai SDK)
+
+```python
+import time
+from google import genai
+
+client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+
+operation = client.models.generate_videos(
+    model="veo-3.1-generate-preview",  # 또는 fast/lite 변형
+    prompt="Camera slowly pans right as the character turns to face the viewer",
+    image=keyframe_image,  # PIL.Image 또는 SDK 이미지 객체
+)
+
+while not operation.done:
+    time.sleep(10)
+    operation = client.operations.get(operation)
+
+video_bytes = operation.response.generated_videos[0].video.video_bytes
 ```
 
-### 변형 생성 순서
+### 모델 선택 (Veo)
 
-1. **카메라 각도 변형** (공간 연속성)
-   ```json
-   {
-     "base": "hero_shot.png",
-     "sequence": [
-       {"camera": "0_degrees"},
-       {"camera": "15_degrees"},
-       {"camera": "30_degrees"},
-       {"camera": "45_degrees"}
-     ]
-   }
-   ```
+| 모델 식별자 | 초당 가격 | 용도 |
+|------------|----------|------|
+| `veo-3.1-generate-preview` (Standard) | $0.40/s (~₩591) | 최종 결과물 |
+| Veo 3 Fast | $0.15/s (~₩222) | 중간 검증 |
+| Veo 3.1 Lite | $0.05/s (~₩74) | 빠른 컨셉 확인 |
 
-2. **동작 진행** (시간 연속성)
-   ```json
-   {
-     "action_sequence": [
-       {"pose": "standing_neutral"},
-       {"pose": "turning_head"},
-       {"pose": "raising_hand"},
-       {"pose": "waving"}
-     ]
-   }
-   ```
+> **컨셉은 Lite로 → 최종은 Standard**가 비용 효율적. 8초 Standard ≈ ₩4,730.
 
-3. **표정 변화** (감정 연속성)
-   ```json
-   {
-     "expression_arc": [
-       {"emotion": "neutral"},
-       {"emotion": "curious"},
-       {"emotion": "surprised"},
-       {"emotion": "happy"}
-     ]
-   }
-   ```
+### 다중 레퍼런스 (옵션)
 
-## Phase 3: 물리적 검증
+Veo 3.1은 최대 3장의 레퍼런스 이미지로 캐릭터·환경 일관성 강화 가능. 시리즈 클립 제작 시 유용.
 
-### 빠른 검증 체크리스트
+## Phase 3: 물리적 검증 체크리스트
 
-#### 🔴 즉시 재생성 필요 (Critical)
-- [ ] 손가락 6개 이상
-- [ ] 눈 위치 비대칭
-- [ ] 떠있는 물체 (중력 무시)
-- [ ] 그림자 방향 불일치
+Veo는 추론 모델이지만 짧은 클립에서도 오류는 발생. 각 클립 검수:
 
-#### 🟡 경미한 수정 가능 (Minor)
-- [ ] 미세한 색상 차이
-- [ ] 배경 요소 위치 변화
-- [ ] 의상 주름 변화
+### 즉시 재생성 필요 (Critical)
+- [ ] 손가락 6개 이상, 비대칭 눈
+- [ ] 떠있는 물체, 그림자 방향 불일치
+- [ ] 캐릭터 ID 변형 (얼굴/의상이 클립 중간에 바뀜)
 
-#### 🟢 허용 가능 (Acceptable)
-- [ ] 자연스러운 머리카락 움직임
-- [ ] 환경 디테일 변화
-- [ ] 미세한 조명 변화
+### 경미 — 후처리 가능 (Minor)
+- [ ] 미세한 색상·조명 변화
+- [ ] 배경 디테일 변화
+- [ ] 의상 주름
 
 ### 검증 우선순위
+1. 캐릭터 일관성 (최우선)
+2. 물리 법칙 (중력·그림자·반사)
+3. 스타일 일관성 (렌더링·색상 톤)
 
-1. **캐릭터 일관성** (최우선)
-   - 얼굴 특징
-   - 신체 비율
-   - 의상/액세서리
+## Phase 4: 스티칭 & 후처리
 
-2. **물리 법칙** (필수)
-   - 중력 방향
-   - 그림자 일치
-   - 반사 정확성
+여러 8초 클립을 FFmpeg로 이어붙이고 자막·BGM 합성.
 
-3. **스타일 일관성** (권장)
-   - 렌더링 품질
-   - 색상 톤
-   - 텍스처 디테일
+### 기본 스티칭 (FFmpeg)
 
-## Phase 4: 프레임 보간 준비
+```bash
+# concat list 작성
+echo "file 'clip1.mp4'" > list.txt
+echo "file 'clip2.mp4'" >> list.txt
+echo "file 'clip3.mp4'" >> list.txt
 
-### 키프레임 간격 가이드
+ffmpeg -f concat -safe 0 -i list.txt -c copy output.mp4
+```
 
-| 동작 타입 | 권장 간격 | 프레임 수 |
-|-----------|----------|-----------|
-| 미세 표정 | 0.5초 | 12-15 프레임 |
-| 제스처 | 1초 | 24-30 프레임 |
-| 걷기/이동 | 2초 | 48-60 프레임 |
-| 장면 전환 | 3초 | 72-90 프레임 |
+### 클립 길이 가이드
 
-### 보간 최적화 팁
+| 동작 타입 | Veo 클립 길이 | 비용 (Standard 기준) |
+|-----------|--------------|----------------------|
+| 짧은 표정·제스처 | 4초 | ₩2,365 |
+| 카메라 무빙 | 8초 (기본) | ₩4,730 |
+| 시퀀스 컷 | 8초 × N | N × ₩4,730 |
 
-1. **앵커 포인트 설정**
-   - 주요 관절 위치 마킹
-   - 얼굴 특징점 고정
-   - 배경 기준점 설정
-
-2. **모션 벡터 힌트**
-   ```json
-   {
-     "motion_hints": {
-       "direction": "left_to_right",
-       "speed": "moderate",
-       "acceleration": "ease_in_out"
-     }
-   }
-   ```
+> **Veo는 8초 단위가 기본**. 더 긴 영상은 여러 클립 + 스티칭으로 구성.
 
 ## 트러블슈팅
 
-### 문제: 캐릭터 얼굴이 계속 변함
+### 캐릭터가 클립 중간에 변형됨
+- Veo 3.1의 **레퍼런스 이미지 입력**(최대 3장) 활용
+- 또는 키프레임을 NB Pro로 더 명확히 만들고 prompt에 캐릭터 디테일 명시
 
-**해결책:**
-```json
-{
-  "face_lock": {
-    "method": "facial_embedding",
-    "strength": 0.95,
-    "reference": "hero_face.png"
-  }
-}
-```
+### 조명·색감이 클립 간 불일치
+- 모든 키프레임을 같은 NB JSON 템플릿으로 생성 (`lighting`, `colorRestriction` 고정)
+- 후처리 단계에서 FFmpeg color matching 적용
 
-### 문제: 조명이 일치하지 않음
+### 모션이 어색함
+- prompt에 카메라/동작을 명시적으로 기술 ("slow pan right", "subject walks toward camera")
+- Veo는 자연어 prompt에 강함, JSON보다 자연어 권장
 
-**해결책:**
-```json
-{
-  "lighting": {
-    "source": "fixed_position",
-    "angle": "45_degrees",
-    "color_temperature": "5600K",
-    "intensity": "maintain"
-  }
-}
-```
+## 실전: 5초 인사 클립
 
-### 문제: 스타일이 점점 변함
-
-**해결책:**
-- Midjourney: `--sref` 코드 매번 적용
-- Nano Banana: 첫 이미지의 스타일 파라미터 고정
-
-## 실전 워크플로우 예시
-
-### 5초 클립 제작 (캐릭터 인사)
-
-1. **스토리보드** (3 키프레임)
-   - Frame 1: 정면, 무표정
-   - Frame 2: 손 들기 시작
-   - Frame 3: 웃으며 손 흔들기
-
-2. **Midjourney 생성**
+1. **키프레임 1장**: NB Pro로 캐릭터 정면 무표정 생성
+2. **Veo 호출**:
+   ```python
+   prompt = "Character smiles warmly, raises right hand, and waves at the camera. Soft natural lighting."
+   operation = client.models.generate_videos(
+       model="veo-3.1-generate-preview",
+       prompt=prompt,
+       image=keyframe,
+   )
    ```
-   Frame 1: character standing, neutral face, front view --sref xyz --seed 123
-   Frame 3: character waving, smiling, front view --sref xyz --seed 456
-   ```
+3. **검증**: 손가락·표정 자연스러운지 확인
+4. **잘라내기**: 8초 출력 → FFmpeg로 5초로 트리밍
 
-3. **Nano Banana 중간 프레임**
-   ```json
-   {
-     "interpolate": {
-       "from": "frame1.png",
-       "to": "frame3.png",
-       "steps": 5
-     }
-   }
-   ```
+총 비용: 키프레임 1장 (NB Pro 1K, ₩198) + Veo 8초 Standard (₩4,730) ≈ **₩4,928**
 
-4. **검증 & 수정**
-   - 각 프레임 물리 검증
-   - 일관성 점수 확인
-   - 필요시 Vary Region
+## 참고
 
-5. **영상 AI 보간**
-   - 24fps 설정
-   - 총 120 프레임 생성
+- 첫 프로젝트는 1~3개 클립의 짧은 영상으로 시작 (비용 통제)
+- 키프레임 + Veo prompt + 결과물을 한 폴더에 같이 보관 (재현성)
+- Lite/Fast로 컨셉 확정 후 Standard로 최종 렌더 (비용 50~80% 절감)
+- Veo MCP는 옵션이지만 **API 직접 호출이 비용 통제·후처리 통합 측면에서 유리**
 
-## 체크리스트 템플릿
+## 출처
 
-```markdown
-## 프로젝트: [프로젝트명]
-## 장면: [장면 번호]
-
-### 키프레임 생성
-- [ ] 스타일 코드: _______
-- [ ] 시드 값: _______
-- [ ] 비율: _______
-
-### 일관성 체크
-- [ ] 캐릭터 ID 일치
-- [ ] 환경 연속성
-- [ ] 조명 일관성
-
-### 물리 검증
-- [ ] 해부학 정확성
-- [ ] 중력/물리 법칙
-- [ ] 그림자/반사
-
-### 보간 준비
-- [ ] 키프레임 정렬
-- [ ] 모션 방향 설정
-- [ ] 타이밍 조정
-
-### 최종 확인
-- [ ] 해상도: 1920x1080
-- [ ] 프레임레이트: 24/30fps
-- [ ] 색공간: sRGB
-```
-
-## 참고 사항
-
-- 첫 프로젝트는 3-5초 짧은 클립으로 시작
-- 각 단계별 백업 필수
-- 스타일/시드 코드 문서화
-- 실패한 시도도 기록 (학습용)
+- [Generate videos with Veo 3.1 - Google AI](https://ai.google.dev/gemini-api/docs/video)
+- [Veo 3.1 announcement - Google Developers Blog](https://developers.googleblog.com/introducing-veo-3-1-and-new-creative-capabilities-in-the-gemini-api/)
