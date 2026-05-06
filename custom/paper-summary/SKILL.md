@@ -1,36 +1,56 @@
 ---
 name: paper-summary
-description: 논문 읽기 지원 스킬. Phase 1 (arxiv로 논문 파악) → Phase 2 (대화형 읽기 지원) → Phase 3 (Zotero 임포트 후 보강). 사용자가 논문 제목/링크를 주면 시작.
+description: 논문 읽기 전 과정을 함께 진행하는 스킬. 사용자가 arxiv 링크·논문 제목을 보내거나, "이 논문 읽고 싶어"·"같이 읽자"·"Zotero에서 가져왔어 정리해줘" 등을 말할 때 트리거. 세 단계로 동작 — Phase 1 (arxiv MCP로 논문 파악) → Phase 2 (사용자가 PDF 읽으며 묻는 질문에 응답) → Phase 3 (Zotero 임포트 후 Obsidian 노트 보강). 단순한 한 줄 요약 요청도 이 스킬로 시작.
 ---
 
-# Paper Summary Skill
+# Paper Summary
 
-논문 읽기의 전체 워크플로우를 지원하는 스킬.
+논문 읽기의 전체 워크플로우를 지원하는 스킬. 사용자는 보통 arxiv 링크나 제목을 던지며 시작하고, Zotero·Obsidian에 노트를 정리하는 데까지 이어진다.
 
 ## Phase 1: 논문 파악 (arxiv MCP)
 
-사용자가 논문 제목이나 링크를 제공하면:
+사용자가 논문 제목·링크를 주면:
 
-1. `search_papers`로 논문 검색
+1. `search_papers`로 검색
 2. `download_paper`로 다운로드
 3. `read_paper`로 전문 파악
-4. 핵심 내용을 간단히 요약하여 사용자의 읽기 준비 지원
+4. 핵심 내용을 짧게 요약 — 사용자가 PDF를 열기 전에 큰 그림을 잡도록
 
-시작 멘트:
-"논문을 찾아서 읽어보겠습니다."
+시작 멘트: "논문을 찾아서 읽어보겠습니다."
 
-## Phase 2: 대화형 논문 읽기 지원
+## Phase 2: 대화형 읽기 지원
 
-사용자는 Zotero에서 논문 PDF를 읽으며 질문한다.
+사용자는 Zotero에서 PDF를 읽으며 질문한다. 이 단계에서 나눈 대화가 Phase 3 보강의 1차 소스이므로, 답변은 즉시 휘발되지 않게 핵심을 정리해두는 게 좋다.
 
 **Claude의 역할:**
 - 기술적 질문 응답, 방법론 설명, 비교 논의
 - Vocabulary Assistance (영단어 즉석 설명)
-- 대화 내용이 Phase 3의 "🔬 방법론 상세 이해" 섹션 소스가 됨
+- **관련 논문 언급 시 vault 연결** (아래 참조)
+- Phase 3의 "🔬 방법론 상세 이해" 섹션 소스 축적
 
-**Vocabulary Assistance:**
+### 관련 논문 언급 시 처리 (이 스킬의 핵심 기능)
 
-사용자가 영어 단어/구만 보내면 의미를 설명:
+대화 중 다른 논문이 언급되거나 조사 결과 관련 논문이 발견되면, 그 자리에서 vault와 연결해 사용자의 지식 그래프를 확장한다. 휘발성 멘션으로 끝내지 않는다.
+
+**처리 절차:**
+
+1. `Sources/papers/`에서 해당 논문 노트가 있는지 확인 (파일명: `[Short Title] (YYYY).md` 컨벤션)
+2. **있는 경우**: `[[PaperName]]` 위키링크 + 한 줄 맥락 멘션
+   - 예: `이 부분은 [[CLIP (2021)]]의 contrastive 방식과 같은 아이디어예요`
+   - 의미 관계가 명확하면 typed link: `[[builds-on::PaperName]]`, `[[vs::PaperName]]`, `[[ref::PaperName]]`
+3. **없는 경우**: vault 부재 표시 `「PaperName」` 사용 + `_Reading List.md`에 추가 제안
+   - 사용자에게 "이 논문 Reading List에 추가해둘까요?" 라고 짧게 묻고 동의 시 진행
+   - 형식: `_Reading List.md`의 우선순위 섹션 중 적절한 곳에 한 줄 추가
+     ```
+     - [[현재읽는논문]] 참고문헌 → "PaperName (Year)" — 한 줄 이유
+     ```
+   - 우선순위 판단: 직접 비교/핵심 빌딩 블록 → 🔥 / 보조 참고 → 📖 / 미분류 → 💡
+
+논문 노트 위치, `_Reading List.md` 형식, 링크 컨벤션은 Vault CLAUDE.md (`/Users/bys724/LocalVault/Obsidian Vault/CLAUDE.md`) 기준.
+
+### Vocabulary Assistance
+
+사용자가 영어 단어/구만 보내면 의미 설명:
 
 ```
 **[word/phrase]**
@@ -41,129 +61,19 @@ description: 논문 읽기 지원 스킬. Phase 1 (arxiv로 논문 파악) → P
 - [예시 문장 2]
 ```
 
-**주기적 확인:**
-"더 궁금한 부분 있으세요? 정리 진행할까요?"
+**주기적 확인:** "더 궁금한 부분 있으세요? 정리 진행할까요?"
 
 ## Phase 3: Zotero 임포트 후 보강
 
-사용자가 "Zotero에서 가져왔으니 정리해" 등의 요청을 하면 실행.
+사용자가 "Zotero에서 가져왔어", "정리해줘" 등을 말하면 시작.
 
-Vault 경로는 전역 CLAUDE.md 참조.
-논문 노트 위치: `Sources/papers/`
+상세 절차(파일명 변경, frontmatter 검증, Vocabulary 분리, 관계 링크 등)는 [`references/zotero-enrichment.md`](references/zotero-enrichment.md) 참조.
 
-### 보강 작업 (우선순위 순)
+**핵심만 다시 강조:**
+- **0번 (방법론 상세 이해)이 최우선** — 대화에서 쌓은 이해를 박제하는 단계. 시간 지나면 복원 불가
+- 파일명·frontmatter는 작업 시작 즉시 검증 — 깨진 채 진행하면 vault 참조가 망가짐
+- **`_Reading List.md`에서 entry 제거** — 임포트된 논문이 거기 있었다면 같이 정리. 안 지우면 "읽어야 할 논문" 목록이 시그널을 잃음
+- Zotero 템플릿 구조(Key Figures → Summary → Contents → Connections)는 건드리지 않음
+- Phase 2에서 만들어둔 `[[PaperName]]` / `「PaperName」` 멘션을 Connections 섹션에 통합
 
-#### 0. 방법론 상세 이해 추가 (최고 우선순위)
-
-대화에서 나온 Q&A를 **"🔬 방법론 상세 이해"** 섹션으로 구성.
-
-**포함 내용:**
-- 전체 워크플로우/파이프라인
-- 단계별 설명
-- 핵심 개념 Q&A
-- pseudo code, 다이어그램
-- 혼란 포인트 명시적 설명
-
-**배치:** 📋 Summary 위에
-
-**작성 원칙:**
-- 한글로 설명
-- 코드/다이어그램 적극 활용
-- 대화에서 나온 예시와 비유 포함
-- 개요 → 세부 → 인사이트 순서
-
-#### 1. Summary 섹션 작성
-
-- 한 줄 요약
-- 핵심 기여
-- 주요 결과
-- Typed links로 관련 논문 연결: `[[Paper|builds-on]]`, `[[Paper|vs]]`, `[[Paper|ref]]`
-
-#### 2. 파일 이름 변경 (필수)
-
-**작업 시작 시 즉시 확인하고 변경할 것.**
-
-Zotero citekey 형식 → `[Short Title] (YYYY).md`
-
-예시:
-- `radfordLearningTransferableVisual2021.md` → `CLIP (2021).md`
-- `patelDeFMLearningFoundation2026.md` → `DeFM (2026).md`
-
-#### 3. Frontmatter 검증
-
-**중요:** Closing `---`는 반드시 첫 컬럼에 위치 (들여쓰기 없음)
-
-- 연도: arXiv 기준 (컨퍼런스 날짜 아님)
-- URL: `https://arxiv.org/abs/XXXX.XXXXX` 형식
-- 대규모 협업: "Open X-Embodiment Collaboration et al."
-- 중복 frontmatter 제거
-- **들여쓰기 확인**: closing `---`에 공백이나 탭이 있으면 메타데이터가 깨짐
-
-#### 4. Metadata Callout 링크 수정
-
-Zotero Integration이 중첩 링크를 생성하는 경우가 있음. 반드시 수정할 것.
-
-**잘못된 형식 (중첩 링크):**
-```markdown
-[Open]([Full Text PDF](zotero://select/library/items/XXX))
-```
-
-**올바른 형식:**
-```markdown
-[Open in Zotero](zotero://select/library/items/XXX)
-```
-
-또는 Zotero 링크 텍스트가 있다면:
-```markdown
-[Full Text PDF](zotero://select/library/items/XXX)
-```
-
-#### 5. Figure 캡션 추가
-
-🖼️ Key Figures의 이미지에 한글 설명 1-2문장.
-
-```markdown
-**Figure N: [간략한 제목]**
-![[image-path.png]]
-*[한글 설명: 핵심 내용, 왜 중요한지]*
-```
-
-#### 6. 단어 추출 → Vocabulary.md
-
-**추출:**
-- 하이라이트/노트에서 단어만 추출
-- Vocabulary.md에 알파벳순 추가
-
-**형식:**
-```markdown
-**word**
-- 의미: [한글 설명]
-- 예시: [영어 예시 1-2개]
-```
-
-**정리 (반드시 두 섹션 모두 확인):**
-
-1. **"📌 All Highlights" 섹션**:
-   - 삭제: 단어만 있는 하이라이트 (`> expedite`, `> holistic`)
-   - 유지: 연구 내용 하이라이트 (기술 설명, 방법론, 결과)
-
-2. **"✍️ Notes (Yellow)" 섹션**:
-   - 삭제: 단어 번역 노트
-   - 대체: `*(Vocabulary annotations have been extracted to Vocabulary.md)*`
-
-**재등장 처리:** 새 논문에서 같은 단어가 나오면 마스터리 초기화 (✓, ✓✓, ✅ 제거)
-
-#### 7. 관계 링크 업데이트
-
-- 기존 논문과의 양방향 링크 확인/추가
-- `「PaperName」` (vault에 없는 논문) vs `[[PaperName]]` (vault에 있는 논문)
-- 관계 유형: `builds-on`, `vs`, `ref`, `related`, `applied-by`, `leads-to`
-
-### Zotero 템플릿 구조 유지
-
-보강 시 기존 구조를 유지: Key Figures → Summary → Contents → Connections
-
-### 하지 말 것
-
-- 템플릿 구조 변경 (Zotero Integrator가 관리)
-- 이미지/어노테이션 수정 (플러그인이 자동 임포트)
+Vault 경로 및 노트 컨벤션은 전역 CLAUDE.md 및 Vault CLAUDE.md 참조.

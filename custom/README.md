@@ -23,13 +23,14 @@ mkdir custom/my-new-skill
 ---
 name: my-new-skill
 description: 트리거 메커니즘. 무엇을 하고 언제 호출되는지 모두 여기에 명시.
-user-invocable: true
 ---
 
 # My New Skill
 
 상세 지시사항...
 ```
+
+frontmatter는 `name`·`description`만 필수. `user-invocable`·`skill-id` 같은 비표준 필드는 쓰지 말 것 (공식 spec 외 잔재).
 
 ### 3. 설치 (심링크)
 
