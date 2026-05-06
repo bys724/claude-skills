@@ -1,83 +1,57 @@
 # Custom Skills
 
-이 디렉토리는 **완전히 새로운 나만의 스킬**을 관리합니다.
+직접 만든 스킬을 관리하는 디렉토리. 호출은 슬래시 커맨드(`/<name>`) 또는 description 트리거로 발생.
 
-## 📝 용도
+## 현재 커스텀 스킬
 
-공식 스킬과 무관하게 처음부터 직접 만든 스킬들을 여기에 보관합니다.
+- **paper-summary**: 논문 읽기 워크플로우 (arxiv → 대화 → Zotero 보강)
+- **research-presentation**: 연구 발표 자료 제작 (Obsidian 노트 통합)
+- **design-partner**: AI 이미지 생성 코칭 (Midjourney + Nano Banana)
+- **code-cleaner**: 저장소 정리 (코드·구조·문서·주석)
 
-## 🎯 현재 커스텀 스킬
-
-### paper-summary
-논문 읽기, 토론, 종합적인 노트 생성 스킬
-
-- 연구자 관점을 반영한 개인화된 한글 요약
-- Obsidian typed links를 활용한 논문 네트워크 구축
-- 향후 검색을 위한 태그 기반 분류
-
-## 🆕 새로운 커스텀 스킬 만들기
+## 새 스킬 만들기
 
 ### 1. 디렉토리 생성
 
 ```bash
 mkdir custom/my-new-skill
-cd custom/my-new-skill
 ```
 
 ### 2. SKILL.md 작성
 
 ```markdown
 ---
-skill-id: my-new-skill
-skill-name: My New Skill
-description: 이 스킬이 하는 일에 대한 간단한 설명
+name: my-new-skill
+description: 트리거 메커니즘. 무엇을 하고 언제 호출되는지 모두 여기에 명시.
 user-invocable: true
 ---
 
 # My New Skill
 
-Claude를 위한 상세한 지시사항...
-
-## 사용 방법
-
-...
-
-## 참고 자료
-
-...
+상세 지시사항...
 ```
 
-### 3. 설치 및 테스트
+### 3. 설치 (심링크)
 
 ```bash
-# 로컬 테스트 (이 프로젝트에서만)
-cd .claude/skills
-ln -s ../../custom/my-new-skill my-new-skill
-
-# 전역 설치 (모든 프로젝트에서 사용)
-./scripts/install.sh my-new-skill
+ln -s ~/Documents/claude-skills/custom/my-new-skill ~/.claude/skills/my-new-skill
 ```
 
-## 📖 스킬 개발 가이드
+저장소 push 후 다른 워크스테이션에서도 동일 명령으로 install (SETUP_GUIDE 4번 참고).
 
-### YAML Frontmatter 필수 필드
+## 작성 원칙 (공식 skill-creator 비판적 흡수)
 
-- `skill-id`: 스킬의 고유 ID (디렉토리명과 동일하게)
-- `skill-name`: 사람이 읽을 수 있는 스킬 이름
-- `description`: 스킬의 간단한 설명
+- **description은 "pushy"하게**: 모델이 트리거 여부를 판단하는 유일한 신호. *무엇을 하는지* + *언제 써야 하는지* 모두 description에 (본문 아님). 너무 차분하면 undertrigger
+- **SKILL.md는 500줄 이하**: 길어지면 reference 파일로 분리 (`reference.md`, `examples.md` 등). 큰 reference엔 ToC
+- **Why를 설명**: `ALWAYS`/`NEVER` 같은 강제어 남발 금지. 이유를 설명하면 모델이 edge case에서도 적절히 판단 (User CLAUDE.md 코딩 원칙과 동일)
+- **한국어 OK**: 우리 컨벤션. 모델은 한국어 instruction도 잘 따름
 
-### 선택적 필드
+본격적으로 새 스킬을 만들거나 기존 스킬을 평가·최적화하려면 공식 스킬 활용:
 
-- `user-invocable: true/false` - 사용자가 직접 호출 가능한지
-- `disable-model-invocation: true` - 모델 호출 비활성화 (배포 작업용)
+- `/skill-creator` — 작성·테스트·description 최적화 워크플로우 (eval 기반)
+- 공식 가이드: [vendor/official/skills/skill-creator/SKILL.md](../vendor/official/skills/skill-creator/SKILL.md)
 
-### 모범 사례
-
-- `SKILL.md`는 500줄 이하로 유지
-- 상세한 참고 자료는 별도 파일로 분리 (`reference.md`, `examples.md` 등)
-- 스크립트나 템플릿은 하위 디렉토리에 정리
-
-## 🔗 유용한 링크
+## 참고
 
 - [Claude Code 스킬 문서](https://code.claude.com/docs/en/skills)
-- [공식 Skill Creator 스킬](../vendor/official/skills/skill-creator/)
+- [공식 skill-creator](../vendor/official/skills/skill-creator/) · [공식 mcp-builder](../vendor/official/skills/mcp-builder/)

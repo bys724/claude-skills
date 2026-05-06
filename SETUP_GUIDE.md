@@ -95,16 +95,22 @@ cp ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
 
 ## 4. 스킬 설치
 
-### 필수 스킬
+저장소 → `~/.claude/skills/` **심링크** 권장. 저장소 update 시 사본도 자동 갱신.
+
+### 커스텀 스킬 (`custom/`)
 ```bash
-# code-cleaner (리팩토링용)
-cp -r custom/code-cleaner ~/.claude/skills/
+ln -s ~/Documents/claude-skills/custom/code-cleaner ~/.claude/skills/code-cleaner
+# 필요한 것만 선택: paper-summary, research-presentation, design-partner
 ```
 
-### 선택 스킬
-- `research-presentation`: 연구 발표용 (Obsidian 필요)
-- `paper-summary`: 논문 정리용
-- 필요에 따라 선택적 설치
+### 공식 스킬 (`vendor/official/skills/`) — 메타 도구
+신규 스킬·MCP를 만들 일이 있을 때 활용. 평소엔 노이즈 적은 description 가진 것만 켜두기.
+```bash
+ln -s ~/Documents/claude-skills/vendor/official/skills/skill-creator ~/.claude/skills/skill-creator
+ln -s ~/Documents/claude-skills/vendor/official/skills/mcp-builder   ~/.claude/skills/mcp-builder
+```
+
+업데이트: `git submodule update --remote vendor/official` 후 Claude Code 재시작.
 
 ## 5. MCP 서버 설정
 
