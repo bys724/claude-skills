@@ -27,14 +27,46 @@ Vault 경로는 전역 CLAUDE.md 참조. 논문 노트 위치: `Sources/papers/`
 - 대화에서 나온 예시·비유 포함
 - 개요 → 세부 → 인사이트 순서
 
-## 1. Summary 섹션 작성
+## 1. Reading Origin (출처·동기) 작성
+
+미래의 자신이 "이 논문 왜 읽었더라"를 회상할 때 가장 빠르게 답을 얻는 정보. 본문 요약과 다르므로 Summary와 분리해서 별도 callout으로 둠.
+
+**배치:** Metadata Callout 직후 (🖼️ Key Figures 앞).
+
+**형식:**
+```markdown
+> [!note]- 📌 Reading Origin
+> **출처**: [어디서 발견했는지 — 원본 논문, 강연, 트위터, arxiv 검색 등]
+> **이유**: [왜 읽었는지 — 한 줄]
+```
+
+`[!note]-` 의 `-`로 기본 접힘. 정보 자체는 짧으니 노트 톤을 해치지 않음.
+
+**소스 결정 (우선순위):**
+
+1. **`_Reading List.md`에 entry가 있었던 경우**
+   - 그 entry의 형식이 곧 출처·이유:
+     ```
+     - [[OpenVLA (2024)]] 참고문헌 → "DiT (2023)" — vision backbone에 transformer 적용 비교
+     ```
+     → **출처**: `[[OpenVLA (2024)]] 참고문헌` / **이유**: `vision backbone에 transformer 적용 비교`
+   - entry가 단순한 경우(`- "제목"`만 있음) → 대화 맥락 유추로 보완
+
+2. **`_Reading List.md`에 없거나 정보가 부족한 경우**
+   - Phase 1·2 대화에서 유추: 사용자가 어떤 맥락에서 이 논문을 꺼냈는지(다른 논문에서 인용? 누가 추천? 특정 문제 해결 중?)
+   - 추정안을 사용자에게 제시: `"출처: X, 이유: Y로 작성하면 어떨까요?"`
+   - 사용자 동의 후 작성. 동의 못 받거나 모호하면 비워두지 말고 빈 형식만 두고 "사용자 보완 필요" 메모 남김
+
+자의 판단으로 추정만 적지 않을 것. 정확하지 않은 origin은 미래에 더 큰 혼란.
+
+## 2. Summary 섹션 작성
 
 - 한 줄 요약
 - 핵심 기여
 - 주요 결과
 - Typed links로 관련 논문 연결: `[[Paper|builds-on]]`, `[[Paper|vs]]`, `[[Paper|ref]]`
 
-## 2. 파일 이름 변경 (작업 시작 시 즉시)
+## 3. 파일 이름 변경 (작업 시작 시 즉시)
 
 Zotero citekey → `[Short Title] (YYYY).md`
 
@@ -45,7 +77,7 @@ Zotero citekey → `[Short Title] (YYYY).md`
 
 Citekey가 vault 전체에서 참조 깨짐을 유발하므로 가능한 한 빨리 변경.
 
-## 3. Frontmatter 검증
+## 4. Frontmatter 검증
 
 가장 흔한 실수: closing `---`가 들여쓰기되어 있는 경우 → 메타데이터 전체가 깨짐. 첫 컬럼 위치 확인이 우선.
 
@@ -55,7 +87,7 @@ Citekey가 vault 전체에서 참조 깨짐을 유발하므로 가능한 한 빨
 - 중복 frontmatter 제거
 - closing `---`은 첫 컬럼 (공백·탭 금지)
 
-## 4. Metadata Callout 링크 수정
+## 5. Metadata Callout 링크 수정
 
 Zotero Integration이 중첩 링크를 생성하는 알려진 버그. 수정하지 않으면 Obsidian에서 클릭 안 됨.
 
@@ -74,7 +106,7 @@ Zotero Integration이 중첩 링크를 생성하는 알려진 버그. 수정하�
 [Full Text PDF](zotero://select/library/items/XXX)
 ```
 
-## 5. Figure 캡션 추가
+## 6. Figure 캡션 추가
 
 🖼️ Key Figures의 이미지에 한글 1-2문장. 영어 캡션만 있으면 빠르게 훑을 때 의미가 안 들어옴.
 
@@ -84,7 +116,7 @@ Zotero Integration이 중첩 링크를 생성하는 알려진 버그. 수정하�
 *[한글 설명: 핵심 내용, 왜 중요한지]*
 ```
 
-## 6. 단어 추출 → Vocabulary.md
+## 7. 단어 추출 → Vocabulary.md
 
 논문 노트에 영어 단어가 섞여 있으면 신호와 노이즈가 분리되지 않음. 단어는 Vocabulary.md로 분리하고 노트는 연구 내용만 남김.
 
@@ -111,14 +143,14 @@ Zotero Integration이 중첩 링크를 생성하는 알려진 버그. 수정하�
 
 **재등장 처리:** 새 논문에서 같은 단어가 다시 나오면 마스터리 마커(✓, ✓✓, ✅) 초기화.
 
-## 7. 관계 링크 업데이트
+## 8. 관계 링크 업데이트
 
 - 기존 논문과의 양방향 링크 확인/추가
 - `「PaperName」` (vault에 없는 논문) vs `[[PaperName]]` (vault에 있는 논문)
 - 관계 유형: `builds-on`, `vs`, `ref`, `related`, `applied-by`, `leads-to`
 - Phase 2 대화에서 만들어둔 `[[]]` / `「」` 멘션을 Connections 섹션에 통합
 
-## 8. `_Reading List.md` 정리
+## 9. `_Reading List.md` 정리
 
 지금 임포트한 논문이 `Sources/papers/_Reading List.md`의 entry 중 하나였다면 제거. 빠뜨리면 "읽어야 할 논문" 목록이 신호를 잃는다.
 
