@@ -88,6 +88,6 @@ description: 논문 읽기 전 과정을 함께 진행하는 스킬. 사용자�
 - 파일명·frontmatter는 작업 시작 즉시 검증 — 깨진 채 진행하면 vault 참조가 망가짐
 - **`_Reading List.md`에서 entry 제거** — 임포트된 논문이 거기 있었다면 같이 정리. 안 지우면 "읽어야 할 논문" 목록이 시그널을 잃음
 - Zotero 템플릿 구조(Key Figures → Summary → Contents → Connections)는 건드리지 않음
-- Phase 2에서 만들어둔 `[[PaperName]]` / `「PaperName」` 멘션을 Connections 섹션에 통합
+- **8번 관계 링크는 적게·정확하게** — 인용·비교·lineage가 명확한 핵심 3-5개. *"같은 분야"*만으로는 링크 X. 0개도 정상. Phase 2에서 만든 `[[]]` / `「」` 멘션도 같은 기준으로 재검토 후 Connections에 통합
 
 Vault 경로 및 노트 컨벤션은 전역 CLAUDE.md 및 Vault CLAUDE.md 참조.
