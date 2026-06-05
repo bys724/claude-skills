@@ -82,6 +82,13 @@ Zotero citekey → `[Short Title] (YYYY).md`
 
 Citekey가 vault 전체에서 참조 깨짐을 유발하므로 가능한 한 빨리 변경.
 
+### 이미지 폴더 연동
+
+Zotero가 추출한 그림은 `Sources/paper imgs/[노트명]/` 폴더에 저장되며, 노트 내 `![[Sources/paper imgs/[노트명]/img-*.png]]` 형식으로 참조된다. 노트 파일명 변경 시 반드시 함께 수행:
+
+1. `Sources/paper imgs/` 아래 citekey 폴더를 Short Title 형식으로 rename
+2. 노트 내 모든 `![[Sources/paper imgs/OLD_NAME/...]]` → `![[Sources/paper imgs/NEW_NAME/...]]` 일괄 치환
+
 ## 4. Frontmatter 검증
 
 가장 흔한 실수: closing `---`가 들여쓰기되어 있는 경우 → 메타데이터 전체가 깨짐. 첫 컬럼 위치 확인이 우선.

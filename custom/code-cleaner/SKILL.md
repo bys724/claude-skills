@@ -1,6 +1,7 @@
 ---
 name: code-cleaner
-description: 사용자가 명시적으로 요청할 때 동작하는 저장소 정리 스킬. 코드뿐 아니라 폴더 구조·문서·주석을 함께 정리해 본질을 잃지 않으면서 구조를 최소화·명확화. 정리해줘, 리팩토링, 깔끔하게, refactor, cleanup 요청 시 사용.
+description: "This skill should be used when the user explicitly requests repository cleanup or says \"\uc815\ub9ac\ud574\uc918\", \"\ub9ac\ud329\ud1a0\ub9c1\", \"\uae54\ub054\ud558\uac8c\", \"refactor\", \"cleanup\", \"\ucf54\ub4dc \uc815\ub9ac\", or asks to reorganize code, folder structure, documentation, or comments. Performs broad cleanup across code, folder structure, docs, and comments \u2014 minimizing and clarifying structure while preserving essence. Only activates on explicit cleanup requests, not during normal code editing."
+allowed-tools: Read Edit Write Glob Grep Bash(rm *) Bash(mv *) Bash(mkdir *) Bash(ls *) Bash(git status *) Bash(git diff *)
 ---
 
 # Code Cleaner — 저장소 정리

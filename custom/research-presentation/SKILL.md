@@ -1,6 +1,6 @@
 ---
 name: research-presentation
-description: 학술·연구 발표 자료(PPT) 제작 스킬. 사용자가 "팀 미팅 발표 자료 만들어줘", "이 논문 발표 슬라이드", "연구 진행 발표", "세미나 자료", "deck 만들어줘" 같은 요청을 하면 트리거. Obsidian vault의 논문 노트와 개념 노트를 자동으로 끌어와 슬라이드를 구성. 단일 논문 소개·다중 논문 비교·연구 아이디어 공유·진행 상황 보고·literature review 등 학술 맥락 발표 전반에 사용. 단, 사내 status update이나 일반 비즈니스 deck은 internal-comms·doc-coauthoring으로.
+description: "This skill should be used when the user wants to create academic or research presentation slides, or says \"\ud300 \ubbf8\ud305 \ubc1c\ud45c \uc790\ub8cc \ub9cc\ub4e4\uc5b4\uc918\", \"\uc774 \ub17c\ubb38 \ubc1c\ud45c \uc2ac\ub77c\uc774\ub4dc\", \"\uc5f0\uad6c \uc9c4\ud589 \ubc1c\ud45c\", \"\uc138\ubbf8\ub098 \uc790\ub8cc\", \"deck \ub9cc\ub4e4\uc5b4\uc918\", or mentions creating slides for paper introductions, literature reviews, research ideas, or progress reports. Pulls paper notes and concept notes from the Obsidian vault to compose slides. Covers single-paper intro, multi-paper comparison, research idea sharing, progress reports, and literature review presentations. Not for internal status updates or general business decks."
 ---
 
 # Research Presentation

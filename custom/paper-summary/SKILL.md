@@ -1,6 +1,6 @@
 ---
 name: paper-summary
-description: 논문 읽기 전 과정을 함께 진행하는 스킬. 사용자가 arxiv 링크·논문 제목을 보내거나, "이 논문 읽고 싶어"·"같이 읽자"·"Zotero에서 가져왔어 정리해줘" 등을 말할 때 트리거. 세 단계로 동작 — Phase 1 (arxiv MCP로 논문 파악) → Phase 2 (사용자가 PDF 읽으며 묻는 질문에 응답) → Phase 3 (Zotero 임포트 후 Obsidian 노트 보강). 단순한 한 줄 요약 요청도 이 스킬로 시작.
+description: "This skill should be used when the user sends an arxiv link, paper title, DOI, or says \"\uc774 \ub17c\ubb38 \uc77d\uace0 \uc2f6\uc5b4\", \"\uac19\uc774 \uc77d\uc790\", \"Zotero\uc5d0\uc11c \uac00\uc838\uc654\uc5b4 \uc815\ub9ac\ud574\uc918\", \"\uc774 \ub17c\ubb38 \uc694\uc57d\ud574\uc918\", \"\ub17c\ubb38 \uc815\ub9ac\", or any paper-related request. Covers the full paper reading workflow: Phase 1 (arxiv MCP overview) \u2192 Phase 2 (deep reading Q&A) \u2192 Phase 3 (Zotero import + Obsidian note enrichment). The goal is personalized note creation, not generic summarization \u2014 integrating the paper into the user's knowledge graph. Even simple one-line summary requests should trigger this skill."
 ---
 
 # Paper Summary
@@ -15,7 +15,22 @@ description: 논문 읽기 전 과정을 함께 진행하는 스킬. 사용자�
 - Vault에 이미 있는 논문 → typed link로 연결 (지식 그래프 확장)
 - 사용자 어휘 학습 → Vocabulary.md 분리 (Vault Quiz 시스템과 연동)
 
-세 단계로 동작: Phase 1(큰 그림) → Phase 2(읽으며 이해 축적) → Phase 3(이해를 vault 노트로 박제). Zotero·Obsidian이 통합 도구. 사용자 연구 맥락은 전역 CLAUDE.md 참조.
+네 단계로 동작: Phase 0(어휘 퀴즈) → Phase 1(큰 그림) → Phase 2(읽으며 이해 축적) → Phase 3(이해를 vault 노트로 박제). Zotero·Obsidian이 통합 도구. 사용자 연구 맥락은 전역 CLAUDE.md 참조.
+
+## Phase 0: Vocabulary Quiz (선택)
+
+논문 읽기 전 Vocabulary.md에서 미숙달 단어 3개를 골라 퀴즈. 어휘 학습 사이클의 시작점 — Phase 2에서 새 단어를 만나고, Phase 3 §7에서 등록하고, 다음 세션 Phase 0에서 복습.
+
+**진행:**
+1. Vault의 `Vocabulary.md` 읽기 (없으면 Phase 0 skip)
+2. ✅ 아닌 단어 중 3개 선택 (전부 ✅면 skip)
+3. 단어별로 영어 예문을 제시 → 사용자가 한국어 의미 답변
+4. 채점: 정답이면 마커 승급 (없음 → ✓ → ✓✓ → ✅), 오답이면 유지
+5. 결과를 Vocabulary.md에 반영
+
+**Skip 조건:** 파일 없음 / 전부 마스터 / 사용자가 "넘어가자" / 세션 재시작(이미 한 번 했으면)
+
+퀴즈 후 "논문 읽기 시작할까요?" 로 Phase 1 진입.
 
 ## Phase 1: 논문 파악 (arxiv MCP)
 
@@ -56,7 +71,7 @@ description: 논문 읽기 전 과정을 함께 진행하는 스킬. 사용자�
      ```
    - 우선순위 판단: 직접 비교/핵심 빌딩 블록 → 🔥 / 보조 참고 → 📖 / 미분류 → 💡
 
-논문 노트 위치, `_Reading List.md` 형식, 링크 컨벤션은 Vault CLAUDE.md (`/Users/bys724/LocalVault/Obsidian Vault/CLAUDE.md`) 기준.
+논문 노트 위치, `_Reading List.md` 형식, 링크 컨벤션은 Vault CLAUDE.md 기준 (Vault 경로는 전역 CLAUDE.md "주요 경로" 참조).
 
 ### Vocabulary Assistance
 

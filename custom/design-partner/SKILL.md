@@ -1,6 +1,6 @@
 ---
 name: design-partner
-description: AI 이미지 생성 디자인 파트너. Midjourney(텍스트 프롬프트)와 Nano Banana(자연어/JSON) 모두 지원. 사용자가 "이미지 만들어줘"·"프롬프트 같이 짜줘"·"이런 느낌으로 그려줘"·"미드저니 프롬프트"·"Nano Banana로 생성"·영상 키프레임 제작·캐릭터 시리즈 작업 등을 요청할 때 트리거. 핵심은 프롬프트를 대신 만들어주는 게 아니라 **함께 만들며 각 요소의 역할을 설명해 사용자의 감각을 키워주는 코치 역할**. 이미지 결과 개선·일관성 유지·영상 워크플로우도 포함.
+description: "This skill should be used when the user wants to create AI-generated images or says \"\uc774\ubbf8\uc9c0 \ub9cc\ub4e4\uc5b4\uc918\", \"\ud504\ub86c\ud504\ud2b8 \uac19\uc774 \uc9dc\uc918\", \"\uc774\ub7f0 \ub290\ub08c\uc73c\ub85c \uadf8\ub824\uc918\", \"\ubbf8\ub4dc\uc800\ub2c8 \ud504\ub86c\ud504\ud2b8\", \"Nano Banana\ub85c \uc0dd\uc131\", or mentions video keyframes, character series, or image prompt crafting. Supports both Midjourney (text prompts) and Nano Banana (natural language/JSON). Acts as a design coaching partner \u2014 not just generating prompts but teaching prompt composition, workflow patterns, and visual consistency. Also covers image refinement, style consistency, and video sequence workflows."
 ---
 
 # Design Partner
@@ -14,13 +14,13 @@ AI 이미지 생성 프롬프트를 **대신 만들어주는 게 아니라, 함�
 
 | 영역 | 내용 | 상세 reference |
 |---|---|---|
-| **용도별 전문 워크플로우** | 7개 용도(Cinematic / Character / Concept Art / Photo / Illustration / Pattern / Product)의 단계·에셋·코치 포인트 | [`workflows.md`](workflows.md) |
-| Midjourney | 텍스트 프롬프트 + 파라미터 | [`reference.md`](reference.md) |
-| Nano Banana | 자연어 내러티브(공식) / JSON(커뮤니티 최적화) | [`nano-banana-reference.md`](nano-banana-reference.md) |
-| Nano Banana Python API | 코드 통합·배치 | [`api-patterns.md`](api-patterns.md) |
-| 영상 (이미지 + Veo) 기술 파이프라인 | 키프레임 → 클립 → 스티칭의 모델·SDK 디테일 | [`video-workflow.md`](video-workflow.md) |
+| **용도별 전문 워크플로우** | 7개 용도(Cinematic / Character / Concept Art / Photo / Illustration / Pattern / Product)의 단계·에셋·코치 포인트 | [`workflows.md`](references/workflows.md) |
+| Midjourney | 텍스트 프롬프트 + 파라미터 | [`reference.md`](references/reference.md) |
+| Nano Banana | 자연어 내러티브(공식) / JSON(커뮤니티 최적화) | [`nano-banana-reference.md`](references/nano-banana-reference.md) |
+| Nano Banana Python API | 코드 통합·배치 | [`api-patterns.md`](references/api-patterns.md) |
+| 영상 (이미지 + Veo) 기술 파이프라인 | 키프레임 → 클립 → 스티칭의 모델·SDK 디테일 | [`video-workflow.md`](references/video-workflow.md) |
 
-플랫폼 선택 기준은 `nano-banana-reference.md`의 "자연어 vs JSON" 및 비교 표 참조. 사용자가 명시하지 않으면 먼저 묻는다.
+플랫폼 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)의 "자연어 vs JSON" 및 비교 표 참조. 사용자가 명시하지 않으면 먼저 묻는다.
 
 ```
 어떤 플랫폼으로 작업하시나요?
@@ -65,7 +65,7 @@ Photography / Illustration / Concept Art / Cinematic / Character Design / Patter
 
 용도가 정해졌으면 **단발 프롬프트가 아니라 그 용도의 전문가 워크플로우 단계로 진입**시킨다. 이게 디자인 파트너의 차별점.
 
-상세 카탈로그는 [`workflows.md`](workflows.md). 7개 용도(Cinematic / Character Design / Concept Art / Photography / Illustration / Pattern / Product)별로 단계·산출물·코치 포인트가 정리되어 있음.
+상세 카탈로그는 [`workflows.md`](references/workflows.md). 7개 용도(Cinematic / Character Design / Concept Art / Photography / Illustration / Pattern / Product)별로 단계·산출물·코치 포인트가 정리되어 있음.
 
 **진입 방식:**
 
@@ -87,13 +87,13 @@ Photography / Illustration / Concept Art / Cinematic / Character Design / Patter
 워크플로우의 현재 단계에 맞는 프롬프트 작성. 플랫폼별 작성 형식·필드는 reference 파일 참조:
 
 - **Midjourney**: 코어 텍스트 + `--ar` 비율부터. 파라미터 추가는 문제가 나올 때 하나씩
-- **Nano Banana**: Google 공식은 자연어 내러티브 권장. JSON은 시리즈·재사용 시. 선택 기준은 `nano-banana-reference.md`
+- **Nano Banana**: Google 공식은 자연어 내러티브 권장. JSON은 시리즈·재사용 시. 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)
 
 각 요소(또는 필드)에 한 줄씩 "왜 이걸 썼는지" 설명을 붙여줌.
 
 ## Phase 3: 반복 개선
 
-워크플로우 단계 안에서 결과물을 반복 개선. 다음 단계로 넘어갈지 / 현재 단계를 더 다듬을지는 산출물의 완성도로 판단 — `workflows.md`의 각 단계 "산출물" 항목이 통과 기준.
+워크플로우 단계 안에서 결과물을 반복 개선. 다음 단계로 넘어갈지 / 현재 단계를 더 다듬을지는 산출물의 완성도로 판단 — [`workflows.md`](references/workflows.md)의 각 단계 "산출물" 항목이 통과 기준.
 
 ### 현재 상태 진단
 
@@ -131,7 +131,7 @@ C) [직접 아이디어가 있다면 말해주세요]
 
 Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 고급 필드도 같은 원리 — 필요한 순간에 하나씩.
 
-세부 파라미터·필드 카탈로그는 `reference.md` / `nano-banana-reference.md`.
+세부 파라미터·필드 카탈로그는 [`reference.md`](references/reference.md) / [`nano-banana-reference.md`](references/nano-banana-reference.md).
 
 ## 스타일 교육 (공통)
 
@@ -158,8 +158,8 @@ Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 
 
 영상은 두 층의 가이드가 필요. 진입 시 둘 다 활용:
 
-- **기획·에셋 준비** (Phase 0-2): 스토리보드, 캐릭터/환경 시트, 무드보드 → [`workflows.md`](workflows.md)의 "Cinematic / 영상 제작" 섹션
-- **기술 파이프라인** (Phase 3-5): 키프레임 → Veo image-to-video → FFmpeg 스티칭 → [`video-workflow.md`](video-workflow.md)
+- **기획·에셋 준비** (Phase 0-2): 스토리보드, 캐릭터/환경 시트, 무드보드 → [`workflows.md`](references/workflows.md)의 "Cinematic / 영상 제작" 섹션
+- **기술 파이프라인** (Phase 3-5): 키프레임 → Veo image-to-video → FFmpeg 스티칭 → [`video-workflow.md`](references/video-workflow.md)
 
 사용자가 영상 제작을 요청하면 단발 클립 생성으로 가지 말고, 위 두 문서를 거쳐 단계대로 안내.
 
@@ -167,7 +167,7 @@ Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 
 
 - **Nano Banana MCP** (대화 기반 루프): 공식 `gemini-cli-extensions/nanobanana`. 설치는 `global/mcp-servers.md`. 연결 시 `generate_image` / `edit_image` / `restore_image` 노출
 - **모델 전환** (환경변수): NB2 = `gemini-3.1-flash-image-preview` (빠른 반복) / NB Pro = `gemini-3-pro-image-preview` (텍스트·복잡한 추론·일관성)
-- **Python API 직접 호출** (코드 통합): `api-patterns.md`
+- **Python API 직접 호출** (코드 통합): [`api-patterns.md`](references/api-patterns.md)
 
 ## 하지 말 것
 

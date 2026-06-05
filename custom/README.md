@@ -22,7 +22,7 @@ mkdir custom/my-new-skill
 ```markdown
 ---
 name: my-new-skill
-description: 트리거 메커니즘. 무엇을 하고 언제 호출되는지 모두 여기에 명시.
+description: "This skill should be used when the user says \"트리거 문구\", \"trigger phrase\", or requests X. 기능 설명."
 ---
 
 # My New Skill
@@ -30,7 +30,20 @@ description: 트리거 메커니즘. 무엇을 하고 언제 호출되는지 모
 상세 지시사항...
 ```
 
-frontmatter는 `name`·`description`만 필수. `user-invocable`·`skill-id` 같은 비표준 필드는 쓰지 말 것 (공식 spec 외 잔재).
+### Frontmatter 필드
+
+**필수:**
+- `name` — 스킬 이름 (디렉토리명과 일치)
+- `description` — 트리거 판단의 핵심 신호. 3인칭 `"This skill should be used when..."` 형태로 작성
+
+**선택 (공식 지원):**
+- `allowed-tools` — 스킬 실행 시 사전 승인할 도구 (예: `Read Edit Write Bash(rm *)`)
+- `when_to_use` — description 뒤에 합산됨 (둘 합쳐 1,536자 cap). 우리는 description에 통합하는 방식 사용
+- `context: fork` — 격리 실행. 대화형 스킬에는 부적합 (사용자 피드백 불가)
+- `disable-model-invocation` — 모델이 자동 트리거하지 못하게 (슬래시 전용)
+
+**쓰지 않는 필드:**
+- `user-invocable`, `skill-id` — 공식 spec 외 잔재
 
 ### 3. 설치 (심링크)
 
