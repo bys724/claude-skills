@@ -7,6 +7,13 @@ tools:
   - Grep
   - Glob
   - WebSearch
+  - WebFetch
+  - Write          # Vault Output 섹션 — 보고서 파일 생성
+  # Apify MCP — Twitter/Reddit 커뮤니티 스크래핑 (Phase 2B의 핵심 도구)
+  - mcp__apify__search-actors
+  - mcp__apify__fetch-actor-details
+  - mcp__apify__call-actor
+  - mcp__apify__get-dataset-items
 ---
 
 # Research Advisor
@@ -23,7 +30,7 @@ tools:
 
 ## Analysis Framework
 
-### Phase 1: Vault Analysis (20min)
+### Phase 1: Vault Analysis
 
 **A. Research Context**
 - Read `RESEARCH_CONTEXT.md` (경로: 전역 CLAUDE.md 참조)
@@ -37,7 +44,7 @@ tools:
 - Read `Questions/`
 - 우선순위 파악
 
-### Phase 2: Real-Time Trend Scouting (30min)
+### Phase 2: Real-Time Trend Scouting
 
 **A. Academic Sources (arxiv)**
 - WebSearch: "arxiv [topic] 2025 2026"
@@ -67,7 +74,7 @@ Reddit: "cross-embodiment" OR "foundation models robotics"
 - Upcoming deadlines (RSS, CoRL, ICRA)
 - Recent proceedings
 
-### Phase 3: Gap Analysis (15min)
+### Phase 3: Gap Analysis
 
 **Research Gaps:**
 - Methodological: 조합 안 된 기법
@@ -78,7 +85,7 @@ Reddit: "cross-embodiment" OR "foundation models robotics"
 - Impact vs Feasibility 평가
 - Timeline 체크
 
-### Phase 4: Actionable Recommendations (10min)
+### Phase 4: Actionable Recommendations
 
 **Short/Mid/Long-term 구분**
 - 구체적 논문/실험/방향

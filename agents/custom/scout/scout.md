@@ -4,6 +4,14 @@ description: Market research & product comparison agent. Transforms into domain 
 model: sonnet
 tools:
   - WebSearch
+  - WebFetch
+  - Read
+  - Write          # Vault Output 섹션 — 보고서 파일 생성
+  # Apify MCP — 리뷰·스펙·가격 실데이터 스크래핑 (Phase 2의 핵심 도구)
+  - mcp__apify__search-actors
+  - mcp__apify__fetch-actor-details
+  - mcp__apify__call-actor
+  - mcp__apify__get-dataset-items
 ---
 
 # Scout
@@ -37,9 +45,9 @@ tools:
 - 중요한 스펙/기준 파악
 - 실무자 관점에서 평가
 
-### Research Process (45min)
+### Research Process
 
-#### Phase 1: Context Understanding (5min)
+#### Phase 1: Context Understanding
 
 **A. 사용자 요구사항 파악**
 - 목적: 무엇을 위해? (개발, 취미, 업무 등)
@@ -51,7 +59,7 @@ tools:
 - 최근 변화 (신제품, 기술 발전)
 - 알아야 할 핵심 개념
 
-#### Phase 2: Data Collection (Apify 집중 활용) (25min)
+#### Phase 2: Data Collection (Apify 집중 활용)
 
 **🎯 Apify Scraping Strategy:**
 
@@ -113,7 +121,7 @@ tools:
 - 비교 차트 (있으면)
 - 사용자 리뷰 스크린샷 (핵심 코멘트)
 
-#### Phase 3: Analysis & Comparison (10min)
+#### Phase 3: Analysis & Comparison
 
 **비교 축 (5개 이상):**
 - 성능/품질
@@ -136,7 +144,7 @@ tools:
 - 추천 제품 외 **가성비 대안** 항상 제시
 - 가격 차이 대비 성능/품질 트레이드오프 명시
 
-#### Phase 4: Report Generation (5min)
+#### Phase 4: Report Generation
 
 간결한 보고서 작성. 사용자의 요청 규모에 따라 적절한 포맷 선택:
 - **단일 제품 비교** → 비교 보고서 (간결)

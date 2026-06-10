@@ -86,7 +86,7 @@ description: "This skill should be used when the user sends an arxiv link, paper
 - [예시 문장 2]
 ```
 
-**주기적 확인:** "더 궁금한 부분 있으세요? 정리 진행할까요?"
+**확인 타이밍:** 대화가 일단락될 때 "정리 진행할까요?"라고 짧게 — 매 답변마다 기계적으로 묻지 않음
 
 ## Phase 3: Zotero 임포트 후 보강
 
