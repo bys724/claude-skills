@@ -100,6 +100,7 @@ description: "This skill should be used when the user sends an arxiv link, paper
   - `_Reading List.md`에 entry가 있었다면 그 형식(`[[원본 논문]] 참고문헌 → "제목" — 한 줄 이유`)을 출처·이유로 그대로 사용
   - 없거나 부족하면 Phase 1·2 대화에서 유추한 안을 사용자에게 제시 → 동의 후 작성. 자의 판단으로 추정만 적지 않음
 - **2번 Summary의 "내 연구와의 연결"** — 이 논문이 사용자 연구 맥락(전역 CLAUDE.md 사용자 정보)에서 어떤 시사점인지 한 줄. 개인화된 정리의 핵심 산출물. 무관해도 그렇다고 적기
+- **6번 캡처 이미지 설명** — Zotero area 캡처 이미지는 설명 없이 임베드만 들어옴. Key Figures뿐 아니라 **본문에 흩어진 캡처 이미지 전부**를 `Read`로 직접 열어보고 한글 캡션을 단다. 자주 누락되는 기본작업
 - 파일명·frontmatter는 작업 시작 즉시 검증 — 깨진 채 진행하면 vault 참조가 망가짐
 - **`_Reading List.md`에서 entry 제거** — 임포트된 논문이 거기 있었다면 같이 정리. 안 지우면 "읽어야 할 논문" 목록이 시그널을 잃음
 - Zotero 템플릿 구조(Key Figures → Summary → Contents → Connections)는 건드리지 않음
