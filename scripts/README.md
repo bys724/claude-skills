@@ -1,43 +1,12 @@
 # Scripts
 
-## 유지되는 스크립트
-
-### obsidian-vault-migration.sh
-Obsidian Vault를 iCloud에서 독립 위치로 이동하고 정기 백업 설정
-
-```bash
-# Vault 이동
-./obsidian-vault-migration.sh migrate
-
-# 수동 백업
-./obsidian-vault-migration.sh backup
-
-# 자동 백업 설정
-./obsidian-vault-migration.sh setup-launchd
-```
-
-## 참고: 스킬 관리 (필요시 직접 수행)
-
-### 스킬 설치
-```bash
-# 특정 스킬만
-cp -r custom/skill-name ~/.claude/skills/
-
-# 전체 스킬
-cp -r custom/* ~/.claude/skills/
-```
-
-### 스킬 목록 확인
-```bash
-ls -la ~/.claude/skills/
-```
-
-### 스킬 삭제
-```bash
-rm -rf ~/.claude/skills/skill-name
-```
+| 스크립트 | 용도 |
+|---|---|
+| `setup-workstation.sh` | 새 워크스테이션 셋업 — 플러그인 등록·옛 복사본 정리·유저 CLAUDE.md/settings·MCP. 재실행 안전 |
+| `apply-project-dev.sh <repo>` | 실험 저장소에 프로젝트 층 적용 — settings.json(스타일+hook)·STATUS.md·CLAUDE.md snippet. 재실행 안전 |
+| `obsidian-vault-migration.sh` | (macOS) Vault를 iCloud에서 독립 위치로 이동 + launchd 백업. `migrate` / `backup` / `setup-launchd` |
 
 ## 설계 원칙
-- **최소 유지**: 실제로 반복 사용하는 스크립트만 유지
-- **문서화 우선**: 일회성 작업은 README에 명령어로 문서화
-- **YAGNI 원칙**: 필요할 때 만들기
+
+- **최소 유지**: 반복 실행하는 것만 스크립트. 일회성은 SETUP_GUIDE에 명령어로
+- **재실행 안전**: 이미 된 단계는 건너뛰고 말해줌

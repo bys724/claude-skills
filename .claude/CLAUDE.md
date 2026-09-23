@@ -1,61 +1,32 @@
 # Claude Skills Repository
 
-Personal workspace for managing Claude Code skills, agents, and MCP servers.
+Personal workspace for managing Claude Code skills, agents, output styles, and workstation templates.
 
-## 저장소 구조
+## 구조
 
 ```
-claude-skills/
-├── custom/          # 내가 만든 스킬 (paper-summary, design-partner, research-presentation, code-cleaner)
-├── agents/custom/   # 내가 만든 에이전트 (research-advisor, scout)
-├── global/          # ~/.claude로 배포되는 글로벌 설정·가이드
-├── vendor/          # 외부 자산 (git submodule)
-│   ├── mcp/         # MCP 서버 (claude-mermaid, nanobanana 등)
-│   └── official/    # Anthropic 공식 스킬
-└── scripts/         # install/list/uninstall 스크립트
+.claude-plugin/marketplace.json   # 이 저장소 = 마켓플레이스 ys-skills
+plugins/ys-research/              # 플러그인: skills/ agents/ output-styles/
+templates/user/                   # ~/.claude 로 복사되는 CLAUDE.md 마스터 · settings.json 키
+templates/project-dev/            # 실험 저장소에 적용하는 settings.json · STATUS.md · CLAUDE.md snippet
+scripts/                          # setup-workstation.sh · apply-project-dev.sh
+docs/                             # AUTHORING.md · mcp-servers.md · 트러블슈팅
+vendor/mcp/nanobanana             # git submodule (MCP 서버, 이 경로에서 실행)
 ```
 
-## 스킬 vs 에이전트
-
-- **스킬** (`custom/`): 슬래시 커맨드. 사용자가 의식적으로 호출하는 워크플로우.
-- **에이전트** (`agents/custom/`): 서브 에이전트. 메인 컨텍스트에서 위임받아 격리된 환경에서 실행.
-
-세부 작성 가이드라인은 `custom/README.md`, `agents/custom/README.md` 참고.
-
-## Current Focus
-
-- **paper-summary**: 논문 읽기 워크플로우 (arxiv → 대화 → Zotero 보강)
-- **research-presentation**: 연구 발표 자료 제작
-- **research-advisor**: 연구 동향 분석 및 갭 분석 에이전트
-- **design-partner**: AI 이미지 생성 코칭 (Midjourney + Nano Banana)
+세 층(플러그인 / 유저 / 프로젝트)의 역할 분담은 [README.md](../README.md), 셋업·갱신 절차는 [SETUP_GUIDE.md](../SETUP_GUIDE.md), 작성 규칙은 [docs/AUTHORING.md](../docs/AUTHORING.md).
 
 ## 작업 패턴
 
-### 새 스킬/에이전트 추가
-- `custom/<name>/SKILL.md` 단일 파일 컨벤션 답습
-- 외부 지식 참조 시 reference 파일에 공식 문서 URL 명시
-- 추가 후 `scripts/install-*.sh`로 배포 검증
-
-### Vendor 동기화
-- `vendor/mcp/`, `vendor/official/`은 git submodule
-- 업데이트: `git submodule update --remote <path>`
-
-### 저장소 업데이트 → 워크스테이션 사본 반영
-- 이 저장소의 `global/CLAUDE.md`는 마스터 템플릿, `~/.claude/CLAUDE.md`는 워크스테이션 사본 (심링크 금지)
-- `git pull` 후 사본에 변경분 옮기는 절차·의도된 차이(placeholder ↔ 실경로) 명세는 [`SETUP_GUIDE.md`](../SETUP_GUIDE.md) "7. 저장소 업데이트 반영" 참고
+- **스킬·에이전트·스타일 수정** → `plugins/ys-research/.claude-plugin/plugin.json`의 `version` 올리기 → `claude plugin validate ./plugins/ys-research` → `claude plugin update ys-research@ys-skills` → Claude Code 재시작. 같은 version이면 update가 캐시를 갱신하지 않음 (2026-09-23 확인)
+- **유저 템플릿 수정** (`templates/user/CLAUDE.md`) → 워크스테이션 사본은 diff 보고 수동 반영 (placeholder ↔ 실경로 차이는 의도됨). 답변 형식 규칙은 여기 말고 `output-styles/`에
+- **프로젝트 템플릿 수정** → 대상 저장소에서 `scripts/apply-project-dev.sh` 재실행
+- **vendor 갱신** → `git submodule update --remote vendor/mcp/nanobanana` 후 빌드
 
 ## Maintenance Policy
 
-스킬/에이전트 업데이트 시, 각 스킬이 참조하는 외부 지식(공식 문서, API 변경사항 등)의 최신 버전을 확인하고 반영할 것.
-
-- 각 스킬의 reference 파일에 공식 문서 URL이 명시되어 있음
-- 업데이트 작업 시 해당 URL들을 웹에서 확인하여 변경사항 반영
-- 특히 버전 업데이트가 잦은 도구(Midjourney 등)는 파라미터/기능 변경 주의
+스킬이 참조하는 외부 지식(공식 문서·API·모델 이름)은 수정 시 최신 여부 확인. 각 스킬의 reference 파일에 공식 URL 명시. Midjourney·Nano Banana처럼 변경이 잦은 도구는 파라미터 주의.
 
 ## Vault 연결
 
-이 저장소는 도구·워크플로우 작업이라 Vault와의 직접 연결은 약함. 다만 다음 노트가 관련됨:
-- 새 스킬 아이디어 발의: `tmp/`, `Questions/`
-- 워크플로우/도구 컨셉 정리: `Concepts/`
-
-신규 Vault 노트 작성·구조 변경은 Vault 작업공간에서 진행 (User CLAUDE.md의 양방향 가드레일 참고).
+도구·워크플로우 저장소라 Vault와 직접 연결은 약함. 새 스킬 아이디어는 `tmp/`·`Questions/`, 워크플로우 컨셉은 `Concepts/`. 신규 Vault 노트 작성·구조 변경은 Vault 작업공간에서 (User CLAUDE.md 양방향 가드레일).

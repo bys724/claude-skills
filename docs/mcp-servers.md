@@ -245,37 +245,11 @@ Mermaid 다이어그램 생성 및 렌더링 MCP 서버. 마인드맵, 플로우
 - 완전 무료 (MIT 오픈소스)
 - Vault 의존성 없음
 
-**이 저장소에서 관리:**
+**등록 (npm 패키지 — 빌드 불필요):**
 ```bash
-# 저장소 클론 시 서브모듈로 포함됨
-cd ~/claude-skills
-git submodule update --init --recursive
-
-# 의존성 설치 및 빌드
-cd vendor/mcp/claude-mermaid
-npm install
-npm run build
+claude mcp add -s user claude-mermaid -- npx -y claude-mermaid
 ```
-
-**Claude Desktop 직접 설정:**
-```json
-{
-  "mcpServers": {
-    "claude-mermaid": {
-      "command": "node",
-      "args": [
-        "/Users/bys724/claude-skills/vendor/mcp/claude-mermaid/build/index.js"
-      ]
-    }
-  }
-}
-```
-
-**환경별 차이점:**
-- **macOS**: `/Users/bys724/claude-skills/...`
-- **Linux**: `/home/username/claude-skills/...`
-- **Windows**: `C:/Users/username/claude-skills/...` (슬래시 사용)
-- Node.js 필요 (이미 설치되어 있을 것)
+`scripts/setup-workstation.sh`가 없으면 자동 등록. (구 방식인 vendor 서브모듈 빌드는 2026-09에 제거.)
 
 **사용법:**
 ```
@@ -291,84 +265,9 @@ npm run build
 
 ---
 
-## 새 워크스테이션 세팅 워크플로우
+## 새 워크스테이션 세팅
 
-### 1. 전역 설정 (CLAUDE.md)
-
-```bash
-# 이 저장소 클론
-git clone <repo-url> ~/claude-skills
-
-# 전역 CLAUDE.md를 사본으로 두기 (심링크 금지 — 워크스테이션 특수 경로가 저장소로 역류함)
-cp ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
-# 이후 ~/.claude/CLAUDE.md "주요 경로" 섹션에 워크스테이션 실경로 추가
-# 자세한 절차: ~/claude-skills/SETUP_GUIDE.md
-```
-
-### 2. MCP 서버 등록
-
-```bash
-# arxiv-mcp-server
-claude mcp add -s user arxiv-mcp-server \
-  -- uv tool run arxiv-mcp-server \
-  --storage-path ~/.arxiv-mcp-server/papers
-```
-
-### 3. 스킬 등록
-
-```bash
-# Claude Code 설정에서 스킬 경로 추가
-# Settings > Skills > Add skill path: ~/claude-skills/custom/
-```
-
-### 4. 에이전트 등록
-
-```bash
-# Claude Code 설정에서 에이전트 경로 추가
-# Settings > Agents > Add agent path: ~/claude-skills/agents/custom/
-```
-
-### 5. 프로젝트별 설정 (필요 시)
-
-```bash
-# vault 접근 권한 추가 (settings.json)
-# ~/.claude/settings.json에 additionalDirectories 추가
-```
-
-### 6. 로컬 환경 조정
-
-저장소 설정은 범용 경로를 사용하므로, 각 머신의 실제 환경에 맞게 조정이 필요합니다.
-
-#### 6.1. 전역 CLAUDE.md 경로 수정
-
-`global/CLAUDE.md`의 "주요 경로" 섹션은 저장소에 커밋하지 않고 로컬에서만 수정:
-
-```bash
-# global/CLAUDE.md 파일을 열고 실제 경로로 수정
-# 예: Vault 경로를 /Users/bys724/LocalVault/Obsidian Vault로 변경
-```
-
-**중요:** 이 수정사항은 `.git/info/exclude`에 추가하거나, 커밋 시 주의해서 제외해야 합니다.
-
-#### 6.2. MCP 서버 경로 조정
-
-MCP 서버 등록 시 실제 사용 중인 경로로 조정:
-
-```bash
-# 예: 기존 arxiv papers 디렉토리가 있다면 그 경로 사용
-claude mcp add -s user arxiv-mcp-server \
-  -- uv tool run arxiv-mcp-server \
-  --storage-path /Users/bys724/.arxiv-mcp-server/papers
-```
-
-#### 6.3. 로컬 설정 파일 활용
-
-머신별 차이점이 많다면 로컬 설정 파일 사용 검토:
-
-- `.claude/settings.local.json` (프로젝트별)
-- 별도의 `local-paths.sh` 스크립트 (gitignore)
-
----
+[SETUP_GUIDE.md](../SETUP_GUIDE.md) + `scripts/setup-workstation.sh`. 이 문서는 서버별 상세만 담는다.
 
 ## MCP 서버 추가 시
 

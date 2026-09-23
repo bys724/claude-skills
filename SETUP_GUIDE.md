@@ -1,243 +1,71 @@
 # Workstation Setup Guide
 
-> 이 문서는 새 워크스테이션에서 "claude-skills 세팅해줘"라고 요청받았을 때 Claude가 참고하는 가이드입니다.
+> 새 워크스테이션에서 "claude-skills 세팅해줘"라고 요청받았을 때 Claude가 따르는 가이드.
 
-## 핵심 원칙: 사용자 계정 레벨 우선
+## 원칙
 
-스킬, MCP 서버, 에이전트 등을 적용할 때 **가능한 한 사용자 계정(user) 레벨에서 설정**할 것.
-- MCP: `claude mcp add -s user ...` (프로젝트별 반복 설정 방지)
-- 스킬/에이전트: `~/.claude/skills/`, `~/.claude/agents/` 등 계정 레벨 경로에 설치
-- 프로젝트 레벨(`.mcp.json`, 프로젝트별 설정)은 해당 프로젝트에서만 필요한 경우에만 사용
+- **사용자 계정 레벨 우선**: 플러그인·MCP는 `-s user`. 프로젝트 레벨은 그 저장소에서만 필요한 것만.
+- **`~/.claude/CLAUDE.md`는 템플릿 복사본**. 심링크 금지 — 워크스테이션 실경로가 저장소 템플릿으로 역류함.
+- **스킬·에이전트는 `~/.claude/skills`에 복사하지 않는다.** 플러그인으로 설치되고 갱신은 `claude plugin update`.
 
-## 1. 환경 파악
-
-먼저 다음 정보를 확인하세요:
-```bash
-# OS 타입 확인
-uname -s  # Darwin(macOS), Linux, Windows
-
-# 홈 디렉토리 확인
-echo $HOME
-
-# Obsidian Vault 존재 여부
-ls -la ~/Documents | grep -i obsidian
-ls -la ~/LocalVault
-```
-
-## 2. 계정 레벨 설정 (~/.claude.json)
-
-### 기본 구조
-```json
-{
-  "additionalDirectories": [
-    // Vault가 있으면 추가
-    // 없으면 비워둠
-  ],
-  "mcpServers": {
-    // 필요한 MCP만 추가
-  }
-}
-```
-
-### OS별 샌드박스 설정
-
-#### macOS (Seatbelt 사용)
-```json
-"sandbox": {
-  "enabled": true,
-  "filesystem": {
-    "allowWrite": [
-      // Vault 경로가 있으면 추가
-    ]
-  }
-}
-```
-
-#### Linux (bubblewrap 사용)
-```json
-"sandbox": {
-  "enabled": true,
-  "filesystem": {
-    "allowWrite": [
-      // 필요한 경로만
-    ]
-  }
-}
-```
-
-#### Windows
-- 샌드박스 설정 불필요 (기본적으로 없음)
-
-## 3. CLAUDE.md 설정
-
-### 위치
-- `~/.claude/CLAUDE.md`: 계정 레벨
-- `{vault}/.claude/CLAUDE.md`: Obsidian용 (있는 경우만)
-
-### 핵심 원칙: 심링크 금지
-
-`global/CLAUDE.md`는 **워크스테이션 일반 템플릿**으로 유지되어야 함. 심링크로 `~/.claude/CLAUDE.md`를 저장소 파일에 연결하면, 해당 워크스테이션에서 user 가이드를 편집할 때마다 저장소가 워크스테이션 특수 경로(Vault 위치 등)로 오염됨.
+## 1. 저장소
 
 ```bash
-# ❌ 금지
-ln -s ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
-
-# ✅ 권장 — 사본 + 워크스테이션 실경로 직접 추가
-cp ~/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
-# ~/.claude/CLAUDE.md의 "주요 경로" 섹션에 placeholder를 실경로로 교체
+git clone --recurse-submodules https://github.com/bys724/claude-skills.git
 ```
 
-저장소 가이드를 업데이트한 뒤 사본에 반영하려면, 변경분을 수동으로 옮기거나 `cp`를 다시 실행한 뒤 실경로를 재추가할 것.
+`vendor/mcp/nanobanana`는 MCP 서버 소스. 이미지 생성을 안 쓰는 워크스테이션은 `--recurse-submodules` 생략.
 
-### 내용 조정
-- Vault 경로가 있으면: 복사 후 "주요 경로" 섹션의 placeholder를 실경로로 교체
-- Vault가 없으면: "주요 경로" 섹션을 비우거나 주석 처리
-
-## 4. 스킬 설치
-
-저장소 → `~/.claude/skills/` **심링크** 권장. 저장소 update 시 사본도 자동 갱신.
-
-### 커스텀 스킬 (`custom/`)
-```bash
-ln -s ~/Documents/claude-skills/custom/code-cleaner ~/.claude/skills/code-cleaner
-# 필요한 것만 선택: paper-summary, research-presentation, design-partner
-```
-
-### 공식 스킬 (`vendor/official/skills/`) — 메타 도구
-신규 스킬·MCP를 만들 일이 있을 때 활용. 평소엔 노이즈 적은 description 가진 것만 켜두기.
-```bash
-ln -s ~/Documents/claude-skills/vendor/official/skills/skill-creator ~/.claude/skills/skill-creator
-ln -s ~/Documents/claude-skills/vendor/official/skills/mcp-builder   ~/.claude/skills/mcp-builder
-```
-
-업데이트: `git submodule update --remote vendor/official` 후 Claude Code 재시작.
-
-## 5. MCP 서버 설정
-
-### 기본 MCP (항상)
-- arxiv-mcp-server: 논문 검색
-- claude-mermaid: 다이어그램
-
-### Vault가 있는 경우
-**주의**: filesystem MCP 서버를 별도로 만들지 마세요!
-- additionalDirectories에 Vault 경로 추가
-- sandbox.allowWrite에 쓰기 권한 추가
-
-### Vault가 원격에 있는 경우
-```json
-"ssh-mcp": {
-  "type": "ssh",
-  "host": "remote-server",
-  "path": "/path/to/vault"
-}
-```
-
-## 6. 워크스테이션별 대응
-
-### 케이스 1: 맥북 (Vault 있음)
-```json
-{
-  "additionalDirectories": [
-    "/Users/username/LocalVault/Obsidian Vault"
-  ],
-  "sandbox": {
-    "enabled": true,
-    "filesystem": {
-      "allowWrite": ["/Users/username/LocalVault"]
-    }
-  }
-}
-```
-
-### 케이스 2: 리눅스 워크스테이션 (Vault 없음)
-```json
-{
-  "additionalDirectories": [],
-  "sandbox": {
-    "enabled": true,
-    "filesystem": {
-      "allowWrite": []
-    }
-  }
-}
-```
-
-### 케이스 3: SSH로 Vault 접근
-- ssh-mcp 설정
-- 로컬 임시 노트: `~/temp-notes/`
-
-## 7. 저장소 업데이트 반영 (기존 워크스테이션)
-
-`global/CLAUDE.md`(저장소 마스터)가 업데이트된 후, 이미 셋업된 워크스테이션의 사본(`~/.claude/CLAUDE.md`)에 변경분을 반영하는 절차.
-
-### 의도된 차이 — diff 시 무시할 라인
-
-마스터에는 placeholder, 사본에는 실경로. diff 결과에서 다음은 정상 차이:
-
-| 위치 | 마스터 | 사본 |
-|------|-------|------|
-| "Vault 노트 양방향 편집 가드레일" 섹션 | `<Vault root>` | 실 Vault 경로 |
-| "주요 경로" 섹션 | placeholder + 셋업 안내 문구 | 실경로 두 줄 |
-
-이 외의 모든 차이는 **반영 대상**.
-
-### 절차
+## 2. 스크립트 실행
 
 ```bash
-# 1. 저장소 최신화
-cd ~/Documents/claude-skills
-git pull
-
-# 2. 변경분 확인 (위 placeholder 라인은 무시)
-diff ~/.claude/CLAUDE.md global/CLAUDE.md
+bash scripts/setup-workstation.sh
 ```
 
-### 반영 방법
+하는 일 (재실행 안전):
+1. CLI 버전 확인 — 2.1.2xx 미만이면 `claude update` 먼저
+2. 마켓플레이스를 이 저장소 경로로 등록 → `ys-research` 플러그인 설치 (이미 있으면 update)
+3. `~/.claude/skills/`·`agents/`의 옛 복사본 중 플러그인과 겹치는 것 삭제
+4. `~/.claude/CLAUDE.md` 없으면 템플릿 복사
+5. `~/.claude/settings.json`에 `outputStyle: ys-research:discuss`, `autoMemoryDirectory: ~/.claude/memory-shared` 병합 (다른 키 유지)
+6. MCP 등록 — arxiv-mcp-server, claude-mermaid (없는 것만)
 
-- **소규모 변경 (몇 줄)**: diff 보면서 사본에 직접 수동 반영
-- **대규모 변경 (구조 변경, 새 섹션 추가 등)**: 사본을 마스터에서 새로 받은 후 워크스테이션 경로 재추가
+## 3. 수동 마무리
+
+- `~/.claude/CLAUDE.md` 맨 아래 "주요 경로"의 placeholder를 실경로로 교체
+- nanobanana MCP: API 키·빌드 → [docs/mcp-servers.md](docs/mcp-servers.md)
+- Vault가 있으면 `~/.claude.json`의 `additionalDirectories`에 Vault 경로 추가. **filesystem MCP 서버를 만들지 말 것** (권한 충돌·중복 — [docs/MCP_FILESYSTEM_SOLUTION.md](docs/MCP_FILESYSTEM_SOLUTION.md))
+- 샌드박스: macOS(Seatbelt)·Linux(bubblewrap)는 `sandbox.filesystem.allowWrite`에 Vault 경로. Windows는 불필요
+- Claude Code 재시작 → `/output-style`에 `ys-research:discuss`·`ys-research:research-dev`가 보이면 정상
+
+## 4. 실험 저장소 (프로젝트 층)
 
 ```bash
-cp ~/Documents/claude-skills/global/CLAUDE.md ~/.claude/CLAUDE.md
-
-# 그 후 ~/.claude/CLAUDE.md 편집:
-# (a) "Vault 작업공간(<Vault root>)" → 실경로로 교체
-# (b) "주요 경로" 섹션의 안내 문구·placeholder 제거 후 실경로 두 줄로 단순화
+bash scripts/apply-project-dev.sh <repo-path>
 ```
 
-> ⚠️ 사본에 워크스테이션 고유 추가 (예: 해당 머신만의 경로·MCP 설정)가 있으면 cp 전에 백업하거나 수동 반영을 선택할 것.
+- `.claude/settings.json`: `outputStyle: ys-research:research-dev` + Stop hook(보고 형식 검사) 병합
+- `docs/STATUS.md`: 없을 때만 템플릿 생성 → **현재 상태로 채우고 커밋**
+- `CLAUDE.md`: `@docs/STATUS.md` 한 줄 추가 (매 세션 상태 자동 로드)
 
-## 8. 검증 체크리스트
+문서·설정만 건드리므로 Vault 세션에서 여러 저장소에 일괄 적용 가능. 다른 워크스테이션은 그 저장소를 pull하면 따라온다. 대상: 클러스터 실험 저장소(source-field-alternation, action-agnostic-visual-rl). 논문 저장소·Vault는 대상 아님.
 
-설정 후 확인:
-- [ ] `~/.claude.json` 생성/수정됨
-- [ ] `~/.claude/CLAUDE.md` 존재
-- [ ] `~/.claude/skills/code-cleaner` 설치됨
-- [ ] Claude Code 재시작 필요 안내
+## 5. 갱신
 
-## 9. 트러블슈팅
+| 층 | 방법 |
+|---|---|
+| 플러그인 | `git pull` → `claude plugin update ys-research@ys-skills` (또는 setup 스크립트 재실행) → 재시작. **내용을 바꿨으면 `plugin.json`의 `version`을 올려야 update가 반영됨** (같은 버전이면 캐시 유지) |
+| 유저 | `setup-workstation.sh` 재실행(settings 병합) + `~/.claude/CLAUDE.md`는 diff 보고 수동 반영 |
+| 프로젝트 | `apply-project-dev.sh` 재실행 (settings·hook 갱신, STATUS.md는 건드리지 않음) |
 
-### 문제: Obsidian 접근 안 됨
-- additionalDirectories 확인
-- 절대 경로 사용 확인
-- sandbox.allowWrite 확인
+`~/.claude/CLAUDE.md` diff 시 **의도된 차이** = "Vault 노트 양방향 편집 가드레일"과 "주요 경로"의 placeholder ↔ 실경로. 그 외는 반영 대상.
 
-### 문제: MCP 충돌
-- filesystem-* 네이밍 피하기
-- 프로젝트 자동 생성 filesystem과 충돌 주의
+## 6. 선택: Advisor
 
-### 문제: 권한 에러
-- macOS: Seatbelt 제한 확인
-- Linux: bubblewrap 설정 확인
+결정 지점(접근 확정 전·완료 선언 전)에 상위 모델이 대화 전체를 검토하는 실험 기능. `/advisor opus`로 켬, `advisorModel` 설정으로 고정. 호출마다 비용 발생 — 기본 off, 클러스터 세션처럼 판단 실수 비용이 큰 곳에서만.
 
-## 사용 예시
+## 7. 워크스테이션 케이스
 
-사용자: "새 워크스테이션에 claude-skills 세팅해줘"
-
-1. OS와 Vault 위치 확인
-2. 상황에 맞는 설정 적용
-3. 필요한 스킬만 설치
-4. 재시작 안내
-
----
-**Note**: 이 가이드는 유연하게 적용하세요. 모든 워크스테이션이 다르므로 상황에 맞게 조정 필요.
+- **Vault 있음 (맥북)**: `additionalDirectories` + `sandbox.allowWrite`에 Vault 경로
+- **Vault 없음 (리눅스 클러스터 PC)**: 두 항목 비움. 설계 관찰은 저장소 `docs/VAULT_SYNC_TODO.md`에 기록 (Vault 세션이 반영)
+- **SSH로 Vault 접근**: ssh-mcp 설정, 로컬 임시 노트 `~/temp-notes/`

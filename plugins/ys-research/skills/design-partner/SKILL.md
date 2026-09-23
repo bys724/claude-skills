@@ -167,7 +167,7 @@ Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 
 
 ## 실행 환경
 
-- **Nano Banana MCP** (대화 기반 루프): 공식 `gemini-cli-extensions/nanobanana`. 설치는 `global/mcp-servers.md`. 연결 시 `generate_image` / `edit_image` / `restore_image` 노출
+- **Nano Banana MCP** (대화 기반 루프): 공식 `gemini-cli-extensions/nanobanana`. 설치는 claude-skills 저장소의 `docs/mcp-servers.md`. 연결 시 `generate_image` / `edit_image` / `restore_image` 노출
 - **모델 전환** (환경변수): NB2 = `gemini-3.1-flash-image-preview` (빠른 반복) / NB Pro = `gemini-3-pro-image-preview` (텍스트·복잡한 추론·일관성)
 - **Python API 직접 호출** (코드 통합): [`api-patterns.md`](references/api-patterns.md)
 

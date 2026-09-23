@@ -1,0 +1,16 @@
+{
+  "name": "ys-skills",
+  "owner": {
+    "name": "bys724"
+  },
+  "plugins": [
+    {
+      "name": "ys-research",
+      "description": "Research workflow tools: paper reading, presentations, image prompting, code cleanup, research/market agents, and two response styles (discuss, research-dev)",
+      "source": "./plugins/ys-research"
+    }
+  ],
+  "metadata": {
+    "description": "Personal research workflow plugins for Claude Code (bys724)"
+  }
+}

@@ -401,7 +401,7 @@ Report must provide:
 
 **When running inside Obsidian vault:**
 
-1. **Check vault location** (경로: global/CLAUDE.md 참조)
+1. **Check vault location** (경로: `~/.claude/CLAUDE.md` '주요 경로' 절 참조)
 2. **If inside vault**, create report file:
    - **Location**: `Outputs/Reports/`
    - **Naming**: `Report - [Topic] (YYYY-MM-DD).md`

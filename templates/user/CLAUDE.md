@@ -70,12 +70,6 @@
 - **푸시 전**: 프로젝트 전체 구성 검토 및 리팩토링 검증 (이미 완벽하면 생략)
 - **커밋 메시지에 `Co-Authored-By: Claude ...` 라인 추가하지 말 것**: 법적 의무 없고 개인 연구 repo에서 실질적 이점 없음. 논문 제출 시점에 AI 도구 사용은 논문 본문에 한 번 명시하면 충분
 
-## 답변 스타일
-
-- 간결하게, 대화 우선
-- 장황한 설명보다 핵심만
-- 불필요한 할일/체크리스트/일정 나열 금지
-
 ## 수식 표현
 
 - **터미널 응답**: plain text로 변환 (V*(s) = max_a [...])
@@ -87,12 +81,14 @@
 - 핵심 로직과 흐름만 표현
 - 메모는 한눈에 이해할 수 있도록
 
-## 3-레벨 가이드 분담
+## 설정 층 구조
 
-내 워크플로우는 세 레이어로 구성됨:
+Claude Code가 세션마다 읽는 것은 역할이 넷이다: **지식**(CLAUDE.md·rules·auto memory) · **형식**(output style, 한 번에 하나) · **강제**(hook) · **도구**(skills·agents·MCP). CLAUDE.md는 지식만 담고, 답변 형식은 output style이 맡는다 — `discuss`(유저 기본) / `research-dev`(실험 저장소가 `.claude/settings.json`으로 선택). CLAUDE.md 파일들은 서로 덮어쓰지 않고 전부 이어 붙는다; settings.json 값은 가까운 쪽이 이긴다.
 
-- **User** (`~/.claude/CLAUDE.md`): 정체성·언어·답변 스타일·코딩/리팩토링 원칙. 어디서든 적용.
-- **Project** (`<repo>/.claude/CLAUDE.md`): 저장소 목적·스택·구조·관련 Vault 노트 매핑.
+CLAUDE.md는 세 레이어:
+
+- **User** (`~/.claude/CLAUDE.md`): 정체성·언어·코딩/리팩토링 원칙. 어디서든 적용.
+- **Project** (`<repo>/CLAUDE.md`): 저장소 목적·스택·구조·관련 Vault 노트 매핑. 실험 저장소는 `@docs/STATUS.md`로 현재 상태를 함께 로드.
 - **Vault** (`Obsidian Vault/.claude/CLAUDE.md`): 노트 작성 컨벤션·폴더 구조·템플릿.
 
 ### 우선순위
@@ -130,9 +126,10 @@
 - **관련 Vault 노트 매핑** (`Projects/<프로젝트명>/`, 관련 `Concepts/`, `Sources/papers/`)
 - 트러블슈팅 — 재발 가능 항목만
 - 진행 상태 (Phase, 현재 잡 등) — 단, 별도 마스터 문서가 있으면 거기로 위임
+- **규칙이 주제별로 늘면 `.claude/rules/<주제>.md`로 분할**: CLAUDE.md와 같은 우선순위로 자동 로드되고 폴더 목록이 곧 목차가 됨. `paths:` frontmatter로 특정 파일군에만 한정 가능. CLAUDE.md에는 진입점(저장소가 뭔지, 정본이 어디인지)과 항상 참인 제약만
 
 **제외**:
-- User CLAUDE.md에 이미 있는 일반 원칙 (언어·답변 스타일·코딩 원칙) 재기술 금지
+- User CLAUDE.md에 이미 있는 일반 원칙 (언어·코딩 원칙) 재기술 금지
 - 미래 계획 나열, 체크리스트 남발
 - README/docs로 위임 가능한 상세 (파일 구조 트리, 상세 알고리즘 등)
 
@@ -153,9 +150,9 @@
 
 ## 주요 경로
 
-> 이 파일은 `claude-skills/global/CLAUDE.md` **마스터 사본**이며 새 워크스테이션 적용용 일반 템플릿. 워크스테이션 특수 경로(`<Vault root>` 등)는 placeholder로만 표기됨.
+> 이 파일은 `claude-skills/templates/user/CLAUDE.md` **마스터 사본**이며 새 워크스테이션 적용용 일반 템플릿. 워크스테이션 특수 경로(`<Vault root>` 등)는 placeholder로만 표기됨.
 >
-> 새 워크스테이션 셋업 시: `~/.claude/CLAUDE.md`로 **복사**한 뒤 아래 형식으로 실경로 추가. **심링크(`ln -s`) 금지** — 워크스테이션 특수 정보가 저장소로 역류해 일반 템플릿이 깨짐. 절차: [`SETUP_GUIDE.md`](../SETUP_GUIDE.md).
+> 새 워크스테이션 셋업 시: `~/.claude/CLAUDE.md`로 **복사**한 뒤 아래 형식으로 실경로 추가. **심링크(`ln -s`) 금지** — 워크스테이션 특수 정보가 저장소로 역류해 일반 템플릿이 깨짐. 절차: [`SETUP_GUIDE.md`](../../SETUP_GUIDE.md) (`scripts/setup-workstation.sh`가 복사까지 수행).
 
 - Vault: `<Vault root, e.g. ~/LocalVault/Obsidian Vault>`
 - 스킬/에이전트 워크스페이스: `<claude-skills repo root, e.g. ~/Documents/claude-skills>`
