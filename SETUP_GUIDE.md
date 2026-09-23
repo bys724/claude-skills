@@ -72,4 +72,5 @@ bash scripts/apply-project-dev.sh <repo-path>
 
 - **Vault 있음 (맥북)**: `additionalDirectories` + `sandbox.allowWrite`에 Vault 경로
 - **Vault 없음 (리눅스 클러스터 PC)**: 두 항목 비움. 설계 관찰은 저장소 `docs/VAULT_SYNC_TODO.md`에 기록 (Vault 세션이 반영)
+  - **mrg 클러스터 한정**: `claude` CLI가 PATH에 없다 — VSCode 확장 번들(`~/.vscode-server/extensions/anthropic.claude-code-*/resources/native-binary`)을 PATH에 넣어야 2단계 스크립트가 돈다. 또 node v10·`uv` 없어 스크립트가 등록하는 `arxiv-mcp-server`·`claude-mermaid`가 연결 실패하므로 재실행마다 `claude mcp remove <name> -s user`로 뗄 것 (논문·다이어그램 워크플로우는 이 워크스테이션 담당이 아니라 실무 지장 없음)
 - **SSH로 Vault 접근**: ssh-mcp 설정, 로컬 임시 노트 `~/temp-notes/`
