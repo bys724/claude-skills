@@ -48,7 +48,11 @@ bash scripts/apply-project-dev.sh <repo-path>
 - `docs/STATUS.md`: 없을 때만 템플릿 생성 → **현재 상태로 채우고 커밋**
 - `CLAUDE.md`: `@docs/STATUS.md` 한 줄 추가 (매 세션 상태 자동 로드)
 
-문서·설정만 건드리므로 Vault 세션에서 여러 저장소에 일괄 적용 가능. 다른 워크스테이션은 그 저장소를 pull하면 따라온다. 대상: 클러스터 실험 저장소(source-field-alternation, action-agnostic-visual-rl). 논문 저장소·Vault는 대상 아님.
+문서·설정만 건드리므로 Vault 세션에서 여러 저장소에 일괄 적용 가능. 다른 워크스테이션은 그 저장소를 pull하면 따라온다.
+
+**적용 현황**: source-field-alternation · action-agnostic-visual-rl (2026-09-23 적용·커밋 완료). 논문 저장소·Vault는 대상 아님 — 유저 기본(discuss)만 받는다.
+
+**갱신 경로 고정**: 두 저장소의 프로젝트 층(settings.json의 스타일·hook, STATUS.md 양식)을 바꿀 때는 **저장소에서 직접 고치지 말고** `templates/project-dev/`를 고친 뒤 이 스크립트를 재실행한다. `docs/STATUS.md` 본문만 저장소 세션이 직접 갱신한다. `.claude/`가 gitignore된 저장소는 스크립트가 경고한다 (`.claude/*` + `!.claude/settings.json`으로 풀 것).
 
 ## 5. 갱신
 

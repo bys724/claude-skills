@@ -20,6 +20,9 @@ cur.setdefault("hooks", {})["Stop"] = new["hooks"]["Stop"]   # Stop 만 교체, 
 json.dump(cur, open(dst, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 print("  .claude/settings.json: outputStyle + Stop hook 반영")
 PYEOF
+if git check-ignore -q .claude/settings.json 2>/dev/null; then
+  echo "  ⚠ .claude/settings.json 이 .gitignore 에 걸려 있음 → 다른 워크스테이션에 안 감. .gitignore 의 '.claude/' 를 '.claude/*' 로 바꾸고 '!.claude/settings.json' 한 줄 추가"
+fi
 
 if [ ! -f docs/STATUS.md ]; then
   sed "s/<저장소명>/$(basename "$PWD")/" "$T/STATUS.md" > docs/STATUS.md
