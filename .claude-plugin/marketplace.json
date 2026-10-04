@@ -6,7 +6,7 @@
   "plugins": [
     {
       "name": "ys-research",
-      "description": "Research workflow tools: paper reading, presentations, image prompting, code cleanup, research/market agents, and two response styles (discuss, research-dev)",
+      "description": "Research workflow tools: paper reading, presentations, image prompting, code cleanup, research/market agents, two response styles (discuss, research-dev), and an English speaking coach (hook)",
       "source": "./plugins/ys-research"
     }
   ],

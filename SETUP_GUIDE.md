@@ -37,6 +37,7 @@ bash scripts/setup-workstation.sh
 - Vault가 있으면 `~/.claude.json`의 `additionalDirectories`에 Vault 경로 추가. **filesystem MCP 서버를 만들지 말 것** (권한 충돌·중복 — [docs/MCP_FILESYSTEM_SOLUTION.md](docs/MCP_FILESYSTEM_SOLUTION.md))
 - 샌드박스: macOS(Seatbelt)·Linux(bubblewrap)는 `sandbox.filesystem.allowWrite`에 Vault 경로. Windows는 불필요
 - Claude Code 재시작 → `/output-style`에 `ys-research:discuss`·`ys-research:research-dev`가 보이면 정상
+- 영어 코치(플러그인 hook)는 설치만으로 켜진다. 한글 요청 앞에 `🗣` 블록이 뜨면 정상. 끄려면 `~/.claude/settings.json`에 `"env": {"ENGLISH_COACH": "off"}` (저장소만 끄려면 그 저장소 `.claude/settings.json`). 음성 입력은 내장 `/voice`
 
 ## 4. 실험 저장소 (프로젝트 층)
 
@@ -44,7 +45,7 @@ bash scripts/setup-workstation.sh
 bash scripts/apply-project-dev.sh <repo-path>
 ```
 
-- `.claude/settings.json`: `outputStyle: ys-research:research-dev` + Stop hook(보고 형식 검사) 병합
+- `.claude/settings.json`: `outputStyle: ys-research:research-dev` 병합
 - `docs/STATUS.md`: 없을 때만 템플릿 생성 → **현재 상태로 채우고 커밋**
 - `CLAUDE.md`: `@docs/STATUS.md` 한 줄 추가 (매 세션 상태 자동 로드)
 
@@ -52,7 +53,7 @@ bash scripts/apply-project-dev.sh <repo-path>
 
 **적용 현황**: source-field-alternation · action-agnostic-visual-rl (2026-09-23 적용·커밋 완료). 논문 저장소·Vault는 대상 아님 — 유저 기본(discuss)만 받는다.
 
-**갱신 경로 고정**: 두 저장소의 프로젝트 층(settings.json의 스타일·hook, STATUS.md 양식)을 바꿀 때는 **저장소에서 직접 고치지 말고** `templates/project-dev/`를 고친 뒤 이 스크립트를 재실행한다. `docs/STATUS.md` 본문만 저장소 세션이 직접 갱신한다. `.claude/`가 gitignore된 저장소는 스크립트가 경고한다 (`.claude/*` + `!.claude/settings.json`으로 풀 것).
+**갱신 경로 고정**: 두 저장소의 프로젝트 층(settings.json의 스타일, STATUS.md 양식)을 바꿀 때는 **저장소에서 직접 고치지 말고** `templates/project-dev/`를 고친 뒤 이 스크립트를 재실행한다. `docs/STATUS.md` 본문만 저장소 세션이 직접 갱신한다. `.claude/`가 gitignore된 저장소는 스크립트가 경고한다 (`.claude/*` + `!.claude/settings.json`으로 풀 것).
 
 ## 5. 갱신
 
@@ -60,7 +61,7 @@ bash scripts/apply-project-dev.sh <repo-path>
 |---|---|
 | 플러그인 | `git pull` → `claude plugin update ys-research@ys-skills` (또는 setup 스크립트 재실행) → 재시작. **내용을 바꿨으면 `plugin.json`의 `version`을 올려야 update가 반영됨** (같은 버전이면 캐시 유지) |
 | 유저 | `setup-workstation.sh` 재실행(settings 병합) + `~/.claude/CLAUDE.md`는 diff 보고 수동 반영 |
-| 프로젝트 | `apply-project-dev.sh` 재실행 (settings·hook 갱신, STATUS.md는 건드리지 않음) |
+| 프로젝트 | `apply-project-dev.sh` 재실행 (settings 갱신, STATUS.md는 건드리지 않음) |
 
 `~/.claude/CLAUDE.md` diff 시 **의도된 차이** = "Vault 노트 양방향 편집 가드레일"과 "주요 경로"의 placeholder ↔ 실경로. 그 외는 반영 대상.
 

@@ -75,6 +75,17 @@ tools:
 
 매 응답의 형식·톤을 정한다. 한 번에 하나만 활성 — 유저 기본은 `discuss`, 실험 저장소는 `.claude/settings.json`에서 `ys-research:research-dev`를 선택. `keep-coding-instructions: true`를 유지해야 코딩 능력이 그대로 남는다. 형식 규칙은 여기에 두고 CLAUDE.md에는 두지 않는다 (CLAUDE.md는 누적 로드라 저장소별로 다르게 할 수 없음).
 
+## Hook (`plugins/ys-research/hooks/`)
+
+플러그인이 켜진 모든 머신·저장소에서 매 턴 실행되는 결정론적 스크립트. output style·CLAUDE.md의 상시 지시가 긴 세션에서 흐려지는 것과 달리 hook은 턴마다 다시 주입되므로, "매 요청마다 반드시"인 행동은 여기에 둔다. 현재: `english_coach.py`(UserPromptSubmit — 프롬프트 언어 판정 → 그 턴의 지시문 주입).
+
+- `hooks/hooks.json`은 settings.json의 `hooks` 키와 같은 형식. 경로는 `$CLAUDE_PLUGIN_ROOT` 기준
+- 해석기는 `"$(command -v python3 || command -v python)"`로 고른다 (맥·리눅스는 python3만, Windows는 둘 다 있음)
+- **stdin/stdout을 UTF-8로 고정**(`sys.stdin.reconfigure(...)`) — Windows 기본 cp949에서 한글·이모지가 깨져 hook이 죽는다 (실측)
+- 주입 지시문은 스크립트 안에 둔다(단일 정본). 범위를 명시할 것 — "이 블록에만 적용, 다른 영어 교정 요청엔 적용 안 함"처럼. 모델은 한 과제의 지시를 다른 과제에 자동 일반화하지 않지만, 반대로 새어 나가는 것도 막아야 한다
+- 테스트는 가짜 stdin으로: `echo '{"prompt":"..."}' | python hooks/english_coach.py`. hook 변경은 재시작 후에만 반영된다
+- 끄기: `ENGLISH_COACH=off` (settings `env`)
+
 ## 변경 후 검증·반영
 
 1. `plugins/ys-research/.claude-plugin/plugin.json`의 `version` 올리기 — 같은 버전이면 `update`가 캐시를 갱신하지 않는다 (플러그인은 `~/.claude/plugins/cache/`에 버전별로 복사됨)
