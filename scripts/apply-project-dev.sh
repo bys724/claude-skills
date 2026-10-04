@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # dev 저장소에 프로젝트 층 적용. 몇 번 실행해도 안전.
 #   bash scripts/apply-project-dev.sh <repo-path>
-# 하는 일: .claude/settings.json 병합(outputStyle + Stop hook) · docs/STATUS.md 생성(없을 때만) · CLAUDE.md에 @docs/STATUS.md 추가
+# 하는 일: .claude/settings.json 병합(outputStyle) · docs/STATUS.md 생성(없을 때만) · CLAUDE.md에 @docs/STATUS.md 추가
 set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && (pwd -W 2>/dev/null || pwd))"   # Git Bash 에선 Windows 경로
 T="$REPO/templates/project-dev"
@@ -16,9 +16,10 @@ dst, src = sys.argv[1], sys.argv[2]
 cur = json.load(open(dst, encoding="utf-8")) if os.path.exists(dst) else {}
 new = json.load(open(src, encoding="utf-8"))
 cur["outputStyle"] = new["outputStyle"]
-cur.setdefault("hooks", {})["Stop"] = new["hooks"]["Stop"]   # Stop 만 교체, 다른 hook 은 유지
+cur.get("hooks", {}).pop("Stop", None)   # 구 보고-형식 게이트 훅 제거 (2026-09-27 폐기: Stop에서 $ARGUMENTS 미치환 → 무한 재작성)
+if not cur.get("hooks"): cur.pop("hooks", None)
 json.dump(cur, open(dst, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
-print("  .claude/settings.json: outputStyle + Stop hook 반영")
+print("  .claude/settings.json: outputStyle 반영")
 PYEOF
 if git check-ignore -q .claude/settings.json 2>/dev/null; then
   echo "  ⚠ .claude/settings.json 이 .gitignore 에 걸려 있음 → 다른 워크스테이션에 안 감. .gitignore 의 '.claude/' 를 '.claude/*' 로 바꾸고 '!.claude/settings.json' 한 줄 추가"

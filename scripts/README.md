@@ -3,7 +3,7 @@
 | 스크립트 | 용도 |
 |---|---|
 | `setup-workstation.sh` | 새 워크스테이션 셋업 — 플러그인 등록·옛 복사본 정리·유저 CLAUDE.md/settings·MCP. 재실행 안전 |
-| `apply-project-dev.sh <repo>` | 실험 저장소에 프로젝트 층 적용 — settings.json(스타일+hook)·STATUS.md·CLAUDE.md snippet. 재실행 안전 |
+| `apply-project-dev.sh <repo>` | 실험 저장소에 프로젝트 층 적용 — settings.json(스타일)·STATUS.md·CLAUDE.md snippet. 재실행 안전 |
 | `obsidian-vault-migration.sh` | (macOS) Vault를 iCloud에서 독립 위치로 이동 + launchd 백업. `migrate` / `backup` / `setup-launchd` |
 
 ## 설계 원칙
