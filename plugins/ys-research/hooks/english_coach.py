@@ -12,13 +12,6 @@ import os
 import re
 import sys
 
-# Windows 콘솔 기본 인코딩(cp949)에서 한글·이모지가 깨지지 않도록 고정
-for _s in (sys.stdin, sys.stdout):
-    try:
-        _s.reconfigure(encoding="utf-8")
-    except Exception:
-        pass
-
 MODE1 = """[english-coach · 모드 1] 사용자가 한글로 썼다. 응답 맨 앞에 아래 블록을 넣은 뒤 평소처럼 작업한다. 블록은 학습용이고, 작업 해석은 한글 원문을 따른다.
 
 🗣 <요청의 핵심을 구어체 영어로 2~4줄. 한국어 연결 어미(-는데/-고/-서/-니까) 자리마다 문장을 끊고 But / And / So 같은 담화 표지로 다음 문장을 시작한다. 문장당 10단어 안팎, 문장마다 동사 하나, 종속절 중첩 금지>
@@ -42,7 +35,8 @@ def main() -> None:
     if os.environ.get("ENGLISH_COACH", "").lower() in ("off", "0", "false"):
         return
     try:
-        data = json.load(sys.stdin)
+        # 바이트로 읽어 UTF-8 디코드 — locale(cp949·C)과 무관. reconfigure()는 3.7+ 라 3.6 클러스터에선 무효
+        data = json.loads(sys.stdin.buffer.read().decode("utf-8"))
     except Exception:
         return
     prompt = (data.get("prompt") or data.get("user_input") or "").strip()
@@ -61,7 +55,7 @@ def main() -> None:
     mode = MODE1 if is_korean else MODE2
     print(json.dumps({
         "hookSpecificOutput": {"hookEventName": "UserPromptSubmit", "additionalContext": mode}
-    }, ensure_ascii=False))
+    }))   # ensure_ascii 기본값(True) — \uXXXX 이스케이프라 stdout 인코딩과 무관
 
 
 if __name__ == "__main__":

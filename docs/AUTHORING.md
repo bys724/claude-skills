@@ -81,7 +81,7 @@ tools:
 
 - `hooks/hooks.json`은 settings.json의 `hooks` 키와 같은 형식. 경로는 `$CLAUDE_PLUGIN_ROOT` 기준
 - 해석기는 `"$(command -v python3 || command -v python)"`로 고른다 (맥·리눅스는 python3만, Windows는 둘 다 있음)
-- **stdin/stdout을 UTF-8로 고정**(`sys.stdin.reconfigure(...)`) — Windows 기본 cp949에서 한글·이모지가 깨져 hook이 죽는다 (실측)
+- **입출력 인코딩을 locale에 맡기지 말 것** — stdin은 `sys.stdin.buffer.read().decode("utf-8")`, 출력 JSON은 `ensure_ascii=True`(기본값). Windows cp949·C locale에서 한글·이모지로 hook이 죽는다 (실측). `reconfigure()`는 3.7+ 라 클러스터 python3 3.6에선 무효
 - 주입 지시문은 스크립트 안에 둔다(단일 정본). 범위를 명시할 것 — "이 블록에만 적용, 다른 영어 교정 요청엔 적용 안 함"처럼. 모델은 한 과제의 지시를 다른 과제에 자동 일반화하지 않지만, 반대로 새어 나가는 것도 막아야 한다
 - 테스트는 가짜 stdin으로: `echo '{"prompt":"..."}' | python hooks/english_coach.py`. hook 변경은 재시작 후에만 반영된다
 - 끄기: `ENGLISH_COACH=off` (settings `env`)

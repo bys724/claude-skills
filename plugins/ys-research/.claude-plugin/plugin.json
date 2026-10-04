@@ -1,7 +1,7 @@
 {
   "name": "ys-research",
   "description": "Research workflow tools: paper reading, presentations, image prompting, code cleanup, research/market agents, two response styles (discuss, research-dev), and an English speaking coach (hook)",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "author": {
     "name": "bys724"
   }
