@@ -3,6 +3,7 @@
 > 클라우드 루틴(매주 월요일 09:00 KST)이 이 파일을 읽고 따른다. 루틴 프롬프트는 "이 파일을 따르라"뿐이라, 내용을 바꾸려면 **이 파일만 고쳐 push**하면 다음 실행부터 반영된다.
 > 관심사 프로필과 "이미 아는 논문"은 로컬 세션이 Vault를 읽어 요약한 것이다 (갱신: 2026-11-15). 클라우드 세션은 Vault를 볼 수 없으므로 이 파일이 유일한 근거다.
 > 이 저장소는 공개다 — 이 파일에는 공개 문헌의 주제·논문 이름만 적는다.
+> 실행 환경 전제: 루틴이 쓰는 클라우드 환경(Default)의 Network access = Limited + Allowed domains에 `arxiv.org`, `export.arxiv.org` (2026-11-15 추가·동작 확인). 빠지면 논문 수집이 웹 검색 대체 경로로 떨어진다.
 
 ## 독자
 
@@ -38,7 +39,7 @@
 
 ### 수집
 
-arxiv API (Atom XML)를 Bash로 조회한다 — 반드시 `https`와 `-L`을 쓴다 (`http`는 리다이렉트되어 빈 응답이 온다, 2026-11-15 실측): `curl -sL -G "https://export.arxiv.org/api/query" --data-urlencode 'search_query=<쿼리>' -d "sortBy=submittedDate&sortOrder=descending&max_results=60"`. 요청 사이 3초 간격 (arxiv 이용 규칙). 결과에서 `<published>`가 7일 이내인 것만 남긴다. 여러 쿼리에 걸린 논문은 하나로 합친다.
+arxiv API (Atom XML)를 Bash로 조회한다 — 반드시 `https`와 `-L`을 쓴다 (`http`는 리다이렉트되어 빈 응답이 온다, 2026-11-15 실측): `curl -sL -G "https://export.arxiv.org/api/query" --data-urlencode 'search_query=<쿼리>' -d "sortBy=submittedDate&sortOrder=descending&max_results=200"`. 축 6·7·8은 한 주에 60편을 넘는다(2026-11-15 실측: 축 7은 상위 60편 중 50편이 7일 이내) — 마지막 결과가 아직 7일 이내면 `start=200`으로 다음 쪽을 더 받는다. 요청 사이 3초 간격 (arxiv 이용 규칙). 결과에서 `<published>`가 7일 이내인 것만 남긴다. 여러 쿼리에 걸린 논문은 하나로 합친다.
 
 | 축 | `search_query` |
 |---|---|
@@ -64,11 +65,11 @@ API 외 경로를 썼으면 보고서 "수집 통계"에 어떤 경로였는지�
 
 - **꼭 읽을 것 (최대 5편)**: 프로필 축 1–6에 직접 닿는 새 방법·결과. 대규모 실로봇 실험, 새 벤치마크, 기존 통념의 반례는 가점
 - **훑어볼 것 (최대 10편)**: 관련은 있으나 점진적 개선·응용, 또는 축 7–9의 주목할 만한 것
-- 근거는 초록에서 확인된 것만 쓴다. 초록에 없는 성능·주장·소속을 지어내지 않는다. 해당 주에 꼽을 것이 적으면 적은 대로 둔다
+- "꼭 읽을 것" 후보는 **초록 전문**을 읽고 판단한다 (앞부분만 보고 쓰지 않는다). 근거는 초록에서 확인된 것만 쓴다. 초록에 없는 성능·주장·소속을 지어내지 않는다. 해당 주에 꼽을 것이 적으면 적은 대로 둔다
 
 ## 2부. 로봇·AI 업계 소식 (지난 7일)
 
-WebSearch로 조사한다. 대상:
+WebSearch로 조사한다. **뉴스 사이트 본문은 WebFetch로 열지 않는다** — 클라우드 환경의 네트워크 허용 목록에 없어 실패한다(2026-11-15 실측). 사실 확인이 필요하면 같은 건을 다른 검색어나 `mode: "extended"`로 한 번 더 검색해 출처를 둘 이상 확보한다. 대상:
 
 - **새 로봇·데모 공개**: 휴머노이드·매니퓰레이터 신제품, 주목받은 시연 영상 — 특히 중국 기업(Unitree · AgiBot · UBTECH · Fourier · Galbot · XPeng · Xiaomi 등)과 Figure · 1X · Tesla Optimus · Boston Dynamics · Apptronik · Agility
 - **로봇 파운데이션 모델 기업**: Physical Intelligence · Skild AI · NVIDIA(GR00T·Cosmos) · Google DeepMind · Meta · TRI · Generalist 등의 모델·데이터셋 공개
