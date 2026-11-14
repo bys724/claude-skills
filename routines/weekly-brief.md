@@ -54,7 +54,7 @@ arxiv API (Atom XML)를 Bash로 조회한다 — 반드시 `https`와 `-L`을 �
 `curl`이 실패하면(클라우드 환경 프록시가 arxiv를 막는 경우가 있다 — 2026-11-15 시험 실행에서 HTTP 000) 한 번만 확인하고 바로 다음으로 넘어간다:
 
 1. **WebFetch**로 같은 `https://export.arxiv.org/api/query?...` URL을 가져온다 (쿼리는 URL 인코딩). 안 되면 축별로 `https://arxiv.org/list/cs.RO/recent` · `https://arxiv.org/list/cs.CV/recent` · `https://arxiv.org/list/cs.LG/recent` 목록을 가져와 제목으로 거른 뒤, 후보의 `https://arxiv.org/abs/<번호>`에서 초록을 확인한다
-2. 그것도 안 되면 **WebSearch**로 축별 주제어를 `arxiv <주제어> <이번 달 연도>`로 찾는다
+2. 그것도 안 되면(2026-11-15 시험 실행: `arxiv.org`·`export.arxiv.org`가 환경 네트워크 허용 목록에 없어 curl·WebFetch 모두 실패, WebSearch만 동작) **WebSearch를 축마다 따로** 돌린다 — 9개 축 전부, 축당 최소 2회, `mode: "extended"`, `allowed_domains: ["arxiv.org"]`. 검색어에 이번 달 arxiv 번호 접두(`YYMM.` — 예: 2026년 11월이면 `2611`)와 축의 주제어를 넣는다. 검색 결과의 제목·요약으로 판단하고, 초록을 확인 못 한 논문은 "초록 미확인"이라고 표시한다. 세 번 검색하고 끝내지 않는다
 
 API 외 경로를 썼으면 보고서 "수집 통계"에 어떤 경로였는지와 "누락 가능"을 적는다. **수집 경로가 막혀도 보고서는 반드시 만든다** — 논문이 적게 잡히면 적은 대로 쓰고, 2부는 그대로 진행한다.
 
