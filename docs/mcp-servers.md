@@ -172,6 +172,13 @@ cd vendor/mcp/nanobanana/mcp-server
 npm install && npm run build
 ```
 
+**Claude Code 등록** (유저 스코프 — 키는 넣지 않는다):
+```bash
+claude mcp add -s user nanobanana -e NANOBANANA_MODEL=gemini-nano-banana-2.1 \
+  -- node "<repo>/vendor/mcp/nanobanana/mcp-server/dist/index.js"
+```
+API 키는 OS 환경변수 `NANOBANANA_API_KEY`(또는 `GEMINI_API_KEY`)로 둔다. `-e`로 넣으면 `~/.claude.json`에 평문으로 남는다. Windows: `[Environment]::SetEnvironmentVariable('NANOBANANA_API_KEY','<key>','User')` 후 VSCode 완전 재시작. Windows는 `node` 대신 `"C:/Program Files/nodejs/node.exe"` 절대경로가 PATH 갱신 전에도 동작 (2026-11-15 Windows PC 적용).
+
 **Claude Desktop 직접 설정:**
 ```json
 {

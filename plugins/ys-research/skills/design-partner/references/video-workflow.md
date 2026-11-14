@@ -8,7 +8,7 @@
 
 ```mermaid
 graph LR
-    A[스토리보드] --> B[키프레임 생성<br/>Nano Banana / Midjourney]
+    A[스토리보드] --> B[키프레임 생성<br/>Nano Banana]
     B --> C[Omni Flash image-to-video<br/>각 키프레임 → 짧은 클립]
     C --> D[프레임 검증]
     D --> E[FFmpeg 스티칭<br/>+ 자막/BGM]
@@ -25,7 +25,7 @@ graph LR
 
 | 상황 | 모델 | 이유 |
 |------|------|------|
-| 빠른 컨셉 탐색 | NB 2.1 (`gemini-nano-banana-2.1`) 또는 Midjourney | 비용·속도 |
+| 빠른 컨셉 탐색 | NB 2.1 (`gemini-nano-banana-2.1`) 또는 Lite | 비용·속도 |
 | 캐릭터·브랜드 일관성 필수 | **NB Pro** | 다중 레퍼런스 입력 |
 | 텍스트·로고 포함 | **NB Pro** | 텍스트 렌더링 우수 |
 

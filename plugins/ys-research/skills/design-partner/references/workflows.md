@@ -62,7 +62,7 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 **Phase 3 — 키프레임 생성**
 - 컷별 핵심 프레임을 이미지 생성 (Phase 2 에셋을 ref로 활용)
 - 일관성 확인: 같은 캐릭터·광원·스타일이 모든 키프레임에 유지되는가
-- **모델 선택**: 일관성 필수 → Nano Banana Pro (ref 14장) / 빠른 탐색 → Midjourney·NB 2.1
+- **모델 선택**: 일관성 필수 → Nano Banana Pro (ref 14장) / 빠른 탐색 → NB 2.1·Lite
 
 **Phase 4 — 클립화 (image-to-video, Omni Flash)**
 - 각 키프레임을 짧은 클립으로 (보통 8초)
@@ -136,7 +136,7 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 **Phase 2 — 썸네일 다수 (Thumbnailing)**
 - 작은 사이즈로 5-10가지 컨셉 빠르게
 - 구도·실루엣·빛 위주, 디테일 무시
-- **산출물**: 썸네일 시트 (Midjourney `--c` 높여서 다양성 확보)
+- **산출물**: 썸네일 시트 (같은 코어 프롬프트로 여러 장 — 구도·조명 한 요소씩만 바꿔 다양성 확보)
 
 **Phase 3 — 키 비주얼 발전**
 - 가장 강한 1-2개 썸네일을 고해상도로 발전
@@ -176,7 +176,7 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 - **산출물**: 5-10컷 리스트
 
 **Phase 3 — 일관성 시리즈 생성**
-- Midjourney `--sref` 또는 Nano Banana Pro 다중 ref
+- Nano Banana Pro 스타일·캐릭터 레퍼런스
 - 모델·의상·로케이션 톤 유지
 
 ### 코치 포인트
@@ -204,7 +204,7 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 
 **Phase 2 — 러프 (Composition Sketch)**
 - 구도·요소 배치만 빠르게
-- Midjourney 텍스트 묘사 또는 NB 2.1
+- NB 2.1 자연어 묘사
 - **산출물**: 3-5 러프
 
 **Phase 3 — 디테일 발전**

@@ -25,7 +25,7 @@ vendor/mcp/nanobanana             # git submodule (MCP 서버, 이 경로에서 
 
 ## Maintenance Policy
 
-스킬이 참조하는 외부 지식(공식 문서·API·모델 이름)은 수정 시 최신 여부 확인. 각 스킬의 reference 파일에 공식 URL 명시. Midjourney·Nano Banana처럼 변경이 잦은 도구는 파라미터 주의.
+스킬이 참조하는 외부 지식(공식 문서·API·모델 이름)은 수정 시 최신 여부 확인. 각 스킬의 reference 파일에 공식 URL 명시. Nano Banana처럼 모델 ID가 자주 바뀌는 도구는 작업 전 공식 deprecations 페이지 확인.
 
 ## Vault 연결
 

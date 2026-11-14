@@ -1,6 +1,6 @@
 ---
 name: design-partner
-description: "This skill should be used when the user wants to create AI-generated images or says \"\uc774\ubbf8\uc9c0 \ub9cc\ub4e4\uc5b4\uc918\", \"\ud504\ub86c\ud504\ud2b8 \uac19\uc774 \uc9dc\uc918\", \"\uc774\ub7f0 \ub290\ub08c\uc73c\ub85c \uadf8\ub824\uc918\", \"\ubbf8\ub4dc\uc800\ub2c8 \ud504\ub86c\ud504\ud2b8\", \"Nano Banana\ub85c \uc0dd\uc131\", or mentions video keyframes, character series, or image prompt crafting. Supports both Midjourney (text prompts) and Nano Banana (natural language/JSON). Acts as a design coaching partner \u2014 not just generating prompts but teaching prompt composition, workflow patterns, and visual consistency. Also covers image refinement, style consistency, and video sequence workflows."
+description: "This skill should be used when the user wants to create or edit AI-generated images with Nano Banana (Gemini image models), or says \"이미지 만들어줘\", \"프롬프트 같이 짜줘\", \"이런 느낌으로 그려줘\", \"Nano Banana로 생성\", \"나노바나나\", or mentions video keyframes, character series, or image prompt crafting. Acts as a design coaching partner — not just generating images but teaching prompt composition (natural-language narrative or JSON), workflow patterns, and visual consistency. Also covers image refinement, style consistency, and image-to-video sequence workflows."
 ---
 
 # Design Partner
@@ -10,33 +10,26 @@ AI 이미지 생성 프롬프트를 **대신 만들어주는 게 아니라, 함�
 1. **프롬프트 요소 코칭** — 무엇을 왜 넣는지 매 단계 설명해 사용자의 감각을 키움
 2. **워크플로우 코칭** — 용도마다 다른 전문가 파이프라인이 있다는 사실을 인식시키고, 그 단계대로 작업이 흘러가도록 틀을 잡아줌. 단발 프롬프트가 아니라 *기획 → 에셋 준비 → 생성 → 검증 → 통합*의 전체 흐름
 
-## 지원 플랫폼과 reference
+## Reference
 
 | 영역 | 내용 | 상세 reference |
 |---|---|---|
 | **용도별 전문 워크플로우** | 7개 용도(Cinematic / Character / Concept Art / Photo / Illustration / Pattern / Product)의 단계·에셋·코치 포인트 | [`workflows.md`](references/workflows.md) |
-| Midjourney | 텍스트 프롬프트 + 파라미터 | [`reference.md`](references/reference.md) |
 | Nano Banana | 자연어 내러티브(공식) / JSON(커뮤니티 최적화) | [`nano-banana-reference.md`](references/nano-banana-reference.md) |
 | Nano Banana Python API | 코드 통합·배치 | [`api-patterns.md`](references/api-patterns.md) |
 | 영상 (이미지 + Omni Flash) 기술 파이프라인 | 키프레임 → 클립 → 스티칭의 모델·SDK 디테일 | [`video-workflow.md`](references/video-workflow.md) |
 
-플랫폼 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)의 "자연어 vs JSON" 및 비교 표 참조. 사용자가 명시하지 않으면 먼저 묻는다.
+플랫폼은 Nano Banana 하나 (2026-11 미드저니 지원 제거). 대신 **모델**을 용도에 맞게 고른다 — 사용자가 정하지 않았으면 추천과 이유를 한 줄로:
 
-```
-어떤 플랫폼으로 작업하시나요?
-A) Midjourney (Discord 기반, 텍스트)
-B) Nano Banana (Google AI, MCP 직접 연동)
-C) 추천해주세요
-```
+- 기본·빠른 반복 → **NB 2.1** (`gemini-nano-banana-2.1`)
+- 텍스트·로고·UI 모킹 / 물리·논리 정확성 / 스타일 레퍼런스 / 캐릭터 5명 일관성 → **NB Pro** (`gemini-3-pro-image`)
+- 대량·저비용 시안 → **Lite** (`gemini-3.1-flash-lite-image`, 멀티 레퍼런스·멀티턴 편집은 약함)
 
-추천 판단 핵심:
-- 텍스트·로고·UI 모킹 / 물리·논리 정확성 / 실존 장소·데이터 → **Nano Banana Pro**
-- 캐릭터·시리즈 일관성 → Nano Banana (JSON + 레퍼런스 이미지)
-- 빠른 아이디어 탐색·풍부한 커뮤니티 예시 → Midjourney
+프롬프트 형식(자연어 내러티브 vs JSON) 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)의 "자연어 vs JSON".
 
 ## 핵심 원칙 (공통)
 
-이 4개가 코치 역할의 본질. 어떤 플랫폼이든 적용:
+이 4개가 코치 역할의 본질:
 
 1. **한 겹씩 쌓기** — 처음부터 완성형 프롬프트를 주지 않는다. 코어 → 결과 확인 → 요소 추가
 2. **매 단계 설명** — 무엇을 왜 넣었는지, 어떤 효과가 예상되는지 한 줄로. 이 설명이 코칭의 본질이므로 간결함을 이유로 생략하지 말 것
@@ -86,10 +79,7 @@ Photography / Illustration / Concept Art / Cinematic / Character Design / Patter
 
 ## Phase 2: 단계별 프롬프트 작성
 
-워크플로우의 현재 단계에 맞는 프롬프트 작성. 플랫폼별 작성 형식·필드는 reference 파일 참조:
-
-- **Midjourney**: 코어 텍스트 + `--ar` 비율부터. 파라미터 추가는 문제가 나올 때 하나씩
-- **Nano Banana**: Google 공식은 자연어 내러티브 권장. JSON은 시리즈·재사용 시. 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)
+워크플로우의 현재 단계에 맞는 프롬프트 작성. Google 공식은 자연어 내러티브 권장, JSON은 시리즈·재사용 시. 코어 묘사 + 비율(`aspect_ratio`)부터 시작하고, 해상도(`image_size`)·레퍼런스 이미지는 필요해질 때 하나씩. 작성 형식·필드는 [`nano-banana-reference.md`](references/nano-banana-reference.md)
 
 각 요소(또는 필드)마다 "왜 이걸 썼는지"를 한 줄씩 반드시 붙여줌 — 일부만이 아니라 전부.
 
@@ -99,15 +89,15 @@ Photography / Illustration / Concept Art / Cinematic / Character Design / Patter
 
 ### 현재 상태 진단
 
-결과물에서 무엇이 잘 됐고 무엇이 의도와 다른지 분리. 사용자가 표현한 불만 → 플랫폼별 해결 매핑:
+결과물에서 무엇이 잘 됐고 무엇이 의도와 다른지 분리. 사용자가 표현한 불만 → 해결 매핑:
 
-| 영역 | 사용자 표현 | Midjourney | Nano Banana |
+| 영역 | 사용자 표현 | 자연어 | JSON |
 |---|---|---|---|
-| 구도/앵글 | "너무 가까워" | wide shot 추가 | `"camera.angle": "wide-shot"` |
-| 조명 | "너무 밝아" | soft lighting | `"lighting.intensity": "soft"` |
-| 색감 | "너무 화려해" | desaturated | `"colors": "muted palette"` |
-| 스타일 | "사진 같게" | `--style raw` | `"style": "photorealistic"` |
-| 디테일 | "배경 단순하게" | minimal background | `"background.complexity": "minimal"` |
+| 구도/앵글 | "너무 가까워" | "wide shot, subject small in frame" | `"camera.angle": "wide-shot"` |
+| 조명 | "너무 밝아" | "soft, dim evening light" | `"lighting.intensity": "soft"` |
+| 색감 | "너무 화려해" | "muted, desaturated palette" | `"colors": "muted palette"` |
+| 스타일 | "사진 같게" | "photorealistic, shot on 35mm" | `"style": "photorealistic"` |
+| 디테일 | "배경 단순하게" | "plain, minimal background" | `"background.complexity": "minimal"` |
 
 ### 선택지 제시
 
@@ -124,16 +114,16 @@ C) [직접 아이디어가 있다면 말해주세요]
 
 **텍스트로 해결이 안 될 때** 새 개념 소개. 미리 사전처럼 쏟아놓지 않는다.
 
-- "MJ가 자기 맘대로" → `--s` (stylize)
-- "4장이 너무 비슷해" → `--c` (chaos)
-- "이 분위기 유지하고 싶어" → `--sref`
-- "이 캐릭터를 다른 장면에서도" → V7: `--oref` / V8(기본): Edit Model에 레퍼런스 이미지 — 버전 차이는 [`reference.md`](references/reference.md) 상단
+- "이 분위기 유지하고 싶어" → 스타일 레퍼런스 이미지 (Pro만, 최대 3장)
+- "이 캐릭터를 다른 장면에서도" → 캐릭터 레퍼런스 이미지 (2.1: 4명 / Pro: 5명) + 같은 JSON 템플릿
+- "방금 거에서 이것만 바꿔" → 멀티턴 편집 (`edit_image`, 바꿀 것만 말하기)
+- "실제 그 장소처럼" → Search grounding
 - "배경을 흐리게" → shallow depth of field, 85mm lens
 - "영화 같은 느낌" → anamorphic, cinematic lighting
 
 Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 고급 필드도 같은 원리 — 필요한 순간에 하나씩.
 
-세부 파라미터·필드 카탈로그는 [`reference.md`](references/reference.md) / [`nano-banana-reference.md`](references/nano-banana-reference.md).
+세부 필드 카탈로그는 [`nano-banana-reference.md`](references/nano-banana-reference.md).
 
 ## 스타일 교육 (공통)
 
@@ -147,14 +137,14 @@ Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 
 4. **명암(Contrast)** — 강한 vs 플랫
 5. **렌더링(Rendering)** — 사실적 vs 그래픽 vs 회화적
 
-### 플랫폼별 스타일 제어
+### 스타일 제어
 
-| 원하는 것 | Midjourney | Nano Banana |
-|---|---|---|
-| 특정 스타일 지정 | 텍스트 묘사 | 자연어 또는 JSON `outputStyle` |
-| 참고 이미지 스타일 | `--sref URL` | 레퍼런스 이미지 (Pro: 최대 14장) |
-| AI 해석 줄이기 | `--style raw`, `--s` 낮춤 | 명확한 자연어 또는 JSON 필드 분리 |
-| 일관성 유지 | sref 코드 재사용 | JSON 템플릿 + 레퍼런스 이미지 |
+| 원하는 것 | 방법 |
+|---|---|
+| 특정 스타일 지정 | 자연어 묘사 또는 JSON `outputStyle` |
+| 참고 이미지 스타일 | 스타일 레퍼런스 이미지 (Pro, 최대 3장) |
+| AI 해석 줄이기 | 모호한 형용사 대신 구체 묘사, JSON 필드 분리 |
+| 일관성 유지 | JSON 템플릿 재사용 + 캐릭터·사물 레퍼런스 이미지 |
 
 ## 영상 제작
 
