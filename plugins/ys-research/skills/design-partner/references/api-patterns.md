@@ -8,6 +8,7 @@
 
 ```bash
 pip install google-genai
+# 설치 없이 바로: uv run --with google-genai python script.py   (Windows PC는 이쪽)
 ```
 
 ## 기본 호출 (Interactions API)
@@ -20,16 +21,17 @@ from google import genai
 
 client = genai.Client()  # GEMINI_API_KEY 환경변수
 
-def generate_image(prompt: str, out_path: str = "out.png", aspect_ratio="1:1", image_size="1K"):
+def generate_image(prompt: str, out_path: str = "out.jpg", aspect_ratio="1:1", image_size="1K",
+                   model="gemini-nano-banana-2.1"):   # 확정 단계: model="gemini-3-pro-image"
     interaction = client.interactions.create(
-        model="gemini-nano-banana-2.1",
+        model=model,
         input=prompt,
         response_format={"type": "image", "aspect_ratio": aspect_ratio, "image_size": image_size},  # 1K/2K/4K
     )
     if not getattr(interaction, "output_image", None):   # safety filter 등으로 이미지가 없을 수 있음
         return None
     with open(out_path, "wb") as f:
-        f.write(base64.b64decode(interaction.output_image.data))  # base64 문자열
+        f.write(base64.b64decode(interaction.output_image.data))  # base64 문자열. 기본 JPEG (2026-11 실측)
     return out_path
 ```
 
@@ -39,9 +41,8 @@ JSON 프롬프트도 문자열로 직렬화해서 `input` 에 전달. 레퍼런�
 
 | 목적 | 모델 |
 |------|------|
-| 기본·빠른 이터레이션 (공식 권장) | `gemini-nano-banana-2.1` (Nano Banana 2.1) |
-| 최고 품질·텍스트·일관성·스타일 레퍼런스 | `gemini-3-pro-image` (Nano Banana Pro) |
-| 최저 비용·최고속 (멀티 레퍼런스 약함) | `gemini-3.1-flash-lite-image` |
+| 탐색 단계·기본 (공식 권장) | `gemini-nano-banana-2.1` (Nano Banana 2.1) |
+| 확정 단계·텍스트·일관성·스타일 레퍼런스 | `gemini-3-pro-image` (Nano Banana Pro) |
 | 영상 생성 | `gemini-omni-1.2-flash` → [`video-workflow.md`](video-workflow.md) |
 
 종료된 ID: `gemini-3.1-flash-image-preview`·`gemini-3-pro-image-preview`(2026-06-25), `veo-3.1-*`(2026-10-22). `gemini-2.5-flash-image`는 2027-03-15 종료 예정. 최신 모델명은 `client.models.list()` 로 확인.

@@ -9,10 +9,31 @@ Google Gemini 이미지 생성 모델. 작업 시 공식 문서·커뮤니티 �
 | Nano Banana 2.1 | `gemini-nano-banana-2.1` | **현재 공식 권장 기본값**, 1K/2K/4K, 이미지 검색 grounding | 2026.10 |
 | Nano Banana Pro | `gemini-3-pro-image` | **추론 후 생성**, 텍스트 렌더링, 스타일 레퍼런스 3장 | 2026.5 (GA) |
 | Nano Banana 2 | `gemini-3.1-flash-image` | 이전 세대 Flash. 512px 지원 | 2026.5 (GA) |
-| Nano Banana 2 Lite | `gemini-3.1-flash-lite-image` | 최저가·최고속, 멀티 레퍼런스·멀티턴 편집 약함 | 2026.6 |
+| Nano Banana 2 Lite | `gemini-3.1-flash-lite-image` | 최고속. 1K 가격은 2.1과 같음, 멀티 레퍼런스·멀티턴 편집 약함 | 2026.6 |
 | Nano Banana (v1) | `gemini-2.5-flash-image` | 레거시, 2027-03-15 종료 예정 | 2025.10 |
 
 > `-preview` ID(`gemini-3.1-flash-image-preview`, `gemini-3-pro-image-preview`)는 **2026-06-25 종료**. 출처: [deprecations](https://aistudio.google.com/docs/deprecations) (2026-11-15 확인). 모델이 자주 바뀌므로 작업 전 이 페이지 확인.
+
+## 비용 (2026-11-15 [공식 pricing](https://aistudio.google.com/docs/pricing))
+
+이미지·영상 모델은 무료 티어 없음. 결제는 **선불 크레딧** (2026 전환 — 잔액 0이면 호출 실패, 추가 청구 없음). 원화는 1달러≈1,450원 대략치.
+
+| 모델 | 1K | 2K | 4K | Batch |
+|---|---|---|---|---|
+| NB 2.1 | $0.034 (≈50원) | $0.050 | $0.113 | 반값 |
+| NB Pro | $0.134 (≈195원) | $0.134 | $0.24 (≈350원) | 없음 |
+| Lite | $0.034 | — | — | 반값 |
+| NB 2 (3.1 Flash) | $0.067 | $0.101 | $0.151 | 없음 |
+
+| 영상 (Omni 1.2 Flash) | 360p | 720p (기본) | 1080p | 4K |
+|---|---|---|---|---|
+| 초당 | $0.023 | $0.07 | $0.104 | $0.209 |
+| 10초 | ≈330원 | ≈1,000원 | ≈1,500원 | ≈3,000원 |
+
+- 입력(프롬프트·레퍼런스 이미지)은 무시할 수준 — Pro 레퍼런스 이미지가 장당 $0.0011
+- Batch = 즉시가 아니라 나중에 받는 대신 반값. 같은 템플릿으로 수십 장 뽑을 때만 의미
+- Search grounding: Gemini 3+ 모델 공유 월 5,000회 무료, 이후 1,000회당 $14
+- 가격은 바뀐다 — 사용자에게 금액을 말하기 전에 이 표의 날짜가 3개월 넘었으면 공식 페이지 재확인
 
 ### Pro 모델의 진짜 차이: Reasoning-Guided Synthesis
 

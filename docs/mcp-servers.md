@@ -198,6 +198,8 @@ API 키는 OS 환경변수 `NANOBANANA_API_KEY`(또는 `GEMINI_API_KEY`)로 둔�
 
 **모델 지정 필수** (2026-11): 확장 내장 기본값 `gemini-3.1-flash-image-preview`는 2026-06-25 종료됐다. `env`에 `"NANOBANANA_MODEL": "gemini-nano-banana-2.1"` (또는 `gemini-3-pro-image`)를 같이 넣을 것. 업스트림은 2026-03 이후 커밋이 없어 새 ID 수용 여부 미검증 — 안 되면 design-partner의 `api-patterns.md` 직접 호출로.
 
+**실측 (2026-11-15, Windows PC)**: `gemini-nano-banana-2.1`·`gemini-3-pro-image` 모두 이 확장(옛 `generateContent` 호출)으로 생성 성공, 1장 15초 안팎. 제약: 해상도·비율 인자가 없어 항상 1K·약 16:9 (비율은 프롬프트로), 파일은 `.png` 이름이지만 내용은 JPEG, 결과는 서버 작업 폴더의 `nanobanana-output/`. 2K/4K·정확한 비율·Pro 확정본은 design-partner `api-patterns.md`의 Interactions API 호출 (같은 날 검증).
+
 **환경변수 우선순위** (소스 기준):
 `NANOBANANA_API_KEY` > `NANOBANANA_GEMINI_API_KEY` > `NANOBANANA_GOOGLE_API_KEY` > `GEMINI_API_KEY` > `GOOGLE_API_KEY`
 

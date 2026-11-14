@@ -19,11 +19,28 @@ AI 이미지 생성 프롬프트를 **대신 만들어주는 게 아니라, 함�
 | Nano Banana Python API | 코드 통합·배치 | [`api-patterns.md`](references/api-patterns.md) |
 | 영상 (이미지 + Omni Flash) 기술 파이프라인 | 키프레임 → 클립 → 스티칭의 모델·SDK 디테일 | [`video-workflow.md`](references/video-workflow.md) |
 
-플랫폼은 Nano Banana 하나 (2026-11 미드저니 지원 제거). 대신 **모델**을 용도에 맞게 고른다 — 사용자가 정하지 않았으면 추천과 이유를 한 줄로:
+플랫폼은 Nano Banana 하나 (2026-11 미드저니 지원 제거).
 
-- 기본·빠른 반복 → **NB 2.1** (`gemini-nano-banana-2.1`)
-- 텍스트·로고·UI 모킹 / 물리·논리 정확성 / 스타일 레퍼런스 / 캐릭터 5명 일관성 → **NB Pro** (`gemini-3-pro-image`)
-- 대량·저비용 시안 → **Lite** (`gemini-3.1-flash-lite-image`, 멀티 레퍼런스·멀티턴 편집은 약함)
+## 모델·비용: 탐색 단계 vs 확정 단계
+
+API는 **선불 크레딧**이라 생성할 때마다 잔액이 줄어든다. 그래서 모델을 "품질 순"이 아니라 **작업 단계**로 고른다 — 구도·방향을 잡는 동안은 싼 모델로 여러 번, 방향이 정해진 산출물만 비싼 모델로 한 번.
+
+| 단계 | 이미지 | 영상 |
+|---|---|---|
+| **탐색** (구도·색·분위기 잡기, 프롬프트 실험) | **NB 2.1 · 1K** — 장당 약 50원 | **Omni 360p** — 10초 약 330원 |
+| **확정** (최종본, 기대하는 산출물) | **NB Pro** 1K/2K 약 195원 · 4K 약 350원 | **Omni 720p** — 10초 약 1,000원 |
+
+- 탐색에서 확정으로 넘어가는 시점은 사용자가 정한다. "이 방향 좋다"가 나오면 "Pro로 최종본 뽑을까요? (약 195원)"처럼 **모델·예상 비용을 함께 묻고** 넘어간다
+- **처음부터 Pro**: 이미지 안에 읽혀야 할 글자(포스터·슬라이드 도식·인포그래픽 라벨), 스타일 레퍼런스 이미지, 캐릭터 5명 일관성이 핵심일 때. 2.1은 글자를 넣으면 주변에 가짜 글씨가 섞이기 쉽다 (2026-11-15 실측: 같은 프롬프트에서 Pro만 문구를 정확히 한 번 렌더링)
+- 1080p·4K 영상, 4K 이미지는 사용자가 요청할 때만
+- Lite·NB 2(`gemini-3.1-flash-image`)는 쓰지 않는다 — Lite는 1K 가격이 2.1과 같고 레퍼런스·편집이 약하며, NB 2는 2.1보다 비싸다
+
+**예산 가드** — 사용자 계정: 선불 32,000원 충전, 잔액 8,000원 이하면 자동 충전, **월 한도 50,000원**. 아래 경우엔 실행 전에 예상 비용을 한 줄로 말하고 확인받는다:
+- Pro 또는 2K 이상 이미지, `outputCount` 3장 이상, 한 번에 10장 넘는 배치
+- 모든 영상 생성
+- 세션 누적 예상 지출이 5,000원을 넘을 때 (누적액도 같이 알려준다)
+
+가격표·근거·Batch(반값) 조건은 [`nano-banana-reference.md`](references/nano-banana-reference.md)의 "비용".
 
 프롬프트 형식(자연어 내러티브 vs JSON) 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)의 "자연어 vs JSON".
 
@@ -157,7 +174,10 @@ Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 
 
 ## 실행 환경
 
-- **Nano Banana MCP** (대화 기반 루프): 공식 `gemini-cli-extensions/nanobanana`. 설치는 claude-skills 저장소의 `docs/mcp-servers.md`. 연결 시 `generate_image` / `edit_image` / `restore_image` 노출
+- **Nano Banana MCP** (탐색 단계의 기본 도구): 공식 `gemini-cli-extensions/nanobanana`. 설치는 claude-skills 저장소의 `docs/mcp-servers.md`. `generate_image` / `edit_image` / `restore_image` 등 노출. 결과는 작업 폴더의 `nanobanana-output/`
+  - **해상도·비율 인자가 없다** — 항상 기본(1K, 약 16:9). 비율은 프롬프트에 "square 1:1 composition"처럼 적는다. 2K/4K·정확한 비율이 필요하면 API 직접 호출
+  - `outputCount`(1–8)는 장수만큼 비용이 곱해진다. 탐색 중에도 기본 1–2장
+  - 모델은 MCP 등록 시 `NANOBANANA_MODEL`로 고정(현재 NB 2.1). Pro로 바꾸려면 등록 env를 바꾸고 재시작해야 하므로, **확정 단계의 Pro 생성은 API 직접 호출**이 간단
 - **모델 전환** (환경변수 `NANOBANANA_MODEL`, **반드시 지정** — 확장 내장 기본값은 종료된 preview ID): NB 2.1 = `gemini-nano-banana-2.1` (빠른 반복) / NB Pro = `gemini-3-pro-image` (텍스트·복잡한 추론·일관성)
 - **Python API 직접 호출** (코드 통합): [`api-patterns.md`](references/api-patterns.md)
 
