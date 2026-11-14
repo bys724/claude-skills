@@ -6,9 +6,13 @@ Google Gemini 이미지 생성 모델. 작업 시 공식 문서·커뮤니티 �
 
 | 모델 | API 식별자 | 특징 | 출시 |
 |------|-----------|------|------|
-| Nano Banana | `gemini-2.5-flash-image` | 최초 버전, 바이럴 | 2025.8 |
-| Nano Banana Pro | `gemini-3-pro-image-preview` | **추론 후 생성**, Search Grounding, 4K, 텍스트 렌더링 | 2025.11 |
-| Nano Banana 2 | `gemini-3.1-flash-image-preview` | Pro 능력 + Flash 속도 (~10초) | 2026.2 |
+| Nano Banana 2.1 | `gemini-nano-banana-2.1` | **현재 공식 권장 기본값**, 1K/2K/4K, 이미지 검색 grounding | 2026.10 |
+| Nano Banana Pro | `gemini-3-pro-image` | **추론 후 생성**, 텍스트 렌더링, 스타일 레퍼런스 3장 | 2026.5 (GA) |
+| Nano Banana 2 | `gemini-3.1-flash-image` | 이전 세대 Flash. 512px 지원 | 2026.5 (GA) |
+| Nano Banana 2 Lite | `gemini-3.1-flash-lite-image` | 최저가·최고속, 멀티 레퍼런스·멀티턴 편집 약함 | 2026.6 |
+| Nano Banana (v1) | `gemini-2.5-flash-image` | 레거시, 2027-03-15 종료 예정 | 2025.10 |
+
+> `-preview` ID(`gemini-3.1-flash-image-preview`, `gemini-3-pro-image-preview`)는 **2026-06-25 종료**. 출처: [deprecations](https://aistudio.google.com/docs/deprecations) (2026-11-15 확인). 모델이 자주 바뀌므로 작업 전 이 페이지 확인.
 
 ### Pro 모델의 진짜 차이: Reasoning-Guided Synthesis
 
@@ -16,7 +20,7 @@ Pro는 단순 디퓨전이 아니라 **프롬프트를 추론하고 씬을 계�
 
 - 물리·논리 오류 사전 검토 (그림자 방향, 손가락 개수, 원근법 등)
 - Google Search Grounding으로 실존 장소·실시간 데이터 반영 (옵션)
-- 레퍼런스 이미지 최대 14장, 인물 일관성 5명까지 (옵션)
+- 레퍼런스 이미지 최대 14장 — Pro: 사물 6·인물 5·스타일 3 / NB 2.1: 사물 10·인물 4 (옵션)
 - 다국어 텍스트 렌더링 (로고·표지·UI 모킹)
 
 > "moving from aesthetic output to **reasoning-guided synthesis**" — 이게 핵심. JSON 프롬프팅이 좋아진 게 아니라 **모델이 추론 능력을 갖게 됐다**.
@@ -169,14 +173,14 @@ JSON으로 시리즈화:
 `vendor/mcp/nanobanana`는 환경변수로 모델 전환:
 
 ```bash
-# Pro (reasoning, 고품질)
-export NANOBANANA_MODEL=gemini-3-pro-image-preview
+# 기본 (빠름) — 반드시 지정할 것: 확장 내장 기본값 gemini-3.1-flash-image-preview 는 2026-06-25 종료됨
+export NANOBANANA_MODEL=gemini-nano-banana-2.1
 
-# NB2 (기본, 빠름)
-export NANOBANANA_MODEL=gemini-3.1-flash-image-preview
+# Pro (reasoning, 고품질)
+export NANOBANANA_MODEL=gemini-3-pro-image
 ```
 
-기본값은 NB2. 텍스트 렌더링·복잡한 씬·실존 장소·일관성이 중요하면 Pro로 전환.
+텍스트 렌더링·복잡한 씬·스타일 레퍼런스·일관성이 중요하면 Pro로 전환. 확장(마지막 커밋 2026-03)이 새 ID를 받는지는 **미검증** — 첫 호출이 모델 오류면 이 확장 대신 [`api-patterns.md`](api-patterns.md)의 직접 호출 사용.
 
 ### 사용 패턴
 
@@ -184,19 +188,19 @@ export NANOBANANA_MODEL=gemini-3.1-flash-image-preview
 2. **JSON 직접 제공**: 시리즈 작업·정밀 제어 시
 3. **반복 수정**: "방금 이미지에서 조명만 golden hour로" → JSON의 해당 키만 수정
 
-## 옵션 기능 (Pro 모델 한정)
+## 옵션 기능
 
 ### Search Grounding
 
 실존 장소·실시간 데이터·정확한 사실이 필요할 때:
 - 실제 도쿄 신주쿠 거리, 특정 시점 날씨, 정확한 차트 등
-- API 호출 시 `tools=[{"google_search": {}}]` 옵션 필요 (MCP는 향후 지원 가능성)
+- API 호출 시 `tools=[{"type": "google_search"}]` (공식 예시는 NB 2.1. 다른 모델 지원 여부는 문서 확인)
 
 ### 다중 레퍼런스 이미지
 
 캐릭터/브랜드 일관성이 핵심일 때:
 - 최대 14개 이미지 입력
-- 인물 일관성 최대 5명
+- 인물 일관성 Pro 5명 / NB 2.1 4명, 스타일 레퍼런스는 Pro만(3장)
 - 브랜드 가이드라인·시리즈 작업·스토리보드에 유용
 
 > 단순 이미지 생성에는 과한 기능. 일관성 워크플로우에서만 의미 있음.
@@ -216,7 +220,7 @@ export NANOBANANA_MODEL=gemini-3.1-flash-image-preview
 - [Atlabs Nano Banana Pro Prompting Guide](https://www.atlabs.ai/blog/the-ultimate-nano-banana-pro-prompting-guide-mastering-gemini-3-pro-image)
 - [Miraflow JSON Prompting 2026](https://miraflow.ai/blog/nano-banana-json-prompting-2026)
 - [Google Cloud 공식 가이드](https://cloud.google.com/blog/products/ai-machine-learning/ultimate-prompting-guide-for-nano-banana)
-- [Gemini 3 prompting guide](https://docs.cloud.google.com/vertex-ai/generative-ai/docs/start/gemini-3-prompting-guide)
+- [공식 image generation 문서 (프롬프팅 전략 포함)](https://aistudio.google.com/docs/image-generation)
 - GitHub 프롬프트 라이브러리: `YouMind-OpenLab/awesome-nano-banana-pro-prompts`, `ZeroLu/awesome-nanobanana-pro`
 
 ## vs Midjourney 비교
@@ -224,7 +228,7 @@ export NANOBANANA_MODEL=gemini-3.1-flash-image-preview
 | 측면 | Nano Banana | Midjourney |
 |------|-------------|------------|
 | 입력 방식 | 자연어 (공식) / JSON (커뮤니티) | 텍스트 + 파라미터 |
-| 추론 능력 | Pro 모델 한정으로 강함 | 없음 |
+| 추론 능력 | Pro에서 가장 강함 | 없음 |
 | 텍스트 렌더링 | Pro 우수 (다국어 가능) | 약함 |
 | 일관성 | JSON 재사용 + 14 reference | sref 코드 |
 | 실존 정보 | Search Grounding | 없음 |

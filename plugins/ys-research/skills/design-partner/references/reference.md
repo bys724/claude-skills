@@ -1,7 +1,13 @@
-# Midjourney Reference (V7, 2025~)
+# Midjourney Reference (V7 기준 + V8 상태)
 
 스킬에서 참조하는 미드저니 핵심 레퍼런스.
 업데이트 시 공식 문서 기준으로 갱신할 것.
+
+> **2026-11 상태 [잠정 — 2차 출처, docs.midjourney.com 직접 확인 못 함]**: 기본 모델은 **V8.2**(2026-07~), V8.1 선택 가능. 아래 본문은 V7 기준.
+> - V8에서 **안 되는 것**: `--oref`/`--ow`(Omni Reference), `--cref`, Draft Mode. V8.2는 캐릭터·오브젝트 레퍼런스를 **Edit Model**(레퍼런스 최대 4장)로 처리
+> - V8에서 되는 것: `--ar`(정수 비율), `--s`, `--c`, `--w`(`--p`와 병용 불가), `--sref`(+`--sw`, `--sv 6`), `--p`/무드보드, `--exp`, `--raw`, `--q`, `--iw`, `--no`
+> - 그래서 `--oref`·Draft를 쓰는 레시피는 **`--v 7`을 명시**. 사용자에게 처음 안내할 때 [Parameter List](https://docs.midjourney.com/hc/en-us/articles/32859204029709-Parameter-List)를 열어 확인하라고 한 줄 덧붙일 것
+> - Niji 최신은 `--niji 7` (2026-01). 영상은 V1 Video(이미지→5초 클립)
 
 ## 공식 문서
 
@@ -63,7 +69,7 @@
 
 | 파라미터 | 문법 | 역할 |
 |----------|------|------|
-| Omni Ref | `--oref URL` | 특정 캐릭터/오브젝트를 이미지에 포함 (V7, cref 대체) |
+| Omni Ref | `--oref URL` | 특정 캐릭터/오브젝트를 이미지에 포함 (**V7 전용**, cref 대체. V8은 Edit Model) |
 | Omni Weight | `--ow N` | oref 영향도 |
 | Image Weight | `--iw N` (0-3) | 이미지 프롬프트의 영향도 |
 
@@ -231,7 +237,7 @@ seamless pattern of [elements], [style], [color palette]
 
 ## 전문가 워크플로우
 
-1. **Draft Mode**: `--mode draft` — 10x 빠름, 절반 비용. 빠른 탐색용
+1. **Draft Mode**: `--mode draft` — 10x 빠름, 절반 비용. 빠른 탐색용 (**V7 전용**)
 2. **Broad → Narrow**: 간단한 프롬프트로 시작 → 결과 보고 요소 추가
 3. **Seed A/B 테스트**: `--seed` 고정 → 단어 하나 변경 → 효과 비교
 4. **Vary Region**: 이미지의 특정 부분만 재생성 (20-50% 영역)

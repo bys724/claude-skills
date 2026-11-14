@@ -30,7 +30,7 @@
 ### macOS (Darwin)
 - **샌드박스**: Seatbelt 사용 (제한적)
 - **쓰기 권한**: 작업 디렉토리 외부는 명시적 허용 필요
-- **설정 필요**: `sandbox.filesystem.allowWrite` in ~/.claude.json
+- **설정 필요**: `~/.claude/settings.json`의 `sandbox.filesystem.allowWrite` (`~/.claude.json` 아님)
 - **MCP 충돌 주의**: filesystem MCP 서버 이름 충돌 피하기
 
 ### Linux
@@ -45,46 +45,9 @@
 
 ## 사용자 레벨 MCP 서버 목록
 
-### filesystem (조건부)
+### filesystem — 쓰지 않음
 
-공식 파일시스템 접근 MCP 서버. **Obsidian Vault 접근을 위해 필수**.
-
-**주요 use case:**
-- Obsidian Vault 읽기/쓰기
-- 논문 메모 작성 및 관리
-- paper-summary, research-presentation 스킬에서 사용
-
-```bash
-# Claude Code (User-level 권장)
-# Obsidian Vault만 포함하는 것을 권장
-claude mcp add -s user filesystem \
-  -- npx -y @modelcontextprotocol/server-filesystem \
-  "/Users/bys724/LocalVault/Obsidian Vault"
-```
-
-**Claude Desktop 직접 설정:**
-```json
-// ~/Library/Application Support/Claude/claude_desktop_config.json
-{
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem",
-        "/Users/bys724/LocalVault/Obsidian Vault"
-      ]
-    }
-  }
-}
-```
-
-**환경별 차이점:**
-- **macOS**: `/Users/bys724/LocalVault/Obsidian Vault`
-- **Linux**: `/home/username/Documents/Obsidian Vault`
-- **Windows**: `C:/Users/username/Documents/Obsidian Vault` (슬래시 사용)
-- 공백이 있는 경로는 따옴표로 감싸기
-- 여러 디렉토리 지정 가능하나, 보안상 필요한 것만 포함 권장
+Vault 접근은 MCP 서버가 아니라 `~/.claude/settings.json`의 `permissions.additionalDirectories`에 Vault 경로를 넣어서 한다 (내장 Read/Edit가 그대로 동작). filesystem MCP를 같이 두면 권한 충돌·도구 중복 — 경위는 [MCP_FILESYSTEM_SOLUTION.md](MCP_FILESYSTEM_SOLUTION.md). 이미 등록돼 있으면 `claude mcp remove filesystem -s user`. Claude **Desktop** 앱에서만 Vault가 필요하면 그 앱 설정에 한해 쓴다.
 
 ### arxiv-mcp-server
 
@@ -94,7 +57,7 @@ claude mcp add -s user filesystem \
 # Claude Code
 # uv 설치 필요: https://docs.astral.sh/uv/
 claude mcp add -s user arxiv-mcp-server \
-  -- uv tool run arxiv-mcp-server \
+  -- uvx arxiv-mcp-server \
   --storage-path ~/.arxiv-mcp-server/papers
 ```
 
@@ -119,6 +82,9 @@ claude mcp add -s user arxiv-mcp-server \
 **환경별 차이점:**
 - `uv` 경로: 보통 `~/.local/bin/uv` 또는 `~/.cargo/bin/uv`
 - `--storage-path`: 원하는 위치로 변경 가능
+- Windows: uv를 막 설치했다면 VSCode·터미널을 **완전히 재시작**해야 Claude Code가 `uvx`를 찾는다 (안 하면 `Failed to connect`)
+- **0.8+ 동작 변화**: `read_paper`·`download_paper`는 기본 12k자 청크만 반환 (`return_full_text: true`로 전문). 섹션 단위는 `get_paper_outline` → `read_paper_section`. `search_papers` 기본 5건, `date_from`/`date_to` 필터. 타임아웃 env는 `ARXIV_REQUEST_TIMEOUT`
+- npx로 실행하지 말 것 — 같은 이름의 무관한 npm 패키지가 있음
 
 ### ssh-mcp
 
@@ -223,6 +189,8 @@ npm install && npm run build
 }
 ```
 
+**모델 지정 필수** (2026-11): 확장 내장 기본값 `gemini-3.1-flash-image-preview`는 2026-06-25 종료됐다. `env`에 `"NANOBANANA_MODEL": "gemini-nano-banana-2.1"` (또는 `gemini-3-pro-image`)를 같이 넣을 것. 업스트림은 2026-03 이후 커밋이 없어 새 ID 수용 여부 미검증 — 안 되면 design-partner의 `api-patterns.md` 직접 호출로.
+
 **환경변수 우선순위** (소스 기준):
 `NANOBANANA_API_KEY` > `NANOBANANA_GEMINI_API_KEY` > `NANOBANANA_GOOGLE_API_KEY` > `GEMINI_API_KEY` > `GOOGLE_API_KEY`
 
@@ -245,11 +213,13 @@ Mermaid 다이어그램 생성 및 렌더링 MCP 서버. 마인드맵, 플로우
 - 완전 무료 (MIT 오픈소스)
 - Vault 의존성 없음
 
+**요구사항:** Node **22.13+** (package.json `engines`). Node가 없거나 낮으면 setup 스크립트가 등록을 건너뛴다.
+
 **등록 (npm 패키지 — 빌드 불필요):**
 ```bash
 claude mcp add -s user claude-mermaid -- npx -y claude-mermaid
 ```
-`scripts/setup-workstation.sh`가 없으면 자동 등록. (구 방식인 vendor 서브모듈 빌드는 2026-09에 제거.)
+`scripts/setup-workstation.sh`가 Node 22+일 때 없으면 자동 등록. 업스트림 대안: 플러그인으로 설치 (`/plugin marketplace add veelenga/claude-mermaid`). (구 방식인 vendor 서브모듈 빌드는 2026-09에 제거.)
 
 **사용법:**
 ```
@@ -312,23 +282,9 @@ claude mcp add -s user <server-name> -- <command> <args...>
 - 평문 API 키가 있었다면 revoke 후 재발급
 - 상세 기록: [docs/MCP_DESKTOP_RECOVERY.md](../docs/MCP_DESKTOP_RECOVERY.md)
 
-### filesystem 서버가 Vault에 접근하지 못할 때
+### Vault 접근이 안 될 때
 
-1. 경로가 정확한지 확인:
-   ```bash
-   ls -la "/Users/bys724/LocalVault/Obsidian Vault"
-   ```
-
-2. User-level로 등록되었는지 확인:
-   ```bash
-   claude mcp list
-   # "filesystem:" 줄에서 경로 확인
-   ```
-
-3. Project-level 설정이 있다면 제거:
-   ```bash
-   # ~/.claude.json에서 projects.<project-path>.mcpServers.filesystem 제거
-   ```
+`/permissions`에서 Vault 경로가 추가 디렉토리로 잡혀 있는지 확인 → 없으면 `~/.claude/settings.json`의 `permissions.additionalDirectories`에 추가 후 재시작. 예전 filesystem MCP가 남아 있으면 제거 (`claude mcp list`).
 
 ### 여러 워크스테이션에서 설정 동기화
 

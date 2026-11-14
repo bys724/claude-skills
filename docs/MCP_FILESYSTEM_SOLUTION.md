@@ -30,12 +30,13 @@ claude --add-dir ~/LocalVault/Obsidian\ Vault
 
 ### 방안 2: 계정 레벨 통합 설정
 ```json
-// ~/.claude.json
+// ~/.claude/settings.json  (~/.claude.json 이 아님 — 2026-11 공식 settings 문서 기준)
 {
-  "additionalDirectories": [
-    "/Users/bys724/LocalVault/Obsidian Vault",
-    "/Users/bys724/LocalVault"
-  ],
+  "permissions": {
+    "additionalDirectories": [
+      "/Users/bys724/LocalVault/Obsidian Vault"
+    ]
+  },
   "sandbox": {
     "enabled": true,
     "filesystem": {
@@ -47,19 +48,15 @@ claude --add-dir ~/LocalVault/Obsidian\ Vault
 }
 ```
 
-**주의**: filesystem MCP 서버는 설정하지 않음 (자동 생성과 충돌)
+**주의**: filesystem MCP 서버는 설정하지 않음 (자동 생성과 충돌). Windows는 샌드박스 블록 불필요
 
 ### 방안 3: 프로젝트별 설정
 ```json
 // {project}/.claude/settings.local.json
 {
-  "additionalDirectories": [
-    "/Users/bys724/LocalVault/Obsidian Vault"
-  ],
   "permissions": {
-    "allow": [
-      "Read(path:/Users/bys724/LocalVault/Obsidian Vault)",
-      "Write(path:/Users/bys724/LocalVault/Obsidian Vault)"
+    "additionalDirectories": [
+      "/Users/bys724/LocalVault/Obsidian Vault"
     ]
   }
 }
@@ -107,7 +104,7 @@ Write("/Users/bys724/LocalVault/Obsidian Vault/새노트.md")
 
 - [ ] Claude Code 재시작했나?
 - [ ] 절대 경로 사용했나? (`~` 아닌 `/Users/...`)
-- [ ] additionalDirectories에 경로 있나?
+- [ ] `permissions.additionalDirectories`에 경로 있나?
 - [ ] sandbox.allowWrite에 경로 있나?
 - [ ] 프로젝트 .claude 폴더가 설정 오버라이드하나?
 

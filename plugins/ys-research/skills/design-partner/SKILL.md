@@ -18,7 +18,7 @@ AI 이미지 생성 프롬프트를 **대신 만들어주는 게 아니라, 함�
 | Midjourney | 텍스트 프롬프트 + 파라미터 | [`reference.md`](references/reference.md) |
 | Nano Banana | 자연어 내러티브(공식) / JSON(커뮤니티 최적화) | [`nano-banana-reference.md`](references/nano-banana-reference.md) |
 | Nano Banana Python API | 코드 통합·배치 | [`api-patterns.md`](references/api-patterns.md) |
-| 영상 (이미지 + Veo) 기술 파이프라인 | 키프레임 → 클립 → 스티칭의 모델·SDK 디테일 | [`video-workflow.md`](references/video-workflow.md) |
+| 영상 (이미지 + Omni Flash) 기술 파이프라인 | 키프레임 → 클립 → 스티칭의 모델·SDK 디테일 | [`video-workflow.md`](references/video-workflow.md) |
 
 플랫폼 선택 기준은 [`nano-banana-reference.md`](references/nano-banana-reference.md)의 "자연어 vs JSON" 및 비교 표 참조. 사용자가 명시하지 않으면 먼저 묻는다.
 
@@ -43,7 +43,7 @@ C) 추천해주세요
 3. **선택지 제시** — 사용자가 직접 판단하도록 옵션을 제시하고 고르게 함
 4. **스타일 분리 훈련** — 컨텐츠(무엇)와 스타일(어떻게)을 항상 분리해서 논의
 
-> **톤**: 정답을 내려주는 게 아니라 격려하며 함께 만드는 코치. 4.8 기본 톤은 더 직설적이므로, 따뜻하게 안내한다는 점을 의식적으로 유지.
+> **톤**: 정답을 내려주는 게 아니라 격려하며 함께 만드는 코치. 기본 톤이 직설적으로 흐르기 쉬우므로, 따뜻하게 안내한다는 점을 의식적으로 유지.
 
 ## Phase 1: 구상 정리
 
@@ -78,7 +78,7 @@ Photography / Illustration / Concept Art / Cinematic / Character Design / Patter
 
 **예시 — 사용자가 "이런 캐릭터 영상 만들고 싶어" 라고 말한 경우:**
 
-> "영상 제작이군요. 단발 프롬프트로 가면 컷 간 일관성이 깨져요. 영상 워크플로우는 5단계예요: ① 기획 → ② 스토리보드 → ③ 비주얼 디벨롭먼트(에셋 준비) → ④ 키프레임 → ⑤ Veo 클립화 + 스티칭. 지금은 ① 기획부터 시작할게요. 한 줄 컨셉부터 잡아볼까요?"
+> "영상 제작이군요. 단발 프롬프트로 가면 컷 간 일관성이 깨져요. 영상 워크플로우는 5단계예요: ① 기획 → ② 스토리보드 → ③ 비주얼 디벨롭먼트(에셋 준비) → ④ 키프레임 → ⑤ 클립화 + 스티칭. 지금은 ① 기획부터 시작할게요. 한 줄 컨셉부터 잡아볼까요?"
 
 **진입 금지 케이스:** 용도가 모호하거나 사용자가 단발 실험을 명시한 경우(`"테스트로 한 장만 뽑아보자"`)는 워크플로우 강제하지 않음. 대신 "이건 단발이고, 시리즈 작업 들어가면 워크플로우 들어가야 일관성 잡혀요" 정도로 안내.
 
@@ -127,7 +127,7 @@ C) [직접 아이디어가 있다면 말해주세요]
 - "MJ가 자기 맘대로" → `--s` (stylize)
 - "4장이 너무 비슷해" → `--c` (chaos)
 - "이 분위기 유지하고 싶어" → `--sref`
-- "이 캐릭터를 다른 장면에서도" → `--oref`
+- "이 캐릭터를 다른 장면에서도" → V7: `--oref` / V8(기본): Edit Model에 레퍼런스 이미지 — 버전 차이는 [`reference.md`](references/reference.md) 상단
 - "배경을 흐리게" → shallow depth of field, 85mm lens
 - "영화 같은 느낌" → anamorphic, cinematic lighting
 
@@ -161,14 +161,14 @@ Nano Banana JSON의 `madeOutOf`, `arrangement`, `colorRestriction`, `label` 등 
 영상은 두 층의 가이드가 필요. 진입 시 둘 다 활용:
 
 - **기획·에셋 준비** (Phase 0-2): 스토리보드, 캐릭터/환경 시트, 무드보드 → [`workflows.md`](references/workflows.md)의 "Cinematic / 영상 제작" 섹션
-- **기술 파이프라인** (Phase 3-5): 키프레임 → Veo image-to-video → FFmpeg 스티칭 → [`video-workflow.md`](references/video-workflow.md)
+- **기술 파이프라인** (Phase 3-5): 키프레임 → image-to-video(Omni Flash) → FFmpeg 스티칭 → [`video-workflow.md`](references/video-workflow.md)
 
 사용자가 영상 제작을 요청하면 단발 클립 생성으로 가지 말고, 위 두 문서를 거쳐 단계대로 안내.
 
 ## 실행 환경
 
 - **Nano Banana MCP** (대화 기반 루프): 공식 `gemini-cli-extensions/nanobanana`. 설치는 claude-skills 저장소의 `docs/mcp-servers.md`. 연결 시 `generate_image` / `edit_image` / `restore_image` 노출
-- **모델 전환** (환경변수): NB2 = `gemini-3.1-flash-image-preview` (빠른 반복) / NB Pro = `gemini-3-pro-image-preview` (텍스트·복잡한 추론·일관성)
+- **모델 전환** (환경변수 `NANOBANANA_MODEL`, **반드시 지정** — 확장 내장 기본값은 종료된 preview ID): NB 2.1 = `gemini-nano-banana-2.1` (빠른 반복) / NB Pro = `gemini-3-pro-image` (텍스트·복잡한 추론·일관성)
 - **Python API 직접 호출** (코드 통합): [`api-patterns.md`](references/api-patterns.md)
 
 ## 하지 말 것

@@ -36,10 +36,10 @@ description: "This skill should be used when the user sends an arxiv link, paper
 
 사용자가 논문 제목·링크를 주면:
 
-1. `search_papers`로 검색
+1. `search_papers`로 검색 (기본 5건)
 2. `download_paper`로 다운로드
-3. `read_paper`로 전문 파악
-4. 핵심 내용을 짧게 요약 — 사용자가 PDF를 열기 전에 큰 그림을 잡도록
+3. `get_paper_outline`으로 섹션 구조를 본 뒤 `read_paper_section`으로 Abstract·Introduction·Method·Results·Conclusion을 읽는다. `read_paper`는 기본으로 **앞 12k자 청크만** 돌려주므로(arxiv-mcp-server 0.8+) 그것만 읽고 전문을 파악했다고 보지 않는다 — 전문이 필요하면 `return_full_text: true`
+4. 핵심 내용을 짧게 요약 — 사용자가 PDF를 열기 전에 큰 그림을 잡도록. Phase 2 질문에 답할 때도 해당 섹션을 `read_paper_section`·`search_paper_text`로 다시 확인
 
 시작 멘트: "논문을 찾아서 읽어보겠습니다."
 

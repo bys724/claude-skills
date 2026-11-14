@@ -18,7 +18,7 @@ vendor/mcp/nanobanana             # git submodule (MCP 서버, 이 경로에서 
 
 ## 작업 패턴
 
-- **스킬·에이전트·스타일 수정** → `plugins/ys-research/.claude-plugin/plugin.json`의 `version` 올리기 → `claude plugin validate ./plugins/ys-research` → `claude plugin update ys-research@ys-skills` → Claude Code 재시작. 같은 version이면 update가 캐시를 갱신하지 않음 (2026-09-23 확인)
+- **스킬·에이전트·스타일 수정** → `plugins/ys-research/.claude-plugin/plugin.json`의 `version` 올리기 → `claude plugin validate ./plugins/ys-research` → `claude plugin update ys-research@ys-skills` → Claude Code 재시작. 같은 version이면 update가 캐시를 갱신하지 않음 (2026-09-23 확인, 2026-11-15 Windows 재확인 — 로컬 경로 마켓플레이스여도 `version`이 있으면 `~/.claude/plugins/cache/.../<version>/`로 복사돼 로드됨. 공식 문서의 "로컬은 제자리 로드"와 다름)
 - **유저 템플릿 수정** (`templates/user/CLAUDE.md`) → 워크스테이션 사본은 diff 보고 수동 반영 (placeholder ↔ 실경로 차이는 의도됨). 답변 형식 규칙은 여기 말고 `output-styles/`에
 - **프로젝트 템플릿 수정** → 대상 저장소에서 `scripts/apply-project-dev.sh` 재실행
 - **vendor 갱신** → `git submodule update --remote vendor/mcp/nanobanana` 후 빌드

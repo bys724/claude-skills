@@ -23,19 +23,21 @@ bash scripts/setup-workstation.sh
 ```
 
 하는 일 (재실행 안전):
-1. CLI 버전 확인 — 2.1.2xx 미만이면 `claude update` 먼저
+1. CLI 확인 — PATH에 없으면 VSCode 확장 번들(`~/.vscode*/extensions/anthropic.claude-code-*/resources/native-binary`)을 찾아 씀. 2.1.2xx 미만이면 `claude update` 먼저
 2. 마켓플레이스를 이 저장소 경로로 등록 → `ys-research` 플러그인 설치 (이미 있으면 update)
 3. `~/.claude/skills/`·`agents/`의 옛 복사본 중 플러그인과 겹치는 것 삭제
 4. `~/.claude/CLAUDE.md` 없으면 템플릿 복사
 5. `~/.claude/settings.json`에 `outputStyle: ys-research:discuss`, `autoMemoryDirectory: ~/.claude/memory-shared` 병합 (다른 키 유지)
-6. MCP 등록 — arxiv-mcp-server, claude-mermaid (없는 것만)
+6. MCP 등록 — arxiv-mcp-server(`uvx` 있을 때), claude-mermaid(Node 22+ 있을 때). 전제 도구가 없으면 등록하지 않고 알려줌 — 깨진 서버를 등록하면 매 세션 연결 실패
+
+Python은 `plugins/ys-research/hooks/python.sh`가 고른다 (hook과 공용). Windows의 `python`/`python3`는 Microsoft Store 별칭이라 찾아지지만 실행이 안 되는 경우가 있어서, 실제로 실행되는 해석기(uv가 깐 `~/.local/bin/python3.X` 포함)를 찾는다.
 
 ## 3. 수동 마무리
 
 - `~/.claude/CLAUDE.md` 맨 아래 "주요 경로"의 placeholder를 실경로로 교체
 - nanobanana MCP: API 키·빌드 → [docs/mcp-servers.md](docs/mcp-servers.md)
-- Vault가 있으면 `~/.claude.json`의 `additionalDirectories`에 Vault 경로 추가. **filesystem MCP 서버를 만들지 말 것** (권한 충돌·중복 — [docs/MCP_FILESYSTEM_SOLUTION.md](docs/MCP_FILESYSTEM_SOLUTION.md))
-- 샌드박스: macOS(Seatbelt)·Linux(bubblewrap)는 `sandbox.filesystem.allowWrite`에 Vault 경로. Windows는 불필요
+- Vault가 있으면 `~/.claude/settings.json`의 `permissions.additionalDirectories`에 Vault 경로 추가 (`~/.claude.json`이 아님). **filesystem MCP 서버를 만들지 말 것** (권한 충돌·중복 — [docs/MCP_FILESYSTEM_SOLUTION.md](docs/MCP_FILESYSTEM_SOLUTION.md))
+- 샌드박스: macOS(Seatbelt)·Linux(bubblewrap)는 `~/.claude/settings.json`의 `sandbox.filesystem.allowWrite`에 Vault 경로. Windows는 불필요
 - Claude Code 재시작 → `/output-style`에 `ys-research:discuss`·`ys-research:research-dev`가 보이면 정상
 - 영어 코치(플러그인 hook)는 설치만으로 켜진다. 한글 요청 앞에 `🗣` 블록이 뜨면 정상. 끄려면 `~/.claude/settings.json`에 `"env": {"ENGLISH_COACH": "off"}` (저장소만 끄려면 그 저장소 `.claude/settings.json`). 음성 입력은 내장 `/voice`
 
@@ -71,7 +73,8 @@ bash scripts/apply-project-dev.sh <repo-path>
 
 ## 7. 워크스테이션 케이스
 
-- **Vault 있음 (맥북)**: `additionalDirectories` + `sandbox.allowWrite`에 Vault 경로
+- **Vault 있음 (맥북)**: `permissions.additionalDirectories` + `sandbox.filesystem.allowWrite`에 Vault 경로
 - **Vault 없음 (리눅스 클러스터 PC)**: 두 항목 비움. 설계 관찰은 저장소 `docs/VAULT_SYNC_TODO.md`에 기록 (Vault 세션이 반영)
   - **mrg 클러스터 한정**: `claude` CLI가 PATH에 없다 — VSCode 확장 번들(`~/.vscode-server/extensions/anthropic.claude-code-*/resources/native-binary`)을 PATH에 넣어야 2단계 스크립트가 돈다. 또 node v10·`uv` 없어 스크립트가 등록하는 `arxiv-mcp-server`·`claude-mermaid`가 연결 실패하므로 재실행마다 `claude mcp remove <name> -s user`로 뗄 것 (논문·다이어그램 워크플로우는 이 워크스테이션 담당이 아니라 실무 지장 없음)
+- **Windows PC** (2026-11-15 적용): CLI는 VSCode 확장 번들만 있음 → 스크립트가 자동으로 찾음. Python은 uv 관리본(`~/.local/bin/python3.15`)만 실제 동작 — `python`/`python3`는 Store 별칭. uv·Python을 막 설치했다면 **VSCode를 완전히 재시작**해야 새 PATH가 Claude Code·MCP에 보인다 (안 하면 arxiv MCP가 `uvx`를 못 찾아 연결 실패). Node 없음 → claude-mermaid 미등록. Vault 없음
 - **SSH로 Vault 접근**: ssh-mcp 설정, 로컬 임시 노트 `~/temp-notes/`

@@ -6,11 +6,11 @@ set -euo pipefail
 REPO="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && (pwd -W 2>/dev/null || pwd))"   # Git Bash 에선 Windows 경로
 T="$REPO/templates/project-dev"
 TARGET="${1:?usage: apply-project-dev.sh <repo-path>}"
-PY="$(command -v python3 || command -v python)"
+PY=(bash "$REPO/plugins/ys-research/hooks/python.sh")   # Windows Store 별칭을 건너뛰는 해석기 탐색
 cd "$TARGET"
 mkdir -p .claude docs
 
-"$PY" - .claude/settings.json "$T/settings.json" <<'PYEOF'
+"${PY[@]}" - .claude/settings.json "$T/settings.json" <<'PYEOF'
 import json, os, sys
 dst, src = sys.argv[1], sys.argv[2]
 cur = json.load(open(dst, encoding="utf-8")) if os.path.exists(dst) else {}

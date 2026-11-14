@@ -9,6 +9,9 @@ tools:
   - WebSearch
   - WebFetch
   - Write          # Vault Output 섹션 — 보고서 파일 생성
+  # arxiv MCP — 최신 논문 검색·초록 (Phase 2A). 서버는 유저 스코프에 등록 (setup-workstation.sh)
+  - mcp__arxiv-mcp-server__search_papers
+  - mcp__arxiv-mcp-server__get_abstract
   # Apify MCP — Twitter/Reddit 커뮤니티 스크래핑 (Phase 2B의 핵심 도구)
   - mcp__apify__search-actors
   - mcp__apify__fetch-actor-details
@@ -47,7 +50,8 @@ tools:
 ### Phase 2: Real-Time Trend Scouting
 
 **A. Academic Sources (arxiv)**
-- WebSearch: "arxiv [topic] 2025 2026"
+- arxiv MCP `search_papers`로 최근 3개월 범위(날짜 필터) 검색 → 후보는 `get_abstract`로 초록 확인. 전문 다운로드는 하지 않는다 (보고서엔 초록 수준이면 충분)
+- arxiv MCP가 연결 안 된 세션이면 WebSearch로 대체: "arxiv [topic] <올해 연도>"
 - 최신 논문 5-7개 식별
 
 **B. Community Intelligence (Apify 활용)**

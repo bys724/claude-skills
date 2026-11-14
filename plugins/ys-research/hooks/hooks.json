@@ -5,7 +5,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "\"$(command -v python3 || command -v python)\" \"$CLAUDE_PLUGIN_ROOT/hooks/english_coach.py\"",
+            "command": "bash \"${CLAUDE_PLUGIN_ROOT}/hooks/python.sh\" \"${CLAUDE_PLUGIN_ROOT}/hooks/english_coach.py\" || true",
             "timeout": 10
           }
         ]

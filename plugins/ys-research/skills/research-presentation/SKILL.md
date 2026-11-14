@@ -83,7 +83,7 @@ description: "This skill should be used when the user wants to create academic o
 
 ### Phase 5: PPT 파일 생성
 
-최종 승인 후 공식 pptx 스킬의 html2pptx 워크플로우로 .pptx 생성. 선택한 테마는 `references/themes.md`의 색상·배경에 따라 자동 적용.
+최종 승인 후 공식 pptx 스킬(`anthropic-skills:pptx`)을 **먼저 로드하고** 그 생성 절차(현재 pptxgenjs 스크립트 + 테마 적용 + QA)를 따른다. 생성 방식은 그 스킬이 정본 — 여기 적지 않는 이유는 공식 스킬이 자주 바뀌기 때문 (2026-11: html2pptx → pptxgenjs로 교체됨). 선택한 테마는 `references/themes.md`의 색상을 그 스킬의 테마 입력으로 넘긴다.
 
 ## Key Features
 
@@ -144,7 +144,7 @@ Claude: "Modern Research 테마(Teal & Emerald)로 제작하겠습니다. 구조
 [반복 개선...]
 
 사용자: "완성이야, PPT 만들어줘"
-→ html2pptx로 .pptx 생성
+→ pptx 스킬로 .pptx 생성
 ```
 
 ## 원칙
@@ -155,6 +155,6 @@ Claude: "Modern Research 테마(Teal & Emerald)로 제작하겠습니다. 구조
 
 ## Dependencies
 
-- 공식 pptx 스킬의 html2pptx 워크플로우
+- 공식 pptx 스킬 `anthropic-skills:pptx` (Claude Code가 자동 동기화)
 - Obsidian vault 경로: 전역 CLAUDE.md
-- markitdown, python-pptx (공식 스킬에서 제공)
+- pptxgenjs·python-pptx 등 의존성은 공식 스킬 문서 기준

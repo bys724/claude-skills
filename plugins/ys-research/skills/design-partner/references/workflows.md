@@ -37,7 +37,7 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 
 ## 1. Cinematic / 영상 제작
 
-키프레임 → Veo 클립화 → 스티칭의 **기술적 파이프라인**은 [`video-workflow.md`](video-workflow.md)에 별도. 여기서는 그 **앞 단계(기획·에셋 준비)**에 집중.
+키프레임 → 영상 모델 클립화 → 스티칭의 **기술적 파이프라인**은 [`video-workflow.md`](video-workflow.md)에 별도. 여기서는 그 **앞 단계(기획·에셋 준비)**에 집중.
 
 ### 단계
 
@@ -62,9 +62,9 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 **Phase 3 — 키프레임 생성**
 - 컷별 핵심 프레임을 이미지 생성 (Phase 2 에셋을 ref로 활용)
 - 일관성 확인: 같은 캐릭터·광원·스타일이 모든 키프레임에 유지되는가
-- **모델 선택**: 일관성 필수 → Nano Banana Pro (ref 14장) / 빠른 탐색 → Midjourney·NB2
+- **모델 선택**: 일관성 필수 → Nano Banana Pro (ref 14장) / 빠른 탐색 → Midjourney·NB 2.1
 
-**Phase 4 — 클립화 (Veo image-to-video)**
+**Phase 4 — 클립화 (image-to-video, Omni Flash)**
 - 각 키프레임을 짧은 클립으로 (보통 8초)
 - 카메라 모션 프롬프트 (pan / dolly / static)
 - 비용 관리: Lite로 컨셉 검증 → Standard로 최종
@@ -204,7 +204,7 @@ Vault CLAUDE.md의 "AI 이미지 생성 프롬프트 워크플로우" 정책에 
 
 **Phase 2 — 러프 (Composition Sketch)**
 - 구도·요소 배치만 빠르게
-- Midjourney 텍스트 묘사 또는 NB2
+- Midjourney 텍스트 묘사 또는 NB 2.1
 - **산출물**: 3-5 러프
 
 **Phase 3 — 디테일 발전**
