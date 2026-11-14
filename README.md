@@ -11,11 +11,13 @@ claude-skills/
 │   ├── skills/          paper-summary · research-presentation · design-partner · code-cleaner
 │   ├── agents/          research-advisor · scout
 │   ├── output-styles/   discuss (user default) · research-dev (experiment repos)
-│   └── hooks/           english-coach (UserPromptSubmit) — English speaking coach
+│   ├── hooks/           english-coach (UserPromptSubmit) — English speaking coach
+│   └── evals/           `claude plugin eval` cases — skill triggers, hook modes
 ├── templates/
 │   ├── user/            ~/.claude/CLAUDE.md master · settings.json keys      (per workstation)
 │   └── project-dev/     settings.json (style) · STATUS.md · CLAUDE.md snippet  (per experiment repo)
 ├── scripts/             setup-workstation.sh · apply-project-dev.sh
+├── routines/            instructions read by cloud routines (/schedule) — arxiv-weekly.md
 ├── docs/                AUTHORING.md (skills/agents/styles) · mcp-servers.md · troubleshooting
 └── vendor/mcp/nanobanana   git submodule — MCP server run from this path
 ```
@@ -31,6 +33,8 @@ claude-skills/
 English coach (plugin hook, on everywhere): a Korean request gets a short spoken-English model of the request before the work starts; an English request gets a one-line restatement of what was understood plus a natural rewrite. Turn off per machine or repo with `ENGLISH_COACH=off` in settings `env`.
 
 Rationale: the same knowledge and tools everywhere, a different response format per context. Vault and paper repos stay on `discuss`; cluster/experiment repos switch to `research-dev`, which reports state (not events), tags every claim with a confidence level, and asks for one decision at a time with a recommendation.
+
+Weekly arxiv watch: a cloud routine (Mondays 09:00 KST) reads [routines/arxiv-weekly.md](routines/arxiv-weekly.md), collects last week's papers on the research interests, and writes a Claude Docs report. Edit that file and push to change topics; manage the routine at claude.ai/code/routines.
 
 ## Setup
 

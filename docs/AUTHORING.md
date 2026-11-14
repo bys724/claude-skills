@@ -92,6 +92,23 @@ tools:
 - 테스트는 가짜 stdin으로: `echo '{"prompt":"..."}' | python hooks/english_coach.py`. hook 변경은 재시작 후에만 반영된다
 - 끄기: `ENGLISH_COACH=off` (settings `env`)
 
+## Eval (`plugins/ys-research/evals/`)
+
+`claude plugin eval`로 트리거·hook 회귀 테스트. 케이스 = 디렉토리 하나 (`prompt.md` frontmatter + 프롬프트, `graders/*.md` 채점기 하나씩). 플러그인 있는 갈래 vs 없는 갈래를 비교해 Δ로 효과를 본다. 형식: [공식 문서](https://code.claude.com/docs/en/plugin-evals).
+
+- 현재 케이스: 스킬 4종 트리거 · code-cleaner 비트리거(평상시 수정) · 영어 코치 모드 1/2/건너뜀
+- 채점기는 `tool_used`(Skill 호출)·`regex`(응답 본문)만 쓴다 — 추가 비용 0. `llm` 채점기는 run마다 판정 호출 3회가 붙는다
+- 매 run이 실제 모델 호출 (케이스 × runs × 2갈래). 전체 1회 ≈ $1.6 (2026-11 실측)
+- frontmatter 값에 `: `가 들어가면 따옴표로 감쌀 것 (YAML 파싱 실패 → 케이스 로드 실패)
+- 샌드박스는 HOME을 임시 폴더로 바꾼다 — hook이 HOME 기준 경로에 기대면 eval에서만 조용히 실패한다 (python.sh가 `uv python find`를 쓰는 이유)
+
+```bash
+claude plugin eval ./plugins/ys-research --runs 1 --max-cost-usd 3 --trust-plugin --no-publish   # 전체
+claude plugin eval ./plugins/ys-research --tag hook --runs 1 --ablation none --keep-temp          # 디버깅
+```
+
+스킬 description·hook을 고친 뒤엔 관련 태그(`trigger`·`negative`·`hook`)만이라도 돌린다. `results/`는 gitignore.
+
 ## 변경 후 검증·반영
 
 1. `plugins/ys-research/.claude-plugin/plugin.json`의 `version` 올리기 — 같은 버전이면 `update`가 캐시를 갱신하지 않는다. 로컬 디렉토리 마켓플레이스여도 `version`이 있으면 `~/.claude/plugins/cache/ys-skills/ys-research/<version>/`에 복사돼 거기서 로드된다 (2026-11-15 Windows 실측: `installed_plugins.json`의 `installPath`)

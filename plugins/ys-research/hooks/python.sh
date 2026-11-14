@@ -4,7 +4,9 @@
 # `command -v python3` 만으로는 부족하다: Windows 는 PATH 에 Microsoft Store 별칭(WindowsApps\python*.exe)이
 # 있어서 찾아지긴 하지만 실행하면 실패한다 (2026-11 Windows PC 실측). uv 로 설치한 Python 은
 # ~/.local/bin/python3.X 이름만 있고 python3 은 없을 수 있어 그것도 후보에 넣는다.
-for p in python3 python py "$HOME"/.local/bin/python3.*; do
+# `uv python find` 는 HOME 과 무관하게 uv 관리 Python 경로를 알려준다 (eval 샌드박스처럼 HOME 이 바뀌어도 동작).
+UVPY="$(command -v uv >/dev/null 2>&1 && uv python find 2>/dev/null || true)"
+for p in python3 python py ${UVPY:+"$UVPY"} "$HOME"/.local/bin/python3.*; do
   command -v "$p" >/dev/null 2>&1 || continue
   "$p" -c "" >/dev/null 2>&1 </dev/null || continue
   exec "$p" "$@"
