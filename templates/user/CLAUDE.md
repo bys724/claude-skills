@@ -98,7 +98,7 @@ CLAUDE.md는 세 레이어:
 ### Vault 노트 양방향 편집 가드레일
 
 **프로젝트 → Vault 노트**:
-- 읽기는 자유 (filesystem MCP / Read 등)
+- 읽기는 자유 (Read 등 내장 도구 — Vault 경로는 `permissions.additionalDirectories`로 연다. filesystem MCP는 쓰지 않음)
 - 한두 줄 추가, 링크 걸기 같은 가벼운 편집은 허용
 - 신규 노트 작성, 폴더 구조 변경, 기존 노트 대규모 리팩토링은 Vault 작업공간(`<Vault root>`)에서 클로드 코드를 새로 띄워 진행
 - 이유: Vault 컨벤션을 자동 적용받지 못하면 노트 일관성이 깨짐

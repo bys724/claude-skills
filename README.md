@@ -34,7 +34,7 @@ English coach (plugin hook, on everywhere): a Korean request gets a short spoken
 
 Rationale: the same knowledge and tools everywhere, a different response format per context. Vault and paper repos stay on `discuss`; cluster/experiment repos switch to `research-dev`, which reports state (not events), tags every claim with a confidence level, and asks for one decision at a time with a recommendation.
 
-Weekly brief: a cloud routine (Mondays 09:00 KST) reads [routines/weekly-brief.md](routines/weekly-brief.md), collects last week's arxiv papers matching the interest profile plus robotics/AI industry news, and writes one Claude Docs report with a ready-to-paste reading-list block. The profile is distilled from the vault by a local session (the cloud run cannot see the vault); ask for a routine refresh to update it. Manage the routine at claude.ai/code/routines.
+Weekly brief: a cloud routine (Mondays 09:00 KST) reads [routines/weekly-brief.md](routines/weekly-brief.md), collects last week's arxiv papers matching the interest profile plus robotics/AI industry news, and publishes one artifact page (push notification with the link) with a ready-to-paste reading-list block. The profile is distilled from the vault by a local session (the cloud run cannot see the vault); ask for a routine refresh to update it. Manage the routine at claude.ai/code/routines.
 
 ## Setup
 
