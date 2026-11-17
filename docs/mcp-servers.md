@@ -85,6 +85,7 @@ claude mcp add -s user arxiv-mcp-server \
 - Windows: uv를 막 설치했다면 VSCode·터미널을 **완전히 재시작**해야 Claude Code가 `uvx`를 찾는다 (안 하면 `Failed to connect`)
 - **0.8+ 동작 변화**: `read_paper`·`download_paper`는 기본 12k자 청크만 반환 (`return_full_text: true`로 전문). 섹션 단위는 `get_paper_outline` → `read_paper_section`. `search_papers` 기본 5건, `date_from`/`date_to` 필터. 타임아웃 env는 `ARXIV_REQUEST_TIMEOUT`
 - npx로 실행하지 말 것 — 같은 이름의 무관한 npm 패키지가 있음
+- **`uv tool install`로 깔아둔 적이 있으면 `uvx`는 그 설치본을 계속 쓴다** — 최신으로 안 올라감 (맥북 2026-11-17: 0.3.1에 머물러 `get_abstract`·`get_paper_outline` 등이 없었음). `uv tool list`로 확인 후 `uv tool upgrade arxiv-mcp-server`
 
 ### ssh-mcp
 
