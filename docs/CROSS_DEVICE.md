@@ -10,7 +10,7 @@
 - **Vault 는 양 기기 모두 Obsidian Sync 로 동기화 중이다.** Mac `~/LocalVault/Obsidian Vault` (`.obsidian/core-plugins.json` `"sync": true`) ↔ Windows `C:/Users/bys72/Obsidian/vault_YS` (사용자 확인 · iCloud/OneDrive 와 무관). 처음에 "로컬 폴더"로 적었던 것은 오판 — 정정.
 - launchd `com.user.obsidian-backup` 의 1시간 `rsync --delete` → `~/Documents/ObsidianVault_Backup`(iCloud) 은 **별도 백업**일 뿐이다. 그대로 둔다. Windows 는 이 사본을 쓰지 않는다.
 - 메모리 = Mac `~/.claude/memory-shared/` (50편 · 256K) **→ §2 완료, 지금은 `<Vault>/Meta/claude-memory/`**. Windows 에 없음 → Vault 안에 넣으면 Obsidian Sync 가 함께 옮긴다. 임시 조치 `tmp/메모리 발췌 2026-11-21.md` 는 §2 뒤 삭제 대상.
-- Obsidian Sync 주의 둘: ① **앱이 열려 있을 때만** 동기화된다 — 기기를 끄기 전 Obsidian 에서 동기화 완료(상태 아이콘) 확인. ② `.obsidian/` 외 **점(.) 폴더는 동기화하지 않는 것으로 알려짐** → Vault `.claude/CLAUDE.md`·`.claude/settings.json` 이 Windows 에 있는지 확인(§6). 없으면 Mac 에서 복사하거나, 내용을 동기화되는 위치로 옮기는 것을 Vault 세션에서 결정.
+- Obsidian Sync 주의 둘: ① **앱이 열려 있을 때만** 동기화된다 — 기기를 끄기 전 Obsidian 에서 동기화 완료(상태 아이콘) 확인. ② `.obsidian/` 외 **점(.) 폴더는 동기화하지 않는다** → **11-21 Vault 세션에서 해결**: `.claude/CLAUDE.md` 를 `Meta/claude/vault-guide.md` 로 옮기고 루트 `CLAUDE.md` 가 `@Meta/claude/vault-guide.md` 로 불러온다(동기화됨). `.claude/settings.json`·`settings.local.json` 은 Mac 절대 경로·권한 목록이라 **기기별로 두는 게 맞음**(옮기지 않음 · Windows 는 자기 것 생성). 옛 `.claude/agents/obsidian-research-assistant.md` 삭제.
 
 ## 1. 동기화 방식 — 결정 완료 (A · Obsidian Sync · 이미 운용 중)
 
@@ -35,6 +35,7 @@
 - `templates/user/CLAUDE.md` "주요 경로" placeholder 를 **기기별 표**로: Vault(Mac `~/LocalVault/Obsidian Vault` · Windows `C:/Users/bys72/Obsidian/vault_YS`) · claude-skills(`~/Documents/claude-skills`). 각 워크스테이션 사본은 자기 행만 유효. `~/.claude/CLAUDE.md` 사본에도 반영.
 - Vault 루트 `CLAUDE.md` 의 `file:///Users/bys724/Documents/<repo>` 링크 교체는 **Vault 세션**에서(§5 와 같은 편집 · 가드레일상 Vault CLAUDE.md 정책 변경은 Vault 세션).
 - `~/.claude/settings.json` 의 `permissions.additionalDirectories`·`sandbox` 는 기기별 파일이라 그대로.
+- `templates/user/CLAUDE.md` "설정 층 구조" 절의 **Vault** 레이어 경로 `Obsidian Vault/.claude/CLAUDE.md` → `Obsidian Vault/Meta/claude/vault-guide.md` (루트 CLAUDE.md 가 @import). `~/.claude/CLAUDE.md` 사본에도.
 
 ## 5. Vault 루트 `CLAUDE.md` 에 "기기 간 작업" 절 (Vault 세션에서 · 짧게 · 이 저장소 세션은 **지시만 남김**)
 
@@ -46,7 +47,7 @@
 ## 6. Windows 에서 사용자가 직접 할 일 (Mac 세션 완료 뒤)
 
 1. Obsidian 열어 동기화 완료 확인 → `Meta/claude-memory/` 와 `tmp/*인계*.md` 가 보이는지.
-2. Vault `.claude/` 폴더(CLAUDE.md · settings.json)가 Windows Vault 에 있는지 확인. 없으면 Mac 에서 복사(Obsidian Sync 점 폴더 미동기화 가능성).
+2. Vault 지침은 `Meta/claude/vault-guide.md` 로 동기화돼 오므로 복사할 것 없음. Windows Vault 의 `.claude/settings.json` 은 **자기 경로로 새로 생성**(`permissions.additionalDirectories` 에 Windows 저장소 경로). 권한 허용 목록은 쓰면서 쌓이게 둔다.
 3. `~/.claude/settings.json`: `"autoMemoryDirectory": "C:/Users/bys72/Obsidian/vault_YS/Meta/claude-memory"` · `permissions.additionalDirectories` 에 Vault 경로.
 4. `cd ~/Documents/claude-skills && git pull` → `claude plugin update ys-research@ys-skills` → `~/.claude/CLAUDE.md` 를 템플릿과 diff 해 경로 표·push 한 줄 반영.
 5. 저장소 clone(§3).
