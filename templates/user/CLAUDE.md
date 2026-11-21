@@ -153,9 +153,9 @@ CLAUDE.md는 세 레이어:
 
 > 이 파일은 `claude-skills/templates/user/CLAUDE.md` **마스터 사본**. 새 워크스테이션 셋업 시 `~/.claude/CLAUDE.md`로 **복사** — **심링크(`ln -s`) 금지**(워크스테이션 정보가 템플릿으로 역류). 절차: [`SETUP_GUIDE.md`](../../SETUP_GUIDE.md) (`scripts/setup-workstation.sh`가 복사까지 수행). 본문의 `<Vault root>`는 자기 기기 행의 Vault 경로.
 >
-> 기기별 실경로 표 — 각 워크스테이션 사본에서는 **자기 행만 유효**. 저장소는 모든 기기에서 `~/Documents/<repo>`.
+> 기기별 실경로 표 — 각 워크스테이션 사본에서는 **자기 행만 유효**. 저장소는 기본 `~/Documents/<repo>` (Windows의 claude-skills만 예외 — 표 참고).
 
 | 기기 | Vault | 스킬/에이전트 워크스페이스 (claude-skills) |
 |---|---|---|
 | Mac | `~/LocalVault/Obsidian Vault` | `~/Documents/claude-skills` |
-| Windows | `C:/Users/bys72/Obsidian/vault_YS` | `~/Documents/claude-skills` |
+| Windows | `C:/Users/bys72/Obsidian/vault_YS` | `C:/Users/bys72/claude-skills` |
