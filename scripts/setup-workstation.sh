@@ -33,23 +33,25 @@ done
 echo "== 4. 유저 CLAUDE.md (템플릿 복사본 — 심링크 금지, SETUP_GUIDE 참고)"
 if [ ! -f "$CLAUDE_DIR/CLAUDE.md" ]; then
   cp "$REPO/templates/user/CLAUDE.md" "$CLAUDE_DIR/CLAUDE.md"
-  echo "   복사함 → '주요 경로' 절의 placeholder를 이 워크스테이션 실경로로 바꿀 것"
+  echo "   복사함 → '주요 경로' 기기별 표에 이 워크스테이션 행이 있는지 확인"
 else
   echo "   이미 있음. 변경분: diff \"$CLAUDE_DIR/CLAUDE.md\" \"$REPO/templates/user/CLAUDE.md\""
 fi
 
-echo "== 5. 유저 settings.json — 템플릿 키 병합 (다른 키는 유지)"
+echo "== 5. 유저 settings.json — 템플릿 키 병합 (다른 키는 유지 · <...> placeholder 값은 건너뜀)"
 "${PY[@]}" - "$CLAUDE_DIR/settings.json" "$REPO/templates/user/settings.json" <<'PYEOF'
 import json, os, sys
 dst, src = sys.argv[1], sys.argv[2]
 cur = json.load(open(dst, encoding="utf-8")) if os.path.exists(dst) else {}
-new = json.load(open(src, encoding="utf-8"))
+raw = json.load(open(src, encoding="utf-8"))
+skipped = {k: v for k, v in raw.items() if isinstance(v, str) and v.startswith("<")}   # placeholder → 수동 설정
+new = {k: v for k, v in raw.items() if k not in skipped}
 changed = {k: v for k, v in new.items() if cur.get(k) != v}
 cur.update(new)
 json.dump(cur, open(dst, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 print("   갱신:", changed if changed else "변경 없음")
+if skipped: print("   수동 설정(placeholder, SETUP_GUIDE §3):", skipped)
 PYEOF
-mkdir -p "$CLAUDE_DIR/memory-shared"
 
 echo "== 6. MCP (전제 도구가 있고 아직 없는 것만 유저 스코프로 등록 — 전제 없이 등록하면 매 세션 연결 실패)"
 if command -v uvx >/dev/null 2>&1; then

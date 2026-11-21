@@ -27,16 +27,16 @@ bash scripts/setup-workstation.sh
 2. 마켓플레이스를 이 저장소 경로로 등록 → `ys-research` 플러그인 설치 (이미 있으면 update)
 3. `~/.claude/skills/`·`agents/`의 옛 복사본 중 플러그인과 겹치는 것 삭제
 4. `~/.claude/CLAUDE.md` 없으면 템플릿 복사
-5. `~/.claude/settings.json`에 `outputStyle: ys-research:discuss`, `autoMemoryDirectory: ~/.claude/memory-shared` 병합 (다른 키 유지)
+5. `~/.claude/settings.json`에 `outputStyle: ys-research:discuss` 병합 (다른 키 유지). `autoMemoryDirectory`는 템플릿에 `<Vault root>/Meta/claude-memory` placeholder로만 있어 스크립트가 건너뜀 → §3에서 수동 설정
 6. MCP 등록 — arxiv-mcp-server(`uvx` 있을 때), claude-mermaid(Node 22+ 있을 때). 전제 도구가 없으면 등록하지 않고 알려줌 — 깨진 서버를 등록하면 매 세션 연결 실패
 
 Python은 `plugins/ys-research/hooks/python.sh`가 고른다 (hook과 공용). Windows의 `python`/`python3`는 Microsoft Store 별칭이라 찾아지지만 실행이 안 되는 경우가 있어서, 실제로 실행되는 해석기(uv가 깐 `~/.local/bin/python3.X` 포함)를 찾는다.
 
 ## 3. 수동 마무리
 
-- `~/.claude/CLAUDE.md` 맨 아래 "주요 경로"의 placeholder를 실경로로 교체
+- `~/.claude/CLAUDE.md` 맨 아래 "주요 경로" 기기별 표에서 이 기기 행 확인 (없는 기기면 템플릿 표에 행 추가 후 커밋)
 - nanobanana MCP: API 키·빌드 → [docs/mcp-servers.md](docs/mcp-servers.md)
-- Vault가 있으면 `~/.claude/settings.json`의 `permissions.additionalDirectories`에 Vault 경로 추가 (`~/.claude.json`이 아님). **filesystem MCP 서버를 만들지 말 것** (권한 충돌·중복 — [docs/MCP_FILESYSTEM_SOLUTION.md](docs/MCP_FILESYSTEM_SOLUTION.md))
+- Vault가 있으면 `~/.claude/settings.json`의 `permissions.additionalDirectories`에 Vault 경로 추가, `autoMemoryDirectory`를 `<Vault root>/Meta/claude-memory`로 (메모리는 Vault 안에 있어 Obsidian Sync로 기기 간 이동 — [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md)) (`~/.claude.json`이 아님). **filesystem MCP 서버를 만들지 말 것** (권한 충돌·중복 — [docs/MCP_FILESYSTEM_SOLUTION.md](docs/MCP_FILESYSTEM_SOLUTION.md))
 - 샌드박스: macOS(Seatbelt)·Linux(bubblewrap)는 `~/.claude/settings.json`의 `sandbox.filesystem.allowWrite`에 Vault 경로. Windows는 불필요
 - Claude Code 재시작 → `/output-style`에 `ys-research:discuss`·`ys-research:research-dev`가 보이면 정상
 - 영어 코치(플러그인 hook)는 설치만으로 켜진다. 한글 요청 앞에 `🗣` 블록이 뜨면 정상. 끄려면 `~/.claude/settings.json`에 `"env": {"ENGLISH_COACH": "off"}` (저장소만 끄려면 그 저장소 `.claude/settings.json`). 음성 입력은 내장 `/voice`
@@ -65,11 +65,11 @@ bash scripts/apply-project-dev.sh <repo-path>
 | 유저 | `setup-workstation.sh` 재실행(settings 병합) + `~/.claude/CLAUDE.md`는 diff 보고 수동 반영 |
 | 프로젝트 | `apply-project-dev.sh` 재실행 (settings 갱신, STATUS.md는 건드리지 않음) |
 
-`~/.claude/CLAUDE.md` diff 시 **의도된 차이** = "Vault 노트 양방향 편집 가드레일"과 "주요 경로"의 placeholder ↔ 실경로. 그 외는 반영 대상.
+`~/.claude/CLAUDE.md` diff 시 **의도된 차이** = "Vault 노트 양방향 편집 가드레일"의 `<Vault root>` ↔ 실경로, "주요 경로" 머리말(템플릿 안내문 ↔ "이 사본은 X 행"). 그 외는 반영 대상.
 
 ## 5-1. 기기 간 작업 (Mac ↔ Windows)
 
-Mac 을 끄고 Windows 로 옮겨도 같은 작업을 이어가려면 Vault **양방향 동기화** + 메모리를 Vault 안(`Meta/claude-memory/`)으로 + 저장소는 git(시작 fetch·끝 push) + 인계 노트. 현황·결정 항목·실행 순서 = [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md) (2026-11-21 작성 · Vault 는 양 기기 Obsidian Sync 로 이미 동기화 중 · Mac claude-skills 세션이 §7 순서로 실행).
+Mac 을 끄고 Windows 로 옮겨도 같은 작업을 이어가려면 Vault **양방향 동기화** + 메모리를 Vault 안(`Meta/claude-memory/`)으로 + 저장소는 git(시작 fetch·끝 push) + 인계 노트. 현황·결정 항목·실행 순서 = [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md) (2026-11-21 작성 · Vault 는 양 기기 Obsidian Sync 로 이미 동기화 중 · **Mac 측 §7 실행 완료 11-21** · 남은 것 = Windows §6 · Vault 세션 §5).
 
 ## 6. 선택: Advisor
 
@@ -78,6 +78,7 @@ Mac 을 끄고 Windows 로 옮겨도 같은 작업을 이어가려면 Vault **�
 ## 7. 워크스테이션 케이스
 
 - **Vault 있음 (맥북)**: `permissions.additionalDirectories` + `sandbox.filesystem.allowWrite`에 Vault 경로
+  - **2026-11-21 메모리를 Vault 안으로**: `autoMemoryDirectory` = `~/LocalVault/Obsidian Vault/Meta/claude-memory` (`~/.claude/memory-shared` 삭제). Obsidian Sync가 Windows로 함께 옮긴다 — [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md)
   - **2026-11-17 플러그인 전환 적용**. Homebrew `claude`(2.0.31)는 `plugin` 명령이 없어 `brew upgrade --cask claude-code` 먼저. 환경변수(`~/.zshenv`의 `NANOBANANA_API_KEY` 등)를 바꾸면 **VSCode를 Cmd+Q로 완전 종료** 후 재실행 — 확장 재시작·창 리로드는 본체가 처음 읽은 env를 그대로 물려받아 MCP 서버에 안 보인다. `autoMemoryDirectory`를 공유 디렉토리로 바꾸면 기존 `~/.claude/projects/<slug>/memory/`는 **자동 이관되지 않는다**(공식 문서 확인) — 파일을 복사하고 MEMORY.md 인덱스를 합칠 것 (맥북은 6 프로젝트 46건 이관)
 - **Vault 없음 (리눅스 클러스터 PC)**: 두 항목 비움. 설계 관찰은 저장소 `docs/VAULT_SYNC_TODO.md`에 기록 (Vault 세션이 반영)
   - **mrg 클러스터 한정**: `claude` CLI가 PATH에 없다 — VSCode 확장 번들(`~/.vscode-server/extensions/anthropic.claude-code-*/resources/native-binary`)을 PATH에 넣어야 2단계 스크립트가 돈다. 또 node v10·`uv` 없어 스크립트가 등록하는 `arxiv-mcp-server`·`claude-mermaid`가 연결 실패하므로 재실행마다 `claude mcp remove <name> -s user`로 뗄 것 (논문·다이어그램 워크플로우는 이 워크스테이션 담당이 아니라 실무 지장 없음)

@@ -69,6 +69,7 @@
 - **커밋 전**: 관련 작업물 검토 및 정리
 - **푸시 전**: 프로젝트 전체 구성 검토 및 리팩토링 검증 (이미 완벽하면 생략)
 - **커밋 메시지에 `Co-Authored-By: Claude ...` 라인 추가하지 말 것**: 법적 의무 없고 개인 연구 repo에서 실질적 이점 없음. 논문 제출 시점에 AI 도구 사용은 논문 본문에 한 번 명시하면 충분
+- **기기를 바꾸는 세션(Mac ↔ Windows)**: 시작 시 관련 저장소 `git fetch`, 끝날 때 커밋분을 push — 다른 기기가 pull로 받아야 하므로 이 경우만 요청 없이 push한다. 그 외엔 요청 시만 push
 
 ## 수식 표현
 
@@ -150,9 +151,11 @@ CLAUDE.md는 세 레이어:
 
 ## 주요 경로
 
-> 이 파일은 `claude-skills/templates/user/CLAUDE.md` **마스터 사본**이며 새 워크스테이션 적용용 일반 템플릿. 워크스테이션 특수 경로(`<Vault root>` 등)는 placeholder로만 표기됨.
+> 이 파일은 `claude-skills/templates/user/CLAUDE.md` **마스터 사본**. 새 워크스테이션 셋업 시 `~/.claude/CLAUDE.md`로 **복사** — **심링크(`ln -s`) 금지**(워크스테이션 정보가 템플릿으로 역류). 절차: [`SETUP_GUIDE.md`](../../SETUP_GUIDE.md) (`scripts/setup-workstation.sh`가 복사까지 수행). 본문의 `<Vault root>`는 자기 기기 행의 Vault 경로.
 >
-> 새 워크스테이션 셋업 시: `~/.claude/CLAUDE.md`로 **복사**한 뒤 아래 형식으로 실경로 추가. **심링크(`ln -s`) 금지** — 워크스테이션 특수 정보가 저장소로 역류해 일반 템플릿이 깨짐. 절차: [`SETUP_GUIDE.md`](../../SETUP_GUIDE.md) (`scripts/setup-workstation.sh`가 복사까지 수행).
+> 기기별 실경로 표 — 각 워크스테이션 사본에서는 **자기 행만 유효**. 저장소는 모든 기기에서 `~/Documents/<repo>`.
 
-- Vault: `<Vault root, e.g. ~/LocalVault/Obsidian Vault>`
-- 스킬/에이전트 워크스페이스: `<claude-skills repo root, e.g. ~/Documents/claude-skills>`
+| 기기 | Vault | 스킬/에이전트 워크스페이스 (claude-skills) |
+|---|---|---|
+| Mac | `~/LocalVault/Obsidian Vault` | `~/Documents/claude-skills` |
+| Windows | `C:/Users/bys72/Obsidian/vault_YS` | `~/Documents/claude-skills` |

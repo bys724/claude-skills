@@ -1,4 +1,4 @@
 {
   "outputStyle": "ys-research:discuss",
-  "autoMemoryDirectory": "~/.claude/memory-shared"
+  "autoMemoryDirectory": "<Vault root>/Meta/claude-memory"
 }
