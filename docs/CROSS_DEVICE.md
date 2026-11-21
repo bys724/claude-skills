@@ -7,6 +7,7 @@
 ## 0. 현황 (2026-11-21 Mac 에서 확인 · 같은 날 정정 · 같은 날 Mac 측 실행 완료)
 
 - **Mac claude-skills 세션 §7 실행 완료 (2026-11-21)**: §2 메모리 50편을 `<Vault>/Meta/claude-memory/` 로 이동(원본 삭제) · Mac `autoMemoryDirectory` 전환 · 템플릿 settings placeholder + setup 스크립트는 `<...>` placeholder 값을 건너뜀 · §3 push 문구·§4 기기별 경로 표를 템플릿과 Mac 사본에 반영 · SETUP_GUIDE §2-5·§3·§5-1·§7 갱신. **남은 것 = §5(Vault 세션) · §6(Windows 사용자)**. 아래 항목들은 실행 전 기록.
+- **Windows §6 실행 완료 (2026-11-21)**: 메모리 50편·인계 노트 동기화 확인 · `autoMemoryDirectory` 전환 · `~/.claude/CLAUDE.md` 반영 · 저장소 3개 clone(`input-prior-mae` 제외 · `action-agnostic-visual-rl` 서브모듈 미초기화). **Windows 저장소 위치는 `~/Documents` 가 아니라 `C:/Users/bys72/<repo>`** — claude-skills 가 이미 거기 있어 통일. 아래 §3·§4·§6 의 `~/Documents` 는 Mac 에만 해당. 미실행 = §6-2 Windows Vault `.claude/settings.json` 생성 · §4 "설정 층 구조" Vault 레이어 경로 갱신.
 - **Vault 는 양 기기 모두 Obsidian Sync 로 동기화 중이다.** Mac `~/LocalVault/Obsidian Vault` (`.obsidian/core-plugins.json` `"sync": true`) ↔ Windows `C:/Users/bys72/Obsidian/vault_YS` (사용자 확인 · iCloud/OneDrive 와 무관). 처음에 "로컬 폴더"로 적었던 것은 오판 — 정정.
 - launchd `com.user.obsidian-backup` 의 1시간 `rsync --delete` → `~/Documents/ObsidianVault_Backup`(iCloud) 은 **별도 백업**일 뿐이다. 그대로 둔다. Windows 는 이 사본을 쓰지 않는다.
 - 메모리 = Mac `~/.claude/memory-shared/` (50편 · 256K) **→ §2 완료, 지금은 `<Vault>/Meta/claude-memory/`**. Windows 에 없음 → Vault 안에 넣으면 Obsidian Sync 가 함께 옮긴다. 임시 조치 `tmp/메모리 발췌 2026-11-21.md` 는 §2 뒤 삭제 대상.
