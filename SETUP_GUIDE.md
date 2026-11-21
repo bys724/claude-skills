@@ -67,6 +67,10 @@ bash scripts/apply-project-dev.sh <repo-path>
 
 `~/.claude/CLAUDE.md` diff 시 **의도된 차이** = "Vault 노트 양방향 편집 가드레일"과 "주요 경로"의 placeholder ↔ 실경로. 그 외는 반영 대상.
 
+## 5-1. 기기 간 작업 (Mac ↔ Windows)
+
+Mac 을 끄고 Windows 로 옮겨도 같은 작업을 이어가려면 Vault **양방향 동기화** + 메모리를 Vault 안(`Meta/claude-memory/`)으로 + 저장소는 git(시작 fetch·끝 push) + 인계 노트. 현황·결정 항목·실행 순서 = [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md) (2026-11-21 작성 · Mac claude-skills 세션이 §7 순서로 실행 · **동기화 방식 결정 전에는 Windows 에서 Vault 쓰기 금지**).
+
 ## 6. 선택: Advisor
 
 결정 지점(접근 확정 전·완료 선언 전)에 상위 모델이 대화 전체를 검토하는 실험 기능. `/advisor opus`로 켬, `advisorModel` 설정으로 고정. 호출마다 비용 발생 — 기본 off, 클러스터 세션처럼 판단 실수 비용이 큰 곳에서만.
