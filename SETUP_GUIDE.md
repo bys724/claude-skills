@@ -69,7 +69,7 @@ bash scripts/apply-project-dev.sh <repo-path>
 
 ## 5-1. 기기 간 작업 (Mac ↔ Windows)
 
-Mac 을 끄고 Windows 로 옮겨도 같은 작업을 이어가려면 Vault **양방향 동기화** + 메모리를 Vault 안(`Meta/claude-memory/`)으로 + 저장소는 git(시작 fetch·끝 push) + 인계 노트. 현황·결정 항목·실행 순서 = [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md) (2026-11-21 작성 · Vault 는 양 기기 Obsidian Sync 로 이미 동기화 중 · **Mac 측 §7 실행 완료 11-21** · 남은 것 = Windows §6 · Vault 세션 §5).
+Mac 을 끄고 Windows 로 옮겨도 같은 작업을 이어가려면 Vault **양방향 동기화** + 메모리를 Vault 안(`Meta/claude-memory/`)으로 + 저장소는 git(시작 fetch·끝 push) + 인계 노트. 현황·결정 항목·실행 순서 = [docs/CROSS_DEVICE.md](docs/CROSS_DEVICE.md) (2026-11-21 작성 · Vault 는 양 기기 Obsidian Sync 로 이미 동기화 중 · **11-21 Mac·Windows·Vault 전부 완료**; 이후는 운용 규칙만 — Vault `Meta/claude/vault-guide.md` "기기 간 작업" 절).
 
 ## 6. 선택: Advisor
 
