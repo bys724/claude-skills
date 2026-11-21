@@ -90,7 +90,7 @@ CLAUDE.md는 세 레이어:
 
 - **User** (`~/.claude/CLAUDE.md`): 정체성·언어·코딩/리팩토링 원칙. 어디서든 적용.
 - **Project** (`<repo>/CLAUDE.md`): 저장소 목적·스택·구조·관련 Vault 노트 매핑. 실험 저장소는 `@docs/STATUS.md`로 현재 상태를 함께 로드.
-- **Vault** (`Obsidian Vault/.claude/CLAUDE.md`): 노트 작성 컨벤션·폴더 구조·템플릿.
+- **Vault** (`Obsidian Vault/Meta/claude/vault-guide.md` — 루트 `CLAUDE.md`가 @import): 노트 작성 컨벤션·폴더 구조·템플릿.
 
 ### 우선순위
 
@@ -134,7 +134,7 @@ CLAUDE.md는 세 레이어:
 - 미래 계획 나열, 체크리스트 남발
 - README/docs로 위임 가능한 상세 (파일 구조 트리, 상세 알고리즘 등)
 
-### Vault CLAUDE.md (`Obsidian Vault/.claude/CLAUDE.md`)
+### Vault CLAUDE.md (`Obsidian Vault/Meta/claude/vault-guide.md`)
 
 **목적**: 노트 작성·편집·정리의 컨벤션 가이드.
 
