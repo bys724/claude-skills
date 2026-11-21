@@ -159,3 +159,4 @@ CLAUDE.md는 세 레이어:
 |---|---|---|
 | Mac | `~/LocalVault/Obsidian Vault` | `~/Documents/claude-skills` |
 | Windows | `C:/Users/bys72/Obsidian/vault_YS` | `C:/Users/bys72/claude-skills` |
+| mrg 클러스터 (Linux) | 없음 | `/proj/home/mrg/bys724/claude-skills` |
