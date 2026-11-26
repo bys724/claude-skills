@@ -161,3 +161,4 @@ CLAUDE.md는 세 레이어:
 | Windows | `C:/Users/bys72/Obsidian/vault_YS` | `C:/Users/bys72/claude-skills` |
 | mrg 클러스터 (Linux) | 없음 | `/proj/home/mrg/bys724/claude-skills` |
 | ETRI camera PC (Linux) | 없음 | `/home/etri/bys/claude-skills` |
+| Windows PC 2 (Vault 없음) | 없음 | `C:/Users/bys724/claude-skills` |
